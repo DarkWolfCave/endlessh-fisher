@@ -6,8 +6,6 @@ from django.core.cache import cache
 from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404, render
 
-from apps.collector.influx_client import query_active_connections
-
 from .models import CaughtBot, CountryStats, DailyStats, FishSpecies, Server
 from .services import get_pond_fish
 
@@ -38,12 +36,8 @@ def get_cached_stats() -> dict:
 
 
 def _get_active_traps():
-    """Get active trap count from cache or InfluxDB."""
-    count = cache.get("endlessh:active_traps")
-    if count is None:
-        count = query_active_connections()
-        cache.set("endlessh:active_traps", count, 60)
-    return count
+    """Get active trap count from pond data (same source as Live Pond)."""
+    return get_pond_fish()["total_active"]
 
 
 def dashboard(request):
@@ -52,13 +46,13 @@ def dashboard(request):
     recent_catches = CaughtBot.objects.select_related("species", "server")[:10]
     stats = get_cached_stats()
 
-    # Live Pond data for initial render
+    # Live Pond data for initial render (also provides active_traps)
     pond_data = get_pond_fish()
 
     return render(request, "aquarium/dashboard.html", {
         "servers": servers,
         "recent_catches": recent_catches,
-        "active_traps": _get_active_traps(),
+        "active_traps": pond_data["total_active"],
         **stats,
         "fish_list": pond_data["fish"],
         "total_active": pond_data["total_active"],
