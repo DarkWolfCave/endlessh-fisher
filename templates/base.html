@@ -185,6 +185,361 @@
         .container { max-width: 1400px; margin: 0 auto; padding: 0 1rem; }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
         .flex-center { display: flex; align-items: center; gap: 0.5rem; }
+
+        /* ========================================
+           LIVE POND
+           ======================================== */
+        .live-pond-container {
+            position: relative;
+            background: linear-gradient(180deg, #060d1e 0%, #0a2040 40%, #0d3060 70%, #0a2540 100%);
+            border-radius: 0.75rem;
+            min-height: 420px;
+            border: 1px solid var(--color-border);
+        }
+        .live-pond-inner {
+            position: relative;
+            width: 100%;
+            min-height: 420px;
+        }
+        .pond-water-surface {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(6,182,212,0.4), rgba(96,165,250,0.3), rgba(6,182,212,0.4), transparent);
+            animation: water-shimmer 4s ease-in-out infinite;
+            z-index: 2;
+        }
+        @keyframes water-shimmer {
+            0%, 100% { opacity: 0.5; transform: scaleX(1); }
+            50% { opacity: 1; transform: scaleX(1.02); }
+        }
+
+        /* Bubbles */
+        .pond-bubbles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .bubble {
+            position: absolute;
+            bottom: -10px;
+            left: var(--x, 50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(96, 165, 250, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            animation: bubble-rise 8s ease-in infinite;
+            animation-delay: var(--delay, 0s);
+        }
+        @keyframes bubble-rise {
+            0% { transform: translateY(0) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-200px) scale(1.3); opacity: 0.3; }
+            100% { transform: translateY(-420px) scale(0.6); opacity: 0; }
+        }
+
+        /* Fish in pond */
+        .pond-fish {
+            position: absolute;
+            cursor: pointer;
+            user-select: none;
+            z-index: 3;
+        }
+        .pond-fish:hover { z-index: 10; }
+        .pond-fish:hover .fish-swim {
+            filter: brightness(1.4) drop-shadow(0 0 10px var(--color-accent));
+        }
+        .pond-fish:hover .fish-tooltip { display: block; }
+        .fish-swim {
+            display: inline-block;
+            position: relative;
+            transition: filter 0.3s;
+        }
+        .fish-body { display: inline-block; }
+        .fish-server-dot {
+            position: absolute;
+            bottom: -3px;
+            right: -3px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.3);
+        }
+        .fish-server-ocean { background: #3b82f6; }
+        .fish-server-lake { background: #34d399; }
+        .fish-server-reef { background: #f472b6; }
+
+        /* Fish sizes */
+        .fish-size-xs .fish-body { font-size: 0.9rem; }
+        .fish-size-sm .fish-body { font-size: 1.1rem; }
+        .fish-size-md .fish-body { font-size: 1.4rem; }
+        .fish-size-lg .fish-body { font-size: 1.8rem; }
+        .fish-size-xl .fish-body { font-size: 2.2rem; }
+        .fish-size-xxl .fish-body { font-size: 2.8rem; }
+
+        /* Splash animation for new fish */
+        .fish-splash {
+            animation: splash-in 0.8s ease-out !important;
+        }
+        @keyframes splash-in {
+            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* Fish tooltip */
+        .fish-tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 0.6rem 0.8rem;
+            min-width: 180px;
+            font-size: 0.75rem;
+            z-index: 50;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            pointer-events: none;
+        }
+        .fish-tooltip-header {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        .fish-tooltip-body {
+            color: var(--color-text-muted);
+            line-height: 1.5;
+        }
+        .fish-tooltip-timer {
+            color: var(--color-accent);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .fish-tooltip-rarity {
+            display: inline-block;
+            margin-top: 0.3rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        /* Pond count overlay */
+        .pond-count {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 0.4rem 0.75rem;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+        }
+        .pond-count-value {
+            font-weight: 700;
+            color: var(--color-accent);
+            font-size: 1rem;
+        }
+        .pond-count-label {
+            color: var(--color-text-muted);
+        }
+
+        /* Empty pond */
+        .pond-empty {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Fish swim animations - scaleX is constant per direction,
+           so tooltip (sibling of fish-swim) is never mirrored */
+        @keyframes swim-left {
+            0%, 100% { transform: translateX(0) scaleX(-1); }
+            50% { transform: translateX(-30px) scaleX(-1); }
+        }
+        @keyframes swim-right {
+            0%, 100% { transform: translateX(0) scaleX(1); }
+            50% { transform: translateX(30px) scaleX(1); }
+        }
+
+        /* ========================================
+           CATCH TICKER
+           ======================================== */
+        .catch-ticker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 36px;
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            z-index: 40;
+            overflow: hidden;
+        }
+        .catch-ticker::before,
+        .catch-ticker::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .catch-ticker::before {
+            left: 0;
+            background: linear-gradient(90deg, var(--color-surface), transparent);
+        }
+        .catch-ticker::after {
+            right: 0;
+            background: linear-gradient(-90deg, var(--color-surface), transparent);
+        }
+        .ticker-track {
+            height: 100%;
+            overflow: hidden;
+        }
+        .ticker-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            white-space: nowrap;
+            animation: ticker-scroll 45s linear infinite;
+        }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            padding: 0 0.5rem;
+        }
+        .ticker-fish { font-size: 1rem; }
+        .ticker-species { font-weight: 600; }
+        .ticker-meta { color: var(--color-text-muted); }
+        .ticker-sep { color: var(--color-border); margin: 0 0.3rem; }
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ========================================
+           RARE FISH ALERTS
+           ======================================== */
+        .rare-alert-container {
+            position: fixed;
+            top: 0.75rem;
+            right: 0.75rem;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 380px;
+        }
+        .rare-alert {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+        }
+        .rare-alert-epic {
+            border-color: var(--color-epic);
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.25);
+        }
+        .rare-alert-legendary {
+            border-color: var(--color-legendary);
+            box-shadow: 0 0 24px rgba(251, 191, 36, 0.3);
+            animation: alert-pulse-gold 2s ease-in-out infinite;
+        }
+        .rare-alert-mythic {
+            border-color: var(--color-mythic);
+            box-shadow: 0 0 28px rgba(255, 0, 64, 0.35);
+            animation: alert-pulse-mythic 1.2s ease-in-out infinite;
+        }
+        @keyframes alert-pulse-gold {
+            0%, 100% { box-shadow: 0 0 24px rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 36px rgba(251, 191, 36, 0.5); }
+        }
+        @keyframes alert-pulse-mythic {
+            0%, 100% { box-shadow: 0 0 28px rgba(255, 0, 64, 0.35); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 64, 0.55); }
+        }
+        .rare-alert-content {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .rare-alert-emoji { font-size: 1.8rem; }
+        .rare-alert-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+        .rare-alert-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+        .rare-alert-species {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .rare-alert-meta {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+        .rare-alert-live {
+            display: inline-block;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            margin-left: 0.3rem;
+            animation: blink-live 1.5s ease-in-out infinite;
+        }
+        @keyframes blink-live {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .rare-alert-close {
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.2rem;
+            line-height: 1;
+        }
+        .rare-alert-close:hover { color: var(--color-text); }
+
+        /* Alert transitions (Alpine.js) */
+        .alert-enter { transition: all 0.4s ease-out; }
+        .alert-enter-start { opacity: 0; transform: translateX(100px); }
+        .alert-enter-end { opacity: 1; transform: translateX(0); }
+        .alert-leave { transition: all 0.3s ease-in; }
+        .alert-leave-start { opacity: 1; transform: translateX(0); }
+        .alert-leave-end { opacity: 0; transform: translateX(100px); }
     </style>
 </head>
 <body>
@@ -212,17 +567,30 @@
         {% include "components/stats_bar.html" %}
     </div>
 
+    <!-- Rare Fish Alerts (fixed top-right, HTMX polling every 30s) -->
+    <div class="rare-alert-container"
+         id="rare-alert-container"
+         hx-get="{% url 'htmx:rare-alert' %}"
+         hx-trigger="every 30s"
+         hx-swap="innerHTML">
+    </div>
+
     <!-- Main Content -->
-    <main class="container" style="padding: 1.5rem 1rem;">
+    <main class="container" style="padding: 1.5rem 1rem 3.5rem;">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Achievement Toast (HTMX polling every 60s) -->
-    <div id="achievement-toast"
-         hx-get="{% url 'htmx:stats-bar' %}"
-         hx-trigger="every 60s"
+    <!-- Catch Ticker (fixed bottom bar, HTMX polling every 15s) -->
+    <div class="catch-ticker"
+         hx-get="{% url 'htmx:catch-ticker' %}"
+         hx-trigger="every 15s"
          hx-swap="innerHTML">
+        {% include "components/catch_ticker.html" %}
     </div>
+
+    <!-- Live Pond JS -->
+    {% load static %}
+    <script src="{% static 'js/live-pond.js' %}"></script>
 
     {% block extra_js %}{% endblock %}
 </body>

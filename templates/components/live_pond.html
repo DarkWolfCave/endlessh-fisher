@@ -1,0 +1,60 @@
+{% load game_tags %}
+<div class="live-pond-inner" id="live-pond-data" data-fish='{{ fish_json }}' data-updated="{{ last_updated }}">
+    <div class="pond-water-surface"></div>
+
+    <!-- Bubble particles -->
+    <div class="pond-bubbles">
+        <span class="bubble" style="--delay: 0s; --x: 12%;"></span>
+        <span class="bubble" style="--delay: 2.5s; --x: 35%;"></span>
+        <span class="bubble" style="--delay: 1.2s; --x: 55%;"></span>
+        <span class="bubble" style="--delay: 3.8s; --x: 72%;"></span>
+        <span class="bubble" style="--delay: 0.8s; --x: 88%;"></span>
+        <span class="bubble" style="--delay: 4.5s; --x: 25%;"></span>
+        <span class="bubble" style="--delay: 2s; --x: 65%;"></span>
+    </div>
+
+    {% for fish in fish_list %}
+    <div class="pond-fish fish-size-{{ fish.size }} glow-{{ fish.rarity }}"
+         data-fish-id="{{ fish.id }}"
+         data-trapped="{{ fish.trapped_seconds }}"
+         data-last-seen="{{ fish.last_seen }}"
+         style="top: {{ fish.pos_top }}%; left: {{ fish.pos_left }}%; color: {{ fish.rarity_color }};">
+
+        <!-- Swim wrapper: gets the animation (scaleX + translateX) -->
+        <div class="fish-swim"
+             style="animation: swim-{{ fish.swim_dir }} {{ fish.swim_speed }}s linear infinite;">
+            <span class="fish-body">{{ fish.species_emoji }}</span>
+            <span class="fish-server-dot fish-server-{{ fish.server_theme }}"></span>
+        </div>
+
+        <!-- Tooltip: OUTSIDE fish-swim, so NOT affected by scaleX -->
+        <div class="fish-tooltip">
+            <div class="fish-tooltip-header" style="color: {{ fish.rarity_color }};">
+                {{ fish.species_emoji }} {{ fish.species_name }}
+            </div>
+            <div class="fish-tooltip-body">
+                <div>{{ fish.ip_hash }}... &middot; {{ fish.country|default:"??" }}</div>
+                <div>{{ fish.server_name }}</div>
+                <div class="fish-tooltip-timer"
+                     data-base-seconds="{{ fish.trapped_seconds }}"
+                     data-last-seen="{{ fish.last_seen }}">
+                    {{ fish.trapped_seconds|duration_format }}
+                </div>
+            </div>
+            <div class="fish-tooltip-rarity" style="color: {{ fish.rarity_color }};">
+                {{ fish.rarity|upper }}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="pond-empty">
+        <span style="font-size: 2.5rem;">&#x1F3A3;</span>
+        <p>Keine Fische in der Falle... noch nicht!</p>
+    </div>
+    {% endfor %}
+
+    <div class="pond-count">
+        <span class="pond-count-value">{{ total_active }}</span>
+        <span class="pond-count-label">aktiv gefangen</span>
+    </div>
+</div>

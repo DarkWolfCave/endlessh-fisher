@@ -1,9 +1,24 @@
 """Aquarium template views - dashboard, aquarium, fish detail."""
 
+import json
+
+from django.core.cache import cache
 from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404, render
 
+from apps.collector.influx_client import query_active_connections
+
 from .models import CaughtBot, CountryStats, DailyStats, FishSpecies, Server
+from .services import get_pond_fish
+
+
+def _get_active_traps():
+    """Get active trap count from cache or InfluxDB."""
+    count = cache.get("endlessh:active_traps")
+    if count is None:
+        count = query_active_connections()
+        cache.set("endlessh:active_traps", count, 60)
+    return count
 
 
 def dashboard(request):
@@ -12,11 +27,14 @@ def dashboard(request):
     recent_catches = CaughtBot.objects.select_related("species", "server")[:10]
     total_score = CaughtBot.objects.aggregate(total=Sum("score"))["total"] or 0
     total_catches = CaughtBot.objects.count()
-    active_traps = CaughtBot.objects.filter(is_active=True).count()
+    active_traps = _get_active_traps()
     total_countries = CountryStats.objects.count()
     total_trapped = (
         CaughtBot.objects.aggregate(total=Sum("trapped_seconds"))["total"] or 0
     )
+
+    # Live Pond data for initial render
+    pond_data = get_pond_fish()
 
     return render(request, "aquarium/dashboard.html", {
         "servers": servers,
@@ -26,6 +44,10 @@ def dashboard(request):
         "active_traps": active_traps,
         "total_countries": total_countries,
         "total_trapped_seconds": total_trapped,
+        "fish_list": pond_data["fish"],
+        "total_active": pond_data["total_active"],
+        "last_updated": pond_data["last_updated"],
+        "fish_json": json.dumps(pond_data["fish"]),
     })
 
 

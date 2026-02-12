@@ -4,6 +4,18 @@
 {% block title %}Dashboard - {{ GAME_NAME }}{% endblock %}
 
 {% block content %}
+<!-- Live Pond (main feature, HTMX polling every 15s) -->
+<h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
+    &#x1F30A; Live-Teich &mdash; Aktuell gefangene Bots
+</h2>
+<div class="live-pond-container" style="margin-bottom: 2rem;"
+     id="live-pond-container"
+     hx-get="{% url 'htmx:live-pond' %}"
+     hx-trigger="every 15s"
+     hx-swap="innerHTML">
+    {% include "components/live_pond.html" %}
+</div>
+
 <!-- Server Ponds -->
 <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
     &#x1F3A3; Angelteiche
@@ -57,43 +69,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-// Simple fish swimming animation (no GSAP dependency for MVP)
-document.querySelectorAll('.pond').forEach(pond => {
-    const serverSlug = pond.dataset.server;
-    // Create a few animated fish per pond
-    const fishEmojis = ['&#x1F41F;', '&#x1F420;', '&#x1F421;'];
-    for (let i = 0; i < 5; i++) {
-        const fish = document.createElement('span');
-        fish.className = 'fish-entity';
-        fish.innerHTML = fishEmojis[i % fishEmojis.length];
-        fish.style.top = (20 + Math.random() * 60) + '%';
-        fish.style.left = (Math.random() * 80) + '%';
-        fish.style.fontSize = (1 + Math.random() * 0.8) + 'rem';
-        fish.style.opacity = 0.6 + Math.random() * 0.4;
-        fish.style.animation = `swim-${i % 2 === 0 ? 'left' : 'right'} ${8 + Math.random() * 8}s linear infinite`;
-        fish.style.animationDelay = -(Math.random() * 10) + 's';
-        pond.appendChild(fish);
-    }
-});
-</script>
-<style>
-@keyframes swim-left {
-    0% { transform: translateX(0) scaleX(-1); }
-    49% { transform: translateX(-120%) scaleX(-1); }
-    50% { transform: translateX(-120%) scaleX(1); }
-    99% { transform: translateX(0) scaleX(1); }
-    100% { transform: translateX(0) scaleX(-1); }
-}
-@keyframes swim-right {
-    0% { transform: translateX(0) scaleX(1); }
-    49% { transform: translateX(120%) scaleX(1); }
-    50% { transform: translateX(120%) scaleX(-1); }
-    99% { transform: translateX(0) scaleX(-1); }
-    100% { transform: translateX(0) scaleX(1); }
-}
-</style>
 {% endblock %}

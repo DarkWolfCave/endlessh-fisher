@@ -32,7 +32,7 @@ FISH_SPECIES = [
     {
         "slug": "anchovy",
         "name": "Anchovy",
-        "name_de": "Anchovis",
+        "name_de": "Sardelle",
         "description": "Small but feisty. Took the bait and struggled a bit.",
         "description_de": "Klein aber zappelig. Hat angebissen und etwas gekämpft.",
         "min_trapped_seconds": 60,
@@ -88,7 +88,7 @@ FISH_SPECIES = [
     {
         "slug": "tuna",
         "name": "Bluefin Tuna",
-        "name_de": "Roter Thun",
+        "name_de": "Thunfisch",
         "description": "Hours of trapped time. This bot's operator is losing money.",
         "description_de": "Stunden in der Falle. Dieser Bot-Betreiber verliert Geld.",
         "min_trapped_seconds": 3600,

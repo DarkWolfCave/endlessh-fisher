@@ -44,7 +44,9 @@ def sync_bot_data(self):
             logger.info("No new connections since %s", since)
             return "No new data"
 
-        trapped_times = query_trapped_times(since)
+        # Always use wide lookback for trapped times - they are cumulative
+        # counters and we need the latest value regardless of sync window.
+        trapped_times = query_trapped_times("-30d")
         servers = {s.host_identifier: s for s in Server.objects.filter(is_active=True)}
 
         created_count = 0

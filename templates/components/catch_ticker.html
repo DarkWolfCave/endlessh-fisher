@@ -1,0 +1,27 @@
+{% load game_tags %}
+<div class="ticker-track">
+    <div class="ticker-content">
+        {% for catch in ticker_catches %}
+        <span class="ticker-item">
+            <span class="ticker-fish" style="color: {{ catch.species.rarity_color }};">&#x1F41F;</span>
+            <span class="ticker-species" style="color: {{ catch.species.rarity_color }};">{{ catch.species.name_de }}</span>
+            <span class="ticker-meta">
+                aus {{ catch.country_code|default:"??" }} auf {{ catch.server.name }}
+                ({{ catch.trapped_seconds|duration_format }})
+            </span>
+            <span class="ticker-sep">&bull;</span>
+        </span>
+        {% endfor %}
+        {% for catch in ticker_catches %}
+        <span class="ticker-item" aria-hidden="true">
+            <span class="ticker-fish" style="color: {{ catch.species.rarity_color }};">&#x1F41F;</span>
+            <span class="ticker-species" style="color: {{ catch.species.rarity_color }};">{{ catch.species.name_de }}</span>
+            <span class="ticker-meta">
+                aus {{ catch.country_code|default:"??" }} auf {{ catch.server.name }}
+                ({{ catch.trapped_seconds|duration_format }})
+            </span>
+            <span class="ticker-sep">&bull;</span>
+        </span>
+        {% endfor %}
+    </div>
+</div>

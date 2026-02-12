@@ -8,9 +8,12 @@ register = template.Library()
 @register.filter
 def duration_format(seconds):
     """Format seconds into human-readable duration."""
-    if seconds is None:
+    if not seconds:
         return "0s"
-    seconds = float(seconds)
+    try:
+        seconds = float(seconds)
+    except (ValueError, TypeError):
+        return "0s"
     if seconds < 60:
         return f"{seconds:.0f}s"
     if seconds < 3600:
@@ -40,6 +43,9 @@ def rarity_color(rarity):
 @register.filter
 def score_format(score):
     """Format score with thousand separators."""
-    if score is None:
+    if not score and score != 0:
         return "0"
-    return f"{int(score):,}".replace(",", ".")
+    try:
+        return f"{int(score):,}".replace(",", ".")
+    except (ValueError, TypeError):
+        return "0"
