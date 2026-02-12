@@ -32,6 +32,7 @@ class Achievement(TimeStampedModel):
         ("unique_ips", "Unique IPs"),
         ("single_trap_seconds", "Single Longest Trap"),
         ("server_catches", "Catches on Specific Server"),
+        ("min_server_catches", "Min Catches Across All Servers"),
         ("species_caught", "Unique Species Caught"),
         ("daily_catches", "Catches in a Single Day"),
         ("total_bytes_sent", "Total Bytes Sent"),

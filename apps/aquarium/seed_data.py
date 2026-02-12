@@ -326,14 +326,32 @@ ACHIEVEMENTS = [
     {"slug": "all-species", "category": "collector", "name": "Complete Collection", "name_de": "Vollständige Sammlung",
      "description": "Catch all 12 fish species!", "description_de": "Fange alle 12 Fischarten!",
      "metric": "species_caught", "threshold": 12, "rarity": "diamond", "points": 500, "sort_order": 4},
-    # Data Hoarder - total bytes sent
+    # Server Master - min catches across ALL servers
+    # ~125 catches/server/day → "at least X on every server"
+    {"slug": "server-allrounder", "category": "server-master", "name": "All-Rounder", "name_de": "Allrounder",
+     "description": "Catch 50 bots on every server.", "description_de": "Fange 50 Bots auf jedem Server.",
+     "metric": "min_server_catches", "threshold": 50, "rarity": "bronze", "points": 25, "sort_order": 1},
+    {"slug": "server-balanced", "category": "server-master", "name": "Balanced Fisher", "name_de": "Ausbalancierter Angler",
+     "description": "Catch 250 bots on every server.", "description_de": "Fange 250 Bots auf jedem Server.",
+     "metric": "min_server_catches", "threshold": 250, "rarity": "silver", "points": 75, "sort_order": 2},
+    {"slug": "server-multi", "category": "server-master", "name": "Multi-Pond Master", "name_de": "Multi-Teich-Meister",
+     "description": "Catch 1,000 bots on every server.", "description_de": "Fange 1.000 Bots auf jedem Server.",
+     "metric": "min_server_catches", "threshold": 1000, "rarity": "gold", "points": 150, "sort_order": 3},
+    {"slug": "server-dominator", "category": "server-master", "name": "Server Dominator", "name_de": "Server-Dominator",
+     "description": "Catch 5,000 bots on every server.", "description_de": "Fange 5.000 Bots auf jedem Server.",
+     "metric": "min_server_catches", "threshold": 5000, "rarity": "platinum", "points": 300, "sort_order": 4},
+    # Data Hoarder - total bytes sent (aggregated from Server.total_bytes_sent)
+    # ~800KB/day across all servers
     {"slug": "one-kb-sent", "category": "data-hoarder", "name": "Byte Bite", "name_de": "Byte-Häppchen",
      "description": "Send 1 KB of tarpit data.", "description_de": "Sende 1 KB Tarpit-Daten.",
      "metric": "total_bytes_sent", "threshold": 1024, "rarity": "bronze", "points": 10, "sort_order": 1},
     {"slug": "one-mb-sent", "category": "data-hoarder", "name": "Mega Fisher", "name_de": "Mega-Angler",
      "description": "Send 1 MB of tarpit data.", "description_de": "Sende 1 MB Tarpit-Daten.",
      "metric": "total_bytes_sent", "threshold": 1048576, "rarity": "silver", "points": 50, "sort_order": 2},
+    {"slug": "hundred-mb-sent", "category": "data-hoarder", "name": "Data Flood", "name_de": "Datenflut",
+     "description": "Send 100 MB of tarpit data.", "description_de": "Sende 100 MB Tarpit-Daten.",
+     "metric": "total_bytes_sent", "threshold": 104857600, "rarity": "gold", "points": 150, "sort_order": 3},
     {"slug": "one-gb-sent", "category": "data-hoarder", "name": "Giga Chad Fisher", "name_de": "Giga-Chad-Angler",
      "description": "Send 1 GB of tarpit data.", "description_de": "Sende 1 GB Tarpit-Daten.",
-     "metric": "total_bytes_sent", "threshold": 1073741824, "rarity": "diamond", "points": 500, "sort_order": 3},
+     "metric": "total_bytes_sent", "threshold": 1073741824, "rarity": "diamond", "points": 500, "sort_order": 4},
 ]

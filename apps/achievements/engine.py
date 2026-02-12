@@ -5,7 +5,7 @@ import logging
 from django.db.models import Count, Max, Sum
 from django.utils import timezone
 
-from apps.aquarium.models import CaughtBot, CountryStats
+from apps.aquarium.models import CaughtBot, CountryStats, Server
 
 from .models import Achievement, UnlockedAchievement
 
@@ -26,8 +26,11 @@ def _get_current_stats() -> dict:
     species_caught = (
         CaughtBot.objects.values("species").distinct().count()
     )
+    # bytes_sent is tracked per-server (from endlessh_sent_bytes_total counter),
+    # not per-bot, so aggregate from Server model
     total_bytes = (
-        CaughtBot.objects.aggregate(b=Sum("bytes_sent"))["b"] or 0
+        Server.objects.filter(is_active=True)
+        .aggregate(b=Sum("total_bytes_sent"))["b"] or 0
     )
 
     # Per-server catches
@@ -35,6 +38,16 @@ def _get_current_stats() -> dict:
         CaughtBot.objects.values_list("server__slug")
         .annotate(count=Count("id"))
         .values_list("server__slug", "count")
+    )
+
+    # Min catches across all active servers (for "master every server" achievements)
+    active_servers = set(
+        Server.objects.filter(is_active=True).values_list("slug", flat=True)
+    )
+    min_server = (
+        min(server_catches.get(s, 0) for s in active_servers)
+        if active_servers
+        else 0
     )
 
     # Best daily catch count
@@ -53,6 +66,7 @@ def _get_current_stats() -> dict:
         "total_bytes_sent": total_bytes,
         "daily_catches": daily_best,
         "server_catches": server_catches,
+        "min_server_catches": min_server,
     }
 
 
