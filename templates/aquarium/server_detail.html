@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load game_tags %}
+
+{% block title %}{{ server.name }} - {{ GAME_NAME }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+    <a href="{% url 'aquarium:dashboard' %}" style="color: var(--color-text-muted); text-decoration: none;">&larr; Dashboard</a>
+</div>
+
+<div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--color-accent);">
+        {{ server.name }}
+    </h2>
+    <span class="badge badge-{{ server.pond_theme }}" style="background: var(--color-surface-2); color: var(--color-text-muted); border: 1px solid var(--color-border);">
+        {{ server.get_pond_theme_display }}
+    </span>
+</div>
+
+{% if server.description %}
+<p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">{{ server.description }}</p>
+{% endif %}
+
+<!-- Stats -->
+<div class="grid-stats" style="margin-bottom: 2rem;">
+    <div class="game-card" style="text-align: center;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-accent);">{{ server.total_catches|score_format }}</div>
+        <div style="font-size: 0.75rem; color: var(--color-text-muted);">Fänge</div>
+    </div>
+    <div class="game-card" style="text-align: center;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-primary);">{{ server.total_trapped_seconds|duration_format }}</div>
+        <div style="font-size: 0.75rem; color: var(--color-text-muted);">Trap-Zeit</div>
+    </div>
+    <div class="game-card" style="text-align: center;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-uncommon);">{{ server.unique_ips }}</div>
+        <div style="font-size: 0.75rem; color: var(--color-text-muted);">Einzigartige IPs</div>
+    </div>
+    <div class="game-card" style="text-align: center;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-rare);">{{ server.unique_countries }}</div>
+        <div style="font-size: 0.75rem; color: var(--color-text-muted);">Länder</div>
+    </div>
+</div>
+
+<!-- Species Breakdown -->
+{% if species_counts %}
+<h3 style="font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">Gefangene Arten</h3>
+<div style="margin-bottom: 2rem;">
+    {% for sp in species_counts %}
+    <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
+        <span style="color: {{ sp.species__rarity_color }};">&#x1F41F;</span>
+        <span style="flex: 1; color: {{ sp.species__rarity_color }};">{{ sp.species__name_de }}</span>
+        <span style="font-weight: 700;">{{ sp.count }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Recent Catches -->
+<h3 style="font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">Letzte Fänge</h3>
+<div class="grid-fish">
+    {% for catch in catches %}
+        {% include "components/fish_card.html" with catch=catch %}
+    {% empty %}
+    <p style="color: var(--color-text-muted);">Noch keine Fänge auf diesem Server.</p>
+    {% endfor %}
+</div>
+{% endblock %}

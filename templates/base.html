@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ GAME_NAME }}{% endblock %}</title>
+
+    {% load static %}
+
+    <!-- Self-hosted Tailwind CSS (compiled) -->
+    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+
+    <!-- Self-hosted HTMX -->
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
+    <!-- Self-hosted Alpine.js -->
+    <script src="{% static 'js/alpine.min.js' %}" defer></script>
+
+    <style>
+        /* Inline critical CSS for game theme */
+        :root {
+            --color-bg: #0a0e1a;
+            --color-surface: #111827;
+            --color-surface-2: #1f2937;
+            --color-border: #374151;
+            --color-primary: #3b82f6;
+            --color-accent: #06b6d4;
+            --color-text: #e5e7eb;
+            --color-text-muted: #9ca3af;
+
+            /* Rarity colors */
+            --color-common: #9CA3AF;
+            --color-uncommon: #34D399;
+            --color-rare: #60A5FA;
+            --color-epic: #A78BFA;
+            --color-legendary: #FBBF24;
+            --color-mythic: #FF0040;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: var(--color-text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: var(--color-surface-2);
+            color: var(--color-accent);
+        }
+
+        /* Cards */
+        .game-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .game-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            background: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: 0.75rem 1.5rem;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .stat-value {
+            font-weight: 700;
+            color: var(--color-accent);
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-label {
+            color: var(--color-text-muted);
+        }
+
+        /* Pond container */
+        .pond {
+            position: relative;
+            background: linear-gradient(180deg, #0c1426 0%, #0a2540 50%, #0d3356 100%);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            min-height: 200px;
+            border: 1px solid var(--color-border);
+        }
+        .pond-ocean { background: linear-gradient(180deg, #0c1426 0%, #0a2540 50%, #0d3356 100%); }
+        .pond-lake { background: linear-gradient(180deg, #0f1a0c 0%, #0a3520 50%, #0d4a30 100%); }
+        .pond-reef { background: linear-gradient(180deg, #1a0c1a 0%, #350a2a 50%, #4a0d3a 100%); }
+
+        /* Fish entity */
+        .fish-entity {
+            position: absolute;
+            cursor: pointer;
+            transition: filter 0.3s;
+            font-size: 1.5rem;
+            user-select: none;
+        }
+        .fish-entity:hover {
+            filter: brightness(1.3) drop-shadow(0 0 8px var(--color-accent));
+        }
+
+        /* Rarity glow */
+        .glow-common { text-shadow: 0 0 4px var(--color-common); }
+        .glow-uncommon { text-shadow: 0 0 6px var(--color-uncommon); }
+        .glow-rare { text-shadow: 0 0 8px var(--color-rare); }
+        .glow-epic { text-shadow: 0 0 10px var(--color-epic); }
+        .glow-legendary { text-shadow: 0 0 14px var(--color-legendary); animation: pulse-glow 2s infinite; }
+        .glow-mythic { text-shadow: 0 0 20px var(--color-mythic); animation: pulse-glow 1s infinite; }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Badge styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-bronze { background: #92400e33; color: #fbbf24; border: 1px solid #92400e; }
+        .badge-silver { background: #4b556333; color: #d1d5db; border: 1px solid #4b5563; }
+        .badge-gold { background: #78350f33; color: #fbbf24; border: 1px solid #78350f; }
+        .badge-platinum { background: #1e3a5f33; color: #93c5fd; border: 1px solid #1e3a5f; }
+        .badge-diamond { background: #5b21b633; color: #c4b5fd; border: 1px solid #5b21b6; }
+
+        /* Activity feed */
+        .feed-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.875rem;
+        }
+        .feed-item:last-child { border-bottom: none; }
+
+        /* Achievement toast */
+        .achievement-toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 50;
+            background: var(--color-surface);
+            border: 2px solid var(--color-legendary);
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+            animation: slide-in 0.5s ease-out;
+        }
+
+        @keyframes slide-in {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Grid utilities */
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; }
+        .grid-ponds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .grid-fish { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+        .grid-achievements { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+        /* Responsive */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 1rem; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-center { display: flex; align-items: center; gap: 0.5rem; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header style="background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: 1rem 0;">
+        <div class="container flex-between">
+            <div class="flex-center">
+                <span style="font-size: 1.5rem;">&#x1F3A3;</span>
+                <h1 style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">Endlessh Fisher</h1>
+            </div>
+            <nav style="display: flex; gap: 0.25rem;">
+                <a href="{% url 'aquarium:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="{% url 'aquarium:aquarium' %}" class="nav-link {% if request.resolver_match.url_name == 'aquarium' %}active{% endif %}">Aquarium</a>
+                <a href="{% url 'aquarium:world-map' %}" class="nav-link {% if request.resolver_match.url_name == 'world-map' %}active{% endif %}">Weltkarte</a>
+                <a href="{% url 'achievements:gallery' %}" class="nav-link {% if 'achievements' in request.resolver_match.app_name %}active{% endif %}">Achievements</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Live Stats Bar (HTMX polling every 30s) -->
+    <div class="stats-bar"
+         hx-get="{% url 'htmx:stats-bar' %}"
+         hx-trigger="every 30s"
+         hx-swap="innerHTML">
+        {% include "components/stats_bar.html" %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="container" style="padding: 1.5rem 1rem;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Achievement Toast (HTMX polling every 60s) -->
+    <div id="achievement-toast"
+         hx-get="{% url 'htmx:stats-bar' %}"
+         hx-trigger="every 60s"
+         hx-swap="innerHTML">
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

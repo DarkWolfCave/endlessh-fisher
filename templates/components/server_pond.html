@@ -1,0 +1,25 @@
+{% load game_tags %}
+<div class="game-card" style="padding: 0; overflow: hidden;">
+    <div class="pond pond-{{ server.pond_theme }}" style="min-height: 180px;" data-server="{{ server.slug }}">
+        <!-- Fish entities populated by JS -->
+        <div style="position: absolute; bottom: 0.75rem; left: 0.75rem; right: 0.75rem;">
+            <h3 style="font-weight: 700; font-size: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">
+                {{ server.name }}
+            </h3>
+        </div>
+    </div>
+    <div style="padding: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center;">
+        <div>
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">{{ server.total_catches|score_format }}</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">Fänge</div>
+        </div>
+        <div>
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-primary);">{{ server.total_trapped_seconds|duration_format }}</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">Trap-Zeit</div>
+        </div>
+        <div>
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-uncommon);">{{ server.unique_countries }}</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">Länder</div>
+        </div>
+    </div>
+</div>

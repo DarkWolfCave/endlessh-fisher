@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load game_tags %}
+
+{% block title %}Dashboard - {{ GAME_NAME }}{% endblock %}
+
+{% block content %}
+<!-- Server Ponds -->
+<h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
+    &#x1F3A3; Angelteiche
+</h2>
+<div class="grid-ponds" style="margin-bottom: 2rem;">
+    {% for server in servers %}
+        {% include "components/server_pond.html" with server=server %}
+    {% endfor %}
+</div>
+
+<!-- Bottom Section: Activity Feed + Stats -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <!-- Activity Feed -->
+    <div class="game-card">
+        <h3 style="font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
+            &#x1F4E1; Live-Fänge
+        </h3>
+        <div hx-get="{% url 'htmx:activity-feed' %}"
+             hx-trigger="every 15s"
+             hx-swap="innerHTML">
+            {% include "components/activity_feed.html" %}
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="game-card">
+        <h3 style="font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
+            &#x1F4CA; Statistiken
+        </h3>
+        <div style="display: grid; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
+                <span style="color: var(--color-text-muted);">Gesamt-Fänge</span>
+                <span style="font-weight: 700; color: var(--color-accent);">{{ total_catches|score_format }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
+                <span style="color: var(--color-text-muted);">Aktuell in Falle</span>
+                <span style="font-weight: 700; color: var(--color-uncommon);">{{ active_traps }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
+                <span style="color: var(--color-text-muted);">Verschwendete Zeit</span>
+                <span style="font-weight: 700; color: var(--color-epic);">{{ total_trapped_seconds|duration_format }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
+                <span style="color: var(--color-text-muted);">Verschiedene Länder</span>
+                <span style="font-weight: 700; color: var(--color-rare);">{{ total_countries }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
+                <span style="color: var(--color-text-muted);">Gesamt-Score</span>
+                <span style="font-weight: 700; color: var(--color-legendary);">{{ total_score|score_format }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Simple fish swimming animation (no GSAP dependency for MVP)
+document.querySelectorAll('.pond').forEach(pond => {
+    const serverSlug = pond.dataset.server;
+    // Create a few animated fish per pond
+    const fishEmojis = ['&#x1F41F;', '&#x1F420;', '&#x1F421;'];
+    for (let i = 0; i < 5; i++) {
+        const fish = document.createElement('span');
+        fish.className = 'fish-entity';
+        fish.innerHTML = fishEmojis[i % fishEmojis.length];
+        fish.style.top = (20 + Math.random() * 60) + '%';
+        fish.style.left = (Math.random() * 80) + '%';
+        fish.style.fontSize = (1 + Math.random() * 0.8) + 'rem';
+        fish.style.opacity = 0.6 + Math.random() * 0.4;
+        fish.style.animation = `swim-${i % 2 === 0 ? 'left' : 'right'} ${8 + Math.random() * 8}s linear infinite`;
+        fish.style.animationDelay = -(Math.random() * 10) + 's';
+        pond.appendChild(fish);
+    }
+});
+</script>
+<style>
+@keyframes swim-left {
+    0% { transform: translateX(0) scaleX(-1); }
+    49% { transform: translateX(-120%) scaleX(-1); }
+    50% { transform: translateX(-120%) scaleX(1); }
+    99% { transform: translateX(0) scaleX(1); }
+    100% { transform: translateX(0) scaleX(-1); }
+}
+@keyframes swim-right {
+    0% { transform: translateX(0) scaleX(1); }
+    49% { transform: translateX(120%) scaleX(1); }
+    50% { transform: translateX(120%) scaleX(-1); }
+    99% { transform: translateX(0) scaleX(-1); }
+    100% { transform: translateX(0) scaleX(1); }
+}
+</style>
+{% endblock %}

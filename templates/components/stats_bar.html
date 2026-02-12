@@ -1,0 +1,28 @@
+{% load game_tags %}
+<div class="container" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+    <div class="stat-item">
+        <span>&#x1F41F;</span>
+        <span class="stat-value">{{ total_catches|score_format }}</span>
+        <span class="stat-label">Fische</span>
+    </div>
+    <div class="stat-item">
+        <span>&#x1F3AF;</span>
+        <span class="stat-value">{{ active_traps }}</span>
+        <span class="stat-label">Aktiv</span>
+    </div>
+    <div class="stat-item">
+        <span>&#x23F1;</span>
+        <span class="stat-value">{{ total_trapped_seconds|duration_format }}</span>
+        <span class="stat-label">Verschwendet</span>
+    </div>
+    <div class="stat-item">
+        <span>&#x1F30D;</span>
+        <span class="stat-value">{{ total_countries }}</span>
+        <span class="stat-label">Länder</span>
+    </div>
+    <div class="stat-item">
+        <span>&#x2B50;</span>
+        <span class="stat-value">{{ total_score|score_format }}</span>
+        <span class="stat-label">Score</span>
+    </div>
+</div>

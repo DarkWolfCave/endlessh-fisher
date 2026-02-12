@@ -1,0 +1,143 @@
+# Endlessh Game - Production Docker Compose
+# Blue-Green Deployment with Traefik
+
+x-traefik-labels: &traefik-labels
+  traefik.enable: "true"
+  traefik.docker.network: proxy
+
+x-backend-env: &backend-env
+  - DJANGO_SETTINGS_MODULE=config.settings.production
+  - SECRET_KEY=${SECRET_KEY}
+  - ALLOWED_HOSTS=${ALLOWED_HOSTS:-endlessh.cronwolf.de}
+  - ADMIN_URL=${ADMIN_URL:-secret-admin/}
+  - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
+  - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+  - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  - POSTGRES_HOST=postgres
+  - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
+  - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+  - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/0
+  - INFLUXDB_URL=${INFLUXDB_URL}
+  - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+  - INFLUXDB_ORG=${INFLUXDB_ORG:-dwc}
+  - INFLUXDB_BUCKET=${INFLUXDB_BUCKET:-external_monitoring}
+
+x-backend-common: &backend-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+    target: production
+  restart: unless-stopped
+  environment: *backend-env
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health/"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 40s
+  networks:
+    - proxy
+    - endlessh_internal
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: endlessh_game_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
+      - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_game}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - endlessh_internal
+
+  redis:
+    image: redis:8.6-alpine
+    container_name: endlessh_game_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - endlessh_internal
+
+  # Blue-Green Backend
+  backend_blue:
+    <<: *backend-common
+    container_name: endlessh_game_blue
+    networks:
+      proxy:
+      endlessh_internal:
+        aliases:
+          - backend
+    labels:
+      <<: *traefik-labels
+      traefik.http.routers.endlessh-game.rule: "Host(`endlessh.cronwolf.de`)"
+      traefik.http.routers.endlessh-game.entrypoints: https
+      traefik.http.routers.endlessh-game.tls: "true"
+      traefik.http.routers.endlessh-game.tls.certresolver: netcup
+      traefik.http.routers.endlessh-game.service: endlessh-game
+      traefik.http.services.endlessh-game.loadbalancer.server.port: "8000"
+      traefik.http.services.endlessh-game.loadbalancer.healthcheck.path: /api/v1/health/
+
+  backend_green:
+    <<: *backend-common
+    container_name: endlessh_game_green
+    labels:
+      <<: *traefik-labels
+      traefik.http.services.endlessh-game.loadbalancer.server.port: "8000"
+      traefik.http.services.endlessh-game.loadbalancer.healthcheck.path: /api/v1/health/
+
+  celery_worker:
+    <<: *backend-common
+    container_name: endlessh_game_celery_worker
+    command: celery -A config worker -l info --concurrency=2
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    labels: {}
+    healthcheck:
+      disable: true
+    networks:
+      - endlessh_internal
+
+  celery_beat:
+    <<: *backend-common
+    container_name: endlessh_game_celery_beat
+    command: celery -A config beat -l info --schedule=/tmp/celerybeat-schedule
+    labels: {}
+    healthcheck:
+      disable: true
+    networks:
+      - endlessh_internal
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  proxy:
+    external: true
+  endlessh_internal:
+    driver: bridge
+    internal: true

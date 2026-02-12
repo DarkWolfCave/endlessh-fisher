@@ -1,0 +1,6 @@
+# Endlessh Game - Production Dependencies
+
+-r base.txt
+
+# WSGI Server
+gunicorn==25.0.2

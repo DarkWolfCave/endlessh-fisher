@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load game_tags %}
+
+{% block title %}{{ achievement.name_de }} - {{ GAME_NAME }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+    <a href="{% url 'achievements:gallery' %}" style="color: var(--color-text-muted); text-decoration: none;">&larr; Achievements</a>
+</div>
+
+<div class="game-card" style="max-width: 500px; text-align: center;">
+    <span style="font-size: 4rem;">&#x1F3C5;</span>
+    <h2 style="font-size: 1.5rem; font-weight: 700; margin-top: 0.5rem;">{{ achievement.name_de }}</h2>
+    <span class="badge badge-{{ achievement.rarity }}" style="margin-top: 0.5rem; text-transform: capitalize;">
+        {{ achievement.rarity }}
+    </span>
+    <p style="color: var(--color-text-muted); margin-top: 1rem;">{{ achievement.description_de }}</p>
+    <div style="margin-top: 1.5rem; padding: 1rem; background: var(--color-surface-2); border-radius: 0.5rem;">
+        <div style="font-size: 0.75rem; color: var(--color-text-muted);">Schwellwert</div>
+        <div style="font-weight: 700; font-size: 1.25rem; color: var(--color-accent);">{{ achievement.threshold|floatformat:0 }}</div>
+        <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ achievement.get_metric_display }}</div>
+    </div>
+    <div style="margin-top: 1rem; font-size: 0.875rem; color: var(--color-legendary);">
+        {{ achievement.points }} Punkte
+    </div>
+    {% if achievement.unlock_record %}
+    <div style="margin-top: 1rem; padding: 0.75rem; background: #065f4620; border: 1px solid #065f46; border-radius: 0.5rem; color: var(--color-uncommon);">
+        &#x2714; Freigeschaltet am {{ achievement.unlock_record.unlocked_at|date:"d.m.Y H:i" }}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% load game_tags %}
+{% for catch in recent_catches %}
+<div class="feed-item">
+    <span style="font-size: 1.25rem; color: {{ catch.species.rarity_color }};"
+          class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
+    <div style="flex: 1;">
+        <span style="font-weight: 600; color: {{ catch.species.rarity_color }};">
+            {{ catch.species.name_de }}
+        </span>
+        <span style="color: var(--color-text-muted);">
+            {{ catch.ip_hash|truncatechars:12 }} &middot; {{ catch.country_code }}
+        </span>
+    </div>
+    <div style="text-align: right;">
+        <div style="font-weight: 600; color: var(--color-accent);">{{ catch.trapped_seconds|duration_format }}</div>
+        <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ catch.server.name }}</div>
+    </div>
+</div>
+{% empty %}
+<div style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
+    Warte auf den ersten Fang...
+</div>
+{% endfor %}

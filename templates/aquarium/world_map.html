@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load game_tags %}
+
+{% block title %}Weltkarte - {{ GAME_NAME }}{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--color-accent);">
+    &#x1F30D; Angriffe nach Land
+</h2>
+
+<!-- Country Table -->
+<div class="game-card">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--color-border);">
+                <th style="text-align: left; padding: 0.75rem 0.5rem; color: var(--color-text-muted); font-size: 0.75rem;">Land</th>
+                <th style="text-align: right; padding: 0.75rem 0.5rem; color: var(--color-text-muted); font-size: 0.75rem;">Fänge</th>
+                <th style="text-align: right; padding: 0.75rem 0.5rem; color: var(--color-text-muted); font-size: 0.75rem;">Trap-Zeit</th>
+                <th style="text-align: right; padding: 0.75rem 0.5rem; color: var(--color-text-muted); font-size: 0.75rem;">IPs</th>
+                <th style="text-align: right; padding: 0.75rem 0.5rem; color: var(--color-text-muted); font-size: 0.75rem;">Letzter Fang</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for country in countries %}
+            <tr style="border-bottom: 1px solid var(--color-border);">
+                <td style="padding: 0.5rem;">
+                    <span style="font-weight: 600;">{{ country.country_code }}</span>
+                    <span style="color: var(--color-text-muted); margin-left: 0.5rem;">{{ country.country_name }}</span>
+                </td>
+                <td style="text-align: right; padding: 0.5rem; font-weight: 700; color: var(--color-accent);">{{ country.total_catches|score_format }}</td>
+                <td style="text-align: right; padding: 0.5rem; color: var(--color-primary);">{{ country.total_trapped_seconds|duration_format }}</td>
+                <td style="text-align: right; padding: 0.5rem;">{{ country.unique_ips }}</td>
+                <td style="text-align: right; padding: 0.5rem; color: var(--color-text-muted); font-size: 0.875rem;">
+                    {% if country.last_catch_at %}{{ country.last_catch_at|date:"d.m.Y" }}{% else %}-{% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
+                    Noch keine Länderdaten verfügbar.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

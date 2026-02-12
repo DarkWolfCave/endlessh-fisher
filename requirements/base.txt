@@ -1,0 +1,23 @@
+# Endlessh Game - Base Dependencies
+
+# Core Framework
+Django==6.0.2
+djangorestframework==3.16.1
+django-cors-headers==4.9.0
+
+# Database
+psycopg[binary]==3.3.2
+
+# Static files
+whitenoise==6.11.0
+
+# Background Tasks
+celery==5.6.2
+celery[redis]==5.6.2
+redis==7.1.0
+
+# InfluxDB Client
+influxdb-client==1.48.0
+
+# Utilities
+python-dotenv==1.2.1

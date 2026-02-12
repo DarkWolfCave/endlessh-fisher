@@ -1,0 +1,11 @@
+# Endlessh Game - Development Dependencies
+
+-r base.txt
+
+# Debug
+django-debug-toolbar==5.1.0
+ipython==9.3.0
+
+# Testing
+pytest==9.0.2
+pytest-django==4.11.0
