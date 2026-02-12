@@ -1,9 +1,9 @@
-"""Aquarium template views - dashboard, aquarium, fish detail."""
+"""Aquarium template views - dashboard, species dex, bestenliste, fish detail."""
 
 import json
 
 from django.core.cache import cache
-from django.db.models import Count, Sum
+from django.db.models import Count, Max, Min, Sum
 from django.shortcuts import get_object_or_404, render
 
 from .models import CaughtBot, CountryStats, DailyStats, FishSpecies, Server
@@ -61,30 +61,49 @@ def dashboard(request):
     })
 
 
-def aquarium(request):
-    """Full aquarium view - all fish with filters."""
-    server_slug = request.GET.get("server")
-    species_slug = request.GET.get("species")
-    country = request.GET.get("country")
+def species_dex(request):
+    """Species Dex - Pokédex-style overview of all 12 fish species."""
+    species_list = (
+        FishSpecies.objects.all()
+        .annotate(
+            catch_count=Count("catches"),
+            best_trapped=Max("catches__trapped_seconds"),
+            best_score=Max("catches__score"),
+            first_caught=Min("catches__first_seen"),
+        )
+        .order_by("sort_order")
+    )
+    return render(request, "aquarium/species_dex.html", {
+        "species_list": species_list,
+    })
 
-    catches = CaughtBot.objects.select_related("species", "server")
 
-    if server_slug:
-        catches = catches.filter(server__slug=server_slug)
-    if species_slug:
-        catches = catches.filter(species__slug=species_slug)
-    if country:
-        catches = catches.filter(country_code=country)
+def bestenliste(request):
+    """Leaderboard - top catches by trap time, score, and per-species records."""
+    longest = (
+        CaughtBot.objects.select_related("species", "server")
+        .order_by("-trapped_seconds")[:10]
+    )
+    highest_score = (
+        CaughtBot.objects.select_related("species", "server")
+        .order_by("-score")[:10]
+    )
+    # Best catch per species (one record per species type)
+    species_records = []
+    for sp in FishSpecies.objects.order_by("sort_order"):
+        best = (
+            CaughtBot.objects.filter(species=sp)
+            .select_related("server")
+            .order_by("-trapped_seconds")
+            .first()
+        )
+        if best:
+            species_records.append({"species": sp, "record": best})
 
-    catches = catches[:100]
-
-    return render(request, "aquarium/aquarium.html", {
-        "catches": catches,
-        "servers": Server.objects.filter(is_active=True),
-        "species_list": FishSpecies.objects.all(),
-        "selected_server": server_slug,
-        "selected_species": species_slug,
-        "selected_country": country,
+    return render(request, "aquarium/bestenliste.html", {
+        "longest": longest,
+        "highest_score": highest_score,
+        "species_records": species_records,
     })
 
 

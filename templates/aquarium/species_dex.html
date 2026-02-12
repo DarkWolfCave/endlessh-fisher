@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load game_tags %}
+
+{% block title %}Fischlexikon - {{ GAME_NAME }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">
+        &#x1F4D6; Fischlexikon
+    </h2>
+    <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-top: 0.25rem;">
+        {{ species_list|length }} Arten &middot; Fange sie alle!
+    </p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+    {% for sp in species_list %}
+    <div class="game-card" style="position: relative; {% if not sp.catch_count %}opacity: 0.5; filter: grayscale(0.8);{% endif %}">
+        <!-- Rarity badge -->
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <span style="font-size: 2.5rem; {% if sp.catch_count %}color: {{ sp.rarity_color }};{% else %}filter: brightness(0.3);{% endif %}"
+                  {% if sp.catch_count %}class="glow-{{ sp.rarity }}"{% endif %}>
+                {{ sp.css_class|species_emoji }}
+            </span>
+            <div style="text-align: right;">
+                <span class="badge badge-{{ sp.rarity }}" style="text-transform: capitalize;">
+                    {{ sp.rarity }}
+                </span>
+                <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.25rem;">
+                    #{{ sp.sort_order|stringformat:"02d" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Name & Description -->
+        <h3 style="font-weight: 700; margin-top: 0.75rem; color: {% if sp.catch_count %}{{ sp.rarity_color }}{% else %}var(--color-text-muted){% endif %};">
+            {% if sp.catch_count %}{{ sp.name_de }}{% else %}???{% endif %}
+        </h3>
+        <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.25rem; min-height: 2.4rem;">
+            {% if sp.catch_count %}{{ sp.description_de }}{% else %}Noch nicht entdeckt...{% endif %}
+        </p>
+
+        <!-- Trap time range -->
+        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--color-text-muted); background: var(--color-surface-2); padding: 0.35rem 0.5rem; border-radius: 0.25rem;">
+            &#x23F1; {{ sp.min_trapped_seconds|duration_format }}{% if sp.max_trapped_seconds %} &ndash; {{ sp.max_trapped_seconds|duration_format }}{% else %}+{% endif %}
+            &middot; {{ sp.points }} Pkt.
+        </div>
+
+        <!-- Stats -->
+        {% if sp.catch_count %}
+        <div style="margin-top: 0.75rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Gefangen</div>
+                <div style="font-weight: 700; color: var(--color-text);">{{ sp.catch_count }}x</div>
+            </div>
+            <div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Rekord</div>
+                <div style="font-weight: 700; color: var(--color-accent);">{{ sp.best_trapped|duration_format }}</div>
+            </div>
+            <div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Bester Score</div>
+                <div style="font-weight: 700; color: var(--color-legendary);">{{ sp.best_score|score_format }}</div>
+            </div>
+            <div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Erstfang</div>
+                <div style="font-weight: 700; color: var(--color-text);">{{ sp.first_caught|date:"d.m.Y" }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div style="margin-top: 0.75rem; text-align: center; padding: 1rem 0; color: var(--color-text-muted); font-size: 0.875rem;">
+            &#x1F512; Noch nicht entdeckt
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

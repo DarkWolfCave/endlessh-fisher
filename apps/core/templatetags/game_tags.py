@@ -49,3 +49,25 @@ def score_format(score):
         return f"{int(score):,}".replace(",", ".")
     except (ValueError, TypeError):
         return "0"
+
+
+_SPECIES_EMOJI = {
+    "fish-plankton": "\U0001F9A0",
+    "fish-sardine": "\U0001F41F",
+    "fish-anchovy": "\U0001F41F",
+    "fish-trout": "\U0001F41F",
+    "fish-pike": "\U0001F988",
+    "fish-salmon": "\U0001F420",
+    "fish-tuna": "\U0001F420",
+    "fish-swordfish": "\U0001F42C",
+    "fish-marlin": "\U0001F42C",
+    "fish-whale-shark": "\U0001F40B",
+    "fish-kraken": "\U0001F419",
+    "fish-leviathan": "\U0001F409",
+}
+
+
+@register.filter
+def species_emoji(css_class):
+    """Return emoji for a fish species by its css_class."""
+    return _SPECIES_EMOJI.get(css_class, "\U0001F41F")

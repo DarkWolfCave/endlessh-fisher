@@ -552,7 +552,8 @@
             </div>
             <nav style="display: flex; gap: 0.25rem;">
                 <a href="{% url 'aquarium:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
-                <a href="{% url 'aquarium:aquarium' %}" class="nav-link {% if request.resolver_match.url_name == 'aquarium' %}active{% endif %}">Aquarium</a>
+                <a href="{% url 'aquarium:species-dex' %}" class="nav-link {% if request.resolver_match.url_name == 'species-dex' %}active{% endif %}">Fischlexikon</a>
+                <a href="{% url 'aquarium:bestenliste' %}" class="nav-link {% if request.resolver_match.url_name == 'bestenliste' %}active{% endif %}">Bestenliste</a>
                 <a href="{% url 'aquarium:world-map' %}" class="nav-link {% if request.resolver_match.url_name == 'world-map' %}active{% endif %}">Weltkarte</a>
                 <a href="{% url 'achievements:gallery' %}" class="nav-link {% if 'achievements' in request.resolver_match.app_name %}active{% endif %}">Achievements</a>
             </nav>
