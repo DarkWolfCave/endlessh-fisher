@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.cache import cache
 
 from apps.aquarium.models import CaughtBot
+from apps.aquarium.views import _get_active_traps, get_cached_stats
 
 
 def game_context(request):
@@ -18,9 +19,14 @@ def game_context(request):
         )
         cache.set("endlessh:ticker_catches", ticker_catches, 60)
 
+    # Stats for the stats bar (cached 120s, needed on all pages)
+    stats = get_cached_stats()
+    stats["active_traps"] = _get_active_traps()
+
     return {
         "GAME_NAME": "Endlessh Fisher",
         "GAME_VERSION": "1.0.0",
         "DEBUG": settings.DEBUG,
         "ticker_catches": ticker_catches,
+        **stats,
     }
