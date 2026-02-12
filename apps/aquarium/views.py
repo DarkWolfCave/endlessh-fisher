@@ -11,6 +11,31 @@ from apps.collector.influx_client import query_active_connections
 from .models import CaughtBot, CountryStats, DailyStats, FishSpecies, Server
 from .services import get_pond_fish
 
+# Cache TTL: stats change only on sync (every 5 min), so 120s is safe
+_STATS_CACHE_TTL = 120
+
+
+def get_cached_stats() -> dict:
+    """Get aggregated game stats from cache or compute them.
+
+    Cached for 120s. Invalidated by sync_bot_data on completion.
+    """
+    cache_key = "endlessh:game_stats"
+    stats = cache.get(cache_key)
+    if stats is not None:
+        return stats
+
+    stats = {
+        "total_catches": CaughtBot.objects.count(),
+        "total_score": CaughtBot.objects.aggregate(t=Sum("score"))["t"] or 0,
+        "total_trapped_seconds": (
+            CaughtBot.objects.aggregate(t=Sum("trapped_seconds"))["t"] or 0
+        ),
+        "total_countries": CountryStats.objects.count(),
+    }
+    cache.set(cache_key, stats, _STATS_CACHE_TTL)
+    return stats
+
 
 def _get_active_traps():
     """Get active trap count from cache or InfluxDB."""
@@ -25,13 +50,7 @@ def dashboard(request):
     """Main dashboard with server ponds and live stats."""
     servers = Server.objects.filter(is_active=True)
     recent_catches = CaughtBot.objects.select_related("species", "server")[:10]
-    total_score = CaughtBot.objects.aggregate(total=Sum("score"))["total"] or 0
-    total_catches = CaughtBot.objects.count()
-    active_traps = _get_active_traps()
-    total_countries = CountryStats.objects.count()
-    total_trapped = (
-        CaughtBot.objects.aggregate(total=Sum("trapped_seconds"))["total"] or 0
-    )
+    stats = get_cached_stats()
 
     # Live Pond data for initial render
     pond_data = get_pond_fish()
@@ -39,11 +58,8 @@ def dashboard(request):
     return render(request, "aquarium/dashboard.html", {
         "servers": servers,
         "recent_catches": recent_catches,
-        "total_score": total_score,
-        "total_catches": total_catches,
-        "active_traps": active_traps,
-        "total_countries": total_countries,
-        "total_trapped_seconds": total_trapped,
+        "active_traps": _get_active_traps(),
+        **stats,
         "fish_list": pond_data["fish"],
         "total_active": pond_data["total_active"],
         "last_updated": pond_data["last_updated"],

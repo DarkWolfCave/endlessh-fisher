@@ -5,6 +5,7 @@ import logging
 from datetime import timedelta
 
 from celery import shared_task
+from django.core.cache import cache
 from django.db import transaction
 from django.db.models import Count, Max, Sum
 from django.utils import timezone
@@ -142,6 +143,9 @@ def sync_bot_data(self):
             state.records_synced += created_count
             state.last_error = ""
             state.save()
+
+        # Invalidate cached stats so next request gets fresh data
+        cache.delete_many(["endlessh:game_stats", "endlessh:ticker_catches"])
 
         logger.info(
             "Sync complete: %d new, %d updated from %d connections",
