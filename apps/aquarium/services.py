@@ -110,6 +110,13 @@ def get_pond_fish() -> dict:
     servers = {s.host_identifier: s for s in Server.objects.filter(is_active=True)}
     species_list = list(FishSpecies.objects.order_by("min_trapped_seconds"))
 
+    # Country data from DB (trapped_time metric lacks country tag)
+    active_fps = [f"{b['host']}:{b['ip']}" for b in active_bots]
+    country_map = dict(
+        CaughtBot.objects.filter(influx_fingerprint__in=active_fps)
+        .values_list("influx_fingerprint", "country_code")
+    )
+
     fish = []
     for bot in active_bots:
         host = bot["host"]
@@ -127,7 +134,8 @@ def get_pond_fish() -> dict:
             else:
                 break
 
-        country = (bot.get("country", "") or "")[:2].upper()
+        fingerprint = f"{host}:{bot['ip']}"
+        country = country_map.get(fingerprint, "")
         ip_hash = _hash_ip(bot["ip"])
 
         fish_id = f"{host}:{ip_hash[:16]}"

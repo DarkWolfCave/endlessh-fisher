@@ -172,13 +172,14 @@ from(bucket: "{settings.INFLUXDB_BUCKET}")
 """
 
     # Query C: Actual trapped_time values
+    # Note: trapped_time metric has no country/geohash tags (those are on open_count)
     values_query = f"""
 from(bucket: "{settings.INFLUXDB_BUCKET}")
   |> range(start: -5m)
   |> filter(fn: (r) => r["_measurement"] == "endlessh_client_trapped_time_seconds")
-  |> group(columns: ["host", "ip", "country", "geohash"])
+  |> group(columns: ["host", "ip"])
   |> last()
-  |> keep(columns: ["_time", "_value", "ip", "host", "country", "geohash"])
+  |> keep(columns: ["_time", "_value", "ip", "host"])
 """
 
     client = get_influx_client()
@@ -214,8 +215,6 @@ from(bucket: "{settings.INFLUXDB_BUCKET}")
                     results.append({
                         "ip": ip,
                         "host": host,
-                        "country": record.values.get("country", ""),
-                        "geohash": record.values.get("geohash", ""),
                         "trapped_seconds": float(trapped),
                         "last_seen": record.get_time().isoformat(),
                     })
