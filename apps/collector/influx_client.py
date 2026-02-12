@@ -1,4 +1,8 @@
-"""InfluxDB client for querying endlessh metrics."""
+"""InfluxDB client for querying endlessh metrics.
+
+Queries use Flux aggregation to return one record per unique (host, ip),
+not one per scrape interval. This keeps data transfer and processing efficient.
+"""
 
 import logging
 
@@ -17,21 +21,22 @@ def get_influx_client() -> InfluxDBClient:
     )
 
 
-def query_new_connections(since_iso: str, host: str | None = None) -> list[dict]:
-    """Query new bot connections from InfluxDB.
+def query_bot_connections(since_iso: str) -> list[dict]:
+    """Query unique bot connections aggregated per (host, ip).
+
+    Uses Flux to aggregate: last() per group(host, ip) gives us one record
+    per unique bot with the latest counter value, country, and geohash.
 
     Returns list of dicts with keys:
-        ip, country, geohash, local_port, host, _time, _value (open_count)
+        ip, country, geohash, local_port, host, time, open_count
     """
-    host_filter = ""
-    if host:
-        host_filter = f'  |> filter(fn: (r) => r["host"] == "{host}")\n'
-
     query = f"""
 from(bucket: "{settings.INFLUXDB_BUCKET}")
   |> range(start: {since_iso})
   |> filter(fn: (r) => r["_measurement"] == "endlessh_client_open_count")
-{host_filter}  |> keep(columns: ["_time", "_value", "ip", "country", "geohash", "local_port", "host"])
+  |> group(columns: ["host", "ip", "country", "geohash", "local_port"])
+  |> last()
+  |> keep(columns: ["_time", "_value", "ip", "country", "geohash", "local_port", "host"])
 """
 
     client = get_influx_client()
@@ -49,31 +54,28 @@ from(bucket: "{settings.INFLUXDB_BUCKET}")
                     "local_port": record.values.get("local_port", "22"),
                     "host": record.values.get("host", ""),
                     "time": record.get_time(),
-                    "value": record.get_value(),
+                    "open_count": record.get_value() or 0,
                 })
         return results
     except Exception:
-        logger.exception("Failed to query InfluxDB for new connections")
+        logger.exception("Failed to query InfluxDB for bot connections")
         return []
     finally:
         client.close()
 
 
-def query_trapped_time(since_iso: str, host: str | None = None) -> list[dict]:
-    """Query trapped time data from InfluxDB.
+def query_trapped_times(since_iso: str) -> dict[str, float]:
+    """Query trapped time aggregated per (host, ip).
 
-    Returns list of dicts with keys:
-        ip, local_port, host, _time, _value (trapped_seconds)
+    Returns dict mapping "host:ip" -> max trapped_seconds.
     """
-    host_filter = ""
-    if host:
-        host_filter = f'  |> filter(fn: (r) => r["host"] == "{host}")\n'
-
     query = f"""
 from(bucket: "{settings.INFLUXDB_BUCKET}")
   |> range(start: {since_iso})
   |> filter(fn: (r) => r["_measurement"] == "endlessh_client_trapped_time_seconds")
-{host_filter}  |> keep(columns: ["_time", "_value", "ip", "local_port", "host"])
+  |> group(columns: ["host", "ip"])
+  |> last()
+  |> keep(columns: ["_value", "ip", "host"])
 """
 
     client = get_influx_client()
@@ -81,32 +83,30 @@ from(bucket: "{settings.INFLUXDB_BUCKET}")
         query_api = client.query_api()
         tables = query_api.query(query, org=settings.INFLUXDB_ORG)
 
-        results = []
+        result = {}
         for table in tables:
             for record in table.records:
-                results.append({
-                    "ip": record.values.get("ip", ""),
-                    "local_port": record.values.get("local_port", "22"),
-                    "host": record.values.get("host", ""),
-                    "time": record.get_time(),
-                    "value": record.get_value(),
-                })
-        return results
+                host = record.values.get("host", "")
+                ip = record.values.get("ip", "")
+                value = record.get_value() or 0
+                if host and ip:
+                    result[f"{host}:{ip}"] = float(value)
+        return result
     except Exception:
-        logger.exception("Failed to query InfluxDB for trapped time")
-        return []
+        logger.exception("Failed to query InfluxDB for trapped times")
+        return {}
     finally:
         client.close()
 
 
-def query_global_totals(since_iso: str) -> dict:
-    """Query global total counters for bytes sent."""
+def query_global_totals() -> dict:
+    """Query global total counters for bytes sent per host."""
     query = f"""
 from(bucket: "{settings.INFLUXDB_BUCKET}")
-  |> range(start: {since_iso})
+  |> range(start: -30d)
   |> filter(fn: (r) => r["_measurement"] == "endlessh_sent_bytes_total")
   |> last()
-  |> keep(columns: ["_time", "_value", "host"])
+  |> keep(columns: ["_value", "host"])
 """
 
     client = get_influx_client()

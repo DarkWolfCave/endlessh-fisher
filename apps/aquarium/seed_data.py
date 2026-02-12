@@ -189,7 +189,7 @@ SERVERS = [
     {
         "slug": "vps2",
         "name": "VPS2",
-        "host_identifier": "vps2",
+        "host_identifier": "vps2-statuspage",
         "description": "Coral reef station. Neighbor of Netcup.",
         "pond_theme": "reef",
     },

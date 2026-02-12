@@ -12,9 +12,8 @@ psycopg[binary]==3.3.2
 whitenoise==6.11.0
 
 # Background Tasks
-celery==5.6.2
 celery[redis]==5.6.2
-redis==7.1.0
+redis==6.4.0  # kombu <6.5 constraint - redis-py 7+ requires kombu 6.x
 
 # InfluxDB Client
 influxdb-client==1.48.0
