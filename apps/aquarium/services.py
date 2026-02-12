@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.utils import timezone
 
 from apps.aquarium.models import CaughtBot, FishSpecies, Server
-from apps.collector.influx_client import query_active_bots, query_active_connections
+from apps.collector.influx_client import query_active_bots
 
 
 def classify_fish(trapped_seconds: float) -> FishSpecies | None:
@@ -165,16 +165,11 @@ def get_pond_fish() -> dict:
 
     # Sort by trapped_seconds desc (biggest fish first) and limit display
     fish.sort(key=lambda f: f["trapped_seconds"], reverse=True)
-
-    # Use global active connections count (matches stats bar)
-    total_active = query_active_connections()
-    # Fall back to fish count if query fails
-    if total_active < len(fish):
-        total_active = len(fish)
+    display_fish = fish[:50]
 
     result = {
-        "fish": fish[:50],
-        "total_active": total_active,
+        "fish": display_fish,
+        "total_active": len(display_fish),
         "last_updated": timezone.now().isoformat(),
     }
     cache.set(cache_key, result, 12)
