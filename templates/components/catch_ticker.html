@@ -2,7 +2,7 @@
 <div class="ticker-track">
     <div class="ticker-content">
         {% for catch in ticker_catches %}
-        <span class="ticker-item">
+        <a href="{% url 'aquarium:fish-detail' pk=catch.pk %}" class="ticker-item ticker-item-link">
             <span class="ticker-fish" style="color: {{ catch.species.rarity_color }};">&#x1F41F;</span>
             <span class="ticker-species" style="color: {{ catch.species.rarity_color }};">{{ catch.species|lang:"name" }}</span>
             <span class="ticker-meta">
@@ -10,10 +10,10 @@
                 ({{ catch.trapped_seconds|duration_format }})
             </span>
             <span class="ticker-sep">&bull;</span>
-        </span>
+        </a>
         {% endfor %}
         {% for catch in ticker_catches %}
-        <span class="ticker-item" aria-hidden="true">
+        <a href="{% url 'aquarium:fish-detail' pk=catch.pk %}" class="ticker-item ticker-item-link" aria-hidden="true" tabindex="-1">
             <span class="ticker-fish" style="color: {{ catch.species.rarity_color }};">&#x1F41F;</span>
             <span class="ticker-species" style="color: {{ catch.species.rarity_color }};">{{ catch.species|lang:"name" }}</span>
             <span class="ticker-meta">
@@ -21,7 +21,7 @@
                 ({{ catch.trapped_seconds|duration_format }})
             </span>
             <span class="ticker-sep">&bull;</span>
-        </span>
+        </a>
         {% endfor %}
     </div>
 </div>

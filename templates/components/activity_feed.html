@@ -1,6 +1,6 @@
 {% load game_tags %}
 {% for catch in recent_catches %}
-<div class="feed-item">
+<a href="{% url 'aquarium:fish-detail' pk=catch.pk %}" class="feed-item feed-item-link">
     <span style="font-size: 1.25rem; color: {{ catch.species.rarity_color }};"
           class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
     <div style="flex: 1;">
@@ -15,7 +15,7 @@
         <div style="font-weight: 600; color: var(--color-accent);">{{ catch.trapped_seconds|duration_format }}</div>
         <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ catch.server.name }}</div>
     </div>
-</div>
+</a>
 {% empty %}
 <div style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
     {{ "Warte auf den ersten Fang..."|t }}

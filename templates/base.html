@@ -155,6 +155,17 @@
             font-size: 0.875rem;
         }
         .feed-item:last-child { border-bottom: none; }
+        a.feed-item-link {
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.15s;
+            border-radius: 6px;
+            margin: 0 -0.5rem;
+            padding: 0.5rem;
+        }
+        a.feed-item-link:hover {
+            background: var(--color-card-hover, rgba(255,255,255,0.05));
+        }
 
         /* Achievement toast */
         .achievement-toast {
@@ -435,6 +446,15 @@
         .ticker-species { font-weight: 600; }
         .ticker-meta { color: var(--color-text-muted); }
         .ticker-sep { color: var(--color-border); margin: 0 0.3rem; }
+        a.ticker-item-link {
+            text-decoration: none;
+            color: inherit;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        a.ticker-item-link:hover {
+            background: rgba(255,255,255,0.08);
+        }
         @keyframes ticker-scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
