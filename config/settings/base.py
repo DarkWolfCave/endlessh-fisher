@@ -129,13 +129,15 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "Europe/Berlin"
 
-# InfluxDB
-INFLUXDB_URL = os.environ.get("INFLUXDB_URL", "http://192.168.1.36:8086")
+# InfluxDB — must be configured via environment variables
+INFLUXDB_URL = os.environ.get("INFLUXDB_URL", "")
 INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN", "")
-INFLUXDB_ORG = os.environ.get("INFLUXDB_ORG", "dwc")
-INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET", "external_monitoring")
+INFLUXDB_ORG = os.environ.get("INFLUXDB_ORG", "")
+INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET", "")
 
 # Game settings
+SHOW_REAL_IP = os.environ.get("SHOW_REAL_IP", "false").lower() in ("true", "1", "yes")
+GAME_LANGUAGE = os.environ.get("GAME_LANGUAGE", "de").lower()  # "de" or "en"
 GAME_SCORE_FORMULA = "species_points + log2(trapped_seconds + 1)"
 GAME_SYNC_INTERVAL_SECONDS = 300  # 5 minutes
 GAME_STATS_AGGREGATE_INTERVAL_SECONDS = 3600  # 1 hour

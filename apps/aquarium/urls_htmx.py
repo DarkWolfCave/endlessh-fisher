@@ -12,4 +12,6 @@ urlpatterns = [
     path("live-pond/", views_htmx.live_pond, name="live-pond"),
     path("catch-ticker/", views_htmx.catch_ticker, name="catch-ticker"),
     path("rare-alert/", views_htmx.rare_alert, name="rare-alert"),
+    path("collect-treasure/", views_htmx.collect_treasure_view, name="collect-treasure"),
+    path("daily-challenges/", views_htmx.daily_challenges, name="daily-challenges"),
 ]

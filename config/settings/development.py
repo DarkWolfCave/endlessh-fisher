@@ -14,17 +14,5 @@ REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [  # noqa: F405
     "rest_framework.renderers.BrowsableAPIRenderer",
 ]
 
-# Use local SQLite for quick development without Docker
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",  # noqa: F405
-    }
-}
-
-# Simple cache for development
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-    }
-}
+# Database and cache: use base.py defaults (PostgreSQL + Redis from env vars).
+# For local dev without Docker, override via .env or environment variables.

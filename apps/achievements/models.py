@@ -36,6 +36,9 @@ class Achievement(TimeStampedModel):
         ("species_caught", "Unique Species Caught"),
         ("daily_catches", "Catches in a Single Day"),
         ("total_bytes_sent", "Total Bytes Sent"),
+        ("total_treasures", "Total Treasures Collected"),
+        ("unique_treasure_types", "Unique Treasure Types Collected"),
+        ("challenges_completed", "Total Challenges Completed"),
     ]
 
     RARITY_CHOICES = [

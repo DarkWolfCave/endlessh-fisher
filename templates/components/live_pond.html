@@ -33,7 +33,7 @@
                 {{ fish.species_emoji }} {{ fish.species_name }}
             </div>
             <div class="fish-tooltip-body">
-                <div>{{ fish.ip_hash }}... &middot; {{ fish.country|default:"??" }}</div>
+                <div>{{ fish.ip_hash }}{% if not SHOW_REAL_IP %}...{% endif %} &middot; {{ fish.country|default:"??" }}</div>
                 <div>{{ fish.server_name }}</div>
                 <div class="fish-tooltip-timer"
                      data-base-seconds="{{ fish.trapped_seconds }}"
@@ -42,19 +42,37 @@
                 </div>
             </div>
             <div class="fish-tooltip-rarity" style="color: {{ fish.rarity_color }};">
-                {{ fish.rarity|upper }}
+                {{ fish.rarity_de }}
             </div>
         </div>
     </div>
     {% empty %}
     <div class="pond-empty">
         <span style="font-size: 2.5rem;">&#x1F3A3;</span>
-        <p>Keine Fische in der Falle... noch nicht!</p>
+        <p>{{ "Keine Fische in der Falle... noch nicht!"|t }}</p>
+    </div>
+    {% endfor %}
+
+    {# Treasures #}
+    {% for treasure in treasures %}
+    <div class="pond-treasure treasure-{{ treasure.rarity }}"
+         data-treasure-id="{{ treasure.id }}"
+         data-treasure-name="{{ treasure.type_name }}"
+         data-treasure-points="{{ treasure.points }}"
+         data-treasure-rarity="{{ treasure.rarity }}"
+         data-treasure-color="{{ treasure.rarity_color }}"
+         style="top: {{ treasure.pos_top }}%; left: {{ treasure.pos_left }}%;"
+         hx-post="{% url 'htmx:collect-treasure' %}"
+         hx-vals='{"treasure_id": "{{ treasure.id }}"}'
+         hx-swap="none"
+         hx-on::after-request="treasureCollected(event)">
+        <span class="treasure-body">{{ treasure.emoji }}</span>
+        <span class="treasure-sparkle"></span>
     </div>
     {% endfor %}
 
     <div class="pond-count">
         <span class="pond-count-value">{{ total_active }}</span>
-        <span class="pond-count-label">aktiv gefangen</span>
+        <span class="pond-count-label">{{ "aktiv gefangen"|t }}</span>
     </div>
 </div>

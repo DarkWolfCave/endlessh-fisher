@@ -1,0 +1,34 @@
+# Endlessh Game - Server Configuration
+#
+# Copy this file to servers.toml and adjust to your setup:
+#   cp servers.toml.example servers.toml
+#
+# Each [[servers]] block defines one endlessh server ("fishing pond").
+#
+# Fields:
+#   slug            - URL-safe identifier (used in URLs like /server/my-server/)
+#   name            - Display name shown in the UI
+#   host_identifier - MUST match the "host" tag in your InfluxDB data.
+#                     This is how the game connects to your endlessh metrics.
+#                     Find your values with:
+#                       influx query 'from(bucket:"YOUR_BUCKET")
+#                         |> range(start:-1h)
+#                         |> filter(fn:(r) => r._measurement == "endlessh_client_open_count")
+#                         |> keep(columns:["host"])
+#                         |> distinct(column:"host")'
+#   description     - Short description for the server card
+#   pond_theme      - Visual theme: "ocean", "lake", or "reef"
+
+[[servers]]
+slug = "my-server"
+name = "My Main Server"
+host_identifier = "my-hostname"
+description = "The main fishing pond. Deep waters, heavy traffic."
+pond_theme = "ocean"
+
+[[servers]]
+slug = "my-vps"
+name = "My VPS"
+host_identifier = "my-vps-hostname"
+description = "Cloud outpost. A smaller pond."
+pond_theme = "lake"

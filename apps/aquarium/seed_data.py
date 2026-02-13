@@ -171,27 +171,892 @@ FISH_SPECIES = [
     },
 ]
 
-SERVERS = [
+TREASURE_TYPES = [
     {
-        "slug": "rs-cronwolf",
-        "name": "RS Cronwolf",
-        "host_identifier": "rs-cronwolf",
-        "description": "The main fishing pond. Deep waters, heavy traffic.",
-        "pond_theme": "ocean",
+        "slug": "driftwood",
+        "name": "Driftwood",
+        "name_de": "Treibholz",
+        "description_de": "Altes Treibholz, ans Ufer gespült.",
+        "emoji": "\U0001FAB5",
+        "rarity": "common",
+        "rarity_color": "#9CA3AF",
+        "points": 5,
+        "spawn_weight": 100,
+        "min_active_fish": 1,
+        "sort_order": 1,
     },
     {
-        "slug": "vps-netcup",
-        "name": "VPS Netcup",
-        "host_identifier": "vps-netcup",
-        "description": "Mountain lake outpost. Netcup territory.",
-        "pond_theme": "lake",
+        "slug": "sea-glass",
+        "name": "Sea Glass",
+        "name_de": "Seeglas",
+        "description_de": "Vom Meer geschliffenes Glas, glänzt im Licht.",
+        "emoji": "\U0001F48E",
+        "rarity": "common",
+        "rarity_color": "#60A5FA",
+        "points": 8,
+        "spawn_weight": 80,
+        "min_active_fish": 2,
+        "sort_order": 2,
     },
     {
-        "slug": "vps2",
-        "name": "VPS2",
-        "host_identifier": "vps2-statuspage",
-        "description": "Coral reef station. Neighbor of Netcup.",
-        "pond_theme": "reef",
+        "slug": "pearl",
+        "name": "Pearl",
+        "name_de": "Perle",
+        "description_de": "Eine schimmernde Perle aus einer Muschel.",
+        "emoji": "\U0001FAE7",
+        "rarity": "uncommon",
+        "rarity_color": "#E2E8F0",
+        "points": 15,
+        "spawn_weight": 40,
+        "min_active_fish": 3,
+        "sort_order": 3,
+    },
+    {
+        "slug": "starfish",
+        "name": "Starfish",
+        "name_de": "Seestern",
+        "description_de": "Ein fünfarmiger Seestern in leuchtenden Farben.",
+        "emoji": "\u2B50",
+        "rarity": "uncommon",
+        "rarity_color": "#FBBF24",
+        "points": 20,
+        "spawn_weight": 30,
+        "min_active_fish": 4,
+        "sort_order": 4,
+    },
+    {
+        "slug": "anchor",
+        "name": "Anchor",
+        "name_de": "Anker",
+        "description_de": "Ein alter Schiffsanker aus vergessenen Zeiten.",
+        "emoji": "\u2693",
+        "rarity": "rare",
+        "rarity_color": "#60A5FA",
+        "points": 40,
+        "spawn_weight": 15,
+        "min_active_fish": 5,
+        "sort_order": 5,
+    },
+    {
+        "slug": "message-bottle",
+        "name": "Message in a Bottle",
+        "name_de": "Flaschenpost",
+        "description_de": "Eine Nachricht in einer Flasche. Wer hat sie geschrieben?",
+        "emoji": "\U0001F9F4",
+        "rarity": "rare",
+        "rarity_color": "#34D399",
+        "points": 50,
+        "spawn_weight": 10,
+        "min_active_fish": 6,
+        "sort_order": 6,
+    },
+    {
+        "slug": "coral-crown",
+        "name": "Coral Crown",
+        "name_de": "Korallenkrone",
+        "description_de": "Eine Krone aus seltenen Korallen, wie für einen Meeresgott.",
+        "emoji": "\U0001F451",
+        "rarity": "epic",
+        "rarity_color": "#A78BFA",
+        "points": 100,
+        "spawn_weight": 5,
+        "min_active_fish": 8,
+        "sort_order": 7,
+    },
+    {
+        "slug": "trident",
+        "name": "Trident",
+        "name_de": "Dreizack",
+        "description_de": "Poseidons verlorener Dreizack. Strahlt vor Macht.",
+        "emoji": "\U0001F531",
+        "rarity": "epic",
+        "rarity_color": "#818CF8",
+        "points": 150,
+        "spawn_weight": 3,
+        "min_active_fish": 10,
+        "sort_order": 8,
+    },
+    {
+        "slug": "golden-compass",
+        "name": "Golden Compass",
+        "name_de": "Goldener Kompass",
+        "description_de": "Ein goldener Kompass, der immer nach Norden zeigt... oder doch nicht?",
+        "emoji": "\U0001F9ED",
+        "rarity": "legendary",
+        "rarity_color": "#FBBF24",
+        "points": 300,
+        "spawn_weight": 1,
+        "min_active_fish": 15,
+        "sort_order": 9,
+    },
+]
+
+SECURITY_TIPS = [
+    # --- Common (8): SSH & Server Basics ---
+    {
+        "slug": "ssh-keys-statt-passwoerter",
+        "title": "SSH Keys Instead of Passwords",
+        "title_de": "SSH-Schlüssel statt Passwörter",
+        "content": (
+            "Disable password authentication in `/etc/ssh/sshd_config` with "
+            "`PasswordAuthentication no`. Use Ed25519 keys instead "
+            "(`ssh-keygen -t ed25519`). SSH keys are virtually uncrackable and "
+            "protect against brute-force attacks — exactly the kind endlessh traps."
+        ),
+        "content_de": (
+            "Deaktiviere Passwort-Authentifizierung in `/etc/ssh/sshd_config` mit "
+            "`PasswordAuthentication no`. Nutze stattdessen Ed25519-Keys "
+            "(`ssh-keygen -t ed25519`). SSH-Keys sind praktisch unknackbar und "
+            "schützen gegen Brute-Force-Angriffe — genau die, die endlessh abfängt."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "common",
+        "category": "ssh",
+        "emoji": "\U0001F511",
+        "sort_order": 1,
+    },
+    {
+        "slug": "root-login-deaktivieren",
+        "title": "Disable Root Login via SSH",
+        "title_de": "Root-Login über SSH deaktivieren",
+        "content": (
+            "Set `PermitRootLogin no` in `/etc/ssh/sshd_config`. Use a regular user "
+            "with sudo privileges instead. Over 90% of SSH brute-force attacks target "
+            "the root account — a single switch eliminates this entire attack vector."
+        ),
+        "content_de": (
+            "Setze `PermitRootLogin no` in `/etc/ssh/sshd_config`. Nutze stattdessen "
+            "einen normalen User mit sudo-Rechten. Über 90% der SSH-Brute-Force-"
+            "Angriffe zielen auf den root-Account — ein einfacher Schalter eliminiert "
+            "diesen gesamten Angriffsvektor."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "common",
+        "category": "ssh",
+        "emoji": "\U0001F6AB",
+        "sort_order": 2,
+    },
+    {
+        "slug": "ssh-port-aendern",
+        "title": "Change SSH Port",
+        "title_de": "SSH-Port ändern",
+        "content": (
+            "Change the default port 22 to a high port (e.g. 2222) with "
+            "`Port 2222` in `/etc/ssh/sshd_config`. This won't stop targeted attacks, "
+            "but reduces automated scans by over 95%. Combined with endlessh "
+            "on port 22, it's an ideal combination."
+        ),
+        "content_de": (
+            "Ändere den Standard-Port 22 auf einen hohen Port (z.B. 2222) mit "
+            "`Port 2222` in `/etc/ssh/sshd_config`. Das stoppt keine gezielten Angriffe, "
+            "reduziert aber automatisierte Scans um über 95%. Zusammen mit endlessh "
+            "auf Port 22 eine ideale Kombination."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "common",
+        "category": "ssh",
+        "emoji": "\U0001F6AA",
+        "sort_order": 3,
+    },
+    {
+        "slug": "automatische-updates",
+        "title": "Automatic Security Updates",
+        "title_de": "Automatische Sicherheitsupdates",
+        "content": (
+            "Enable unattended-upgrades: "
+            "`apt install unattended-upgrades && dpkg-reconfigure -plow unattended-upgrades`. "
+            "Critical security patches are applied automatically. Unpatched systems are "
+            "the most common attack vector — automation closes this window."
+        ),
+        "content_de": (
+            "Aktiviere unattended-upgrades: "
+            "`apt install unattended-upgrades && dpkg-reconfigure -plow unattended-upgrades`. "
+            "Kritische Sicherheitspatches werden automatisch eingespielt. Der häufigste "
+            "Angriffsvektor sind ungepatchte Systeme — Automatisierung schließt dieses Zeitfenster."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave — Server Monitoring",
+        "source_label_de": "DarkWolfCave — Server-Monitoring",
+        "rarity": "common",
+        "category": "updates",
+        "emoji": "\U0001F504",
+        "sort_order": 4,
+    },
+    {
+        "slug": "firewall-aktivieren",
+        "title": "Enable Firewall (ufw/nftables)",
+        "title_de": "Firewall mit ufw aktivieren",
+        "content": (
+            "Enable a firewall and only allow required ports: "
+            "`ufw default deny incoming && ufw allow ssh && ufw enable`. "
+            "Since 2024, nftables is the default backend for ufw/iptables. "
+            "Every open port is an invitation — restrict them to the minimum."
+        ),
+        "content_de": (
+            "Aktiviere eine Firewall und erlaube nur benötigte Ports: "
+            "`ufw default deny incoming && ufw allow ssh && ufw enable`. "
+            "Seit 2024 ist nftables das Standard-Backend für ufw/iptables. "
+            "Jeder offene Port ist eine Einladung — beschränke sie auf das Minimum."
+        ),
+        "source_url": "https://darkwolfcave.de/netzwerk-sicherheit-firewall-zero-trust/",
+        "source_label": "DarkWolfCave — Network Security",
+        "source_label_de": "DarkWolfCave — Netzwerk-Sicherheit",
+        "rarity": "common",
+        "category": "firewall",
+        "emoji": "\U0001F6E1\uFE0F",
+        "sort_order": 5,
+    },
+    {
+        "slug": "fail2ban-crowdsec",
+        "title": "fail2ban or CrowdSec",
+        "title_de": "fail2ban oder CrowdSec einsetzen",
+        "content": (
+            "Install fail2ban (`apt install fail2ban`) or the more modern CrowdSec. "
+            "Both automatically block IPs after multiple failed login attempts. "
+            "CrowdSec shares threat intelligence with the community and "
+            "provides collaborative defense."
+        ),
+        "content_de": (
+            "Installiere fail2ban (`apt install fail2ban`) oder das modernere CrowdSec. "
+            "Beide sperren IPs nach mehreren fehlgeschlagenen Login-Versuchen "
+            "automatisch. CrowdSec teilt Bedrohungsdaten mit der Community und "
+            "bietet eine kollaborative Verteidigung."
+        ),
+        "source_url": "https://darkwolfcave.de/netzwerk-sicherheit-firewall-zero-trust/",
+        "source_label": "DarkWolfCave — Network Security",
+        "source_label_de": "DarkWolfCave — Netzwerk-Sicherheit",
+        "rarity": "common",
+        "category": "firewall",
+        "emoji": "\U0001F46E",
+        "sort_order": 6,
+    },
+    {
+        "slug": "dienste-deaktivieren",
+        "title": "Disable Unnecessary Services",
+        "title_de": "Nicht benötigte Dienste deaktivieren",
+        "content": (
+            "List active services with "
+            "`systemctl list-units --type=service --state=running` "
+            "and disable unnecessary ones with `systemctl disable --now <service>`. "
+            "Every running service is a potential attack surface. "
+            "The principle of minimal attack surface is one of the most effective "
+            "security measures."
+        ),
+        "content_de": (
+            "Liste aktive Dienste mit "
+            "`systemctl list-units --type=service --state=running` "
+            "und deaktiviere unnötige mit `systemctl disable --now <dienst>`. "
+            "Jeder laufende Dienst ist eine potenzielle Angriffsfläche. "
+            "Das Prinzip der minimalen Angriffsfläche ist eine der effektivsten "
+            "Sicherheitsmaßnahmen."
+        ),
+        "source_url": "https://darkwolfcave.de/linux-server-haerten-angriffflaeche-minimieren/",
+        "source_label": "DarkWolfCave — Hardening Linux Servers",
+        "source_label_de": "DarkWolfCave — Linux-Server härten",
+        "rarity": "common",
+        "category": "strategy",
+        "emoji": "\u2702\uFE0F",
+        "sort_order": 7,
+    },
+    {
+        "slug": "ssh-algorithmen-haerten",
+        "title": "Harden SSH Algorithms",
+        "title_de": "SSH-Algorithmen härten",
+        "content": (
+            "Only use modern algorithms in sshd_config: "
+            "`KexAlgorithms curve25519-sha256` and "
+            "`Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com`. "
+            "Legacy algorithms like SHA1 and CBC ciphers are cryptographically "
+            "broken. `ssh-audit` (github.com/jtesta/ssh-audit) checks your configuration."
+        ),
+        "content_de": (
+            "Nutze nur moderne Algorithmen in sshd_config: "
+            "`KexAlgorithms curve25519-sha256` und "
+            "`Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com`. "
+            "Alte Algorithmen wie SHA1 und CBC-Ciphers sind kryptographisch "
+            "gebrochen. `ssh-audit` (github.com/jtesta/ssh-audit) prüft deine Konfiguration."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "common",
+        "category": "ssh",
+        "emoji": "\U0001F510",
+        "sort_order": 8,
+    },
+    # --- Uncommon (6): Intermediate ---
+    {
+        "slug": "ssh-allowusers",
+        "title": "SSH AllowUsers/AllowGroups",
+        "title_de": "SSH-Zugang auf bestimmte User beschränken",
+        "content": (
+            "Restrict SSH access to specific users: `AllowUsers admin deploy` "
+            "or `AllowGroups ssh-users` in sshd_config. Even if an attacker "
+            "has valid credentials — without being on the allow list, they can't "
+            "get in. A simple but powerful whitelist strategy."
+        ),
+        "content_de": (
+            "Beschränke SSH-Zugang auf bestimmte User: `AllowUsers admin deploy` "
+            "oder `AllowGroups ssh-users` in sshd_config. Selbst wenn ein Angreifer "
+            "gültige Credentials hat — ohne in der Allow-Liste zu stehen, kommt er "
+            "nicht rein. Eine einfache aber mächtige Whitelist-Strategie."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "uncommon",
+        "category": "ssh",
+        "emoji": "\U0001F4CB",
+        "sort_order": 9,
+    },
+    {
+        "slug": "ssh-2fa",
+        "title": "Two-Factor Authentication for SSH",
+        "title_de": "Zwei-Faktor-Authentifizierung für SSH",
+        "content": (
+            "Set up TOTP for SSH: `apt install libpam-google-authenticator`, "
+            "then run `google-authenticator` and configure PAM in `/etc/pam.d/sshd`. "
+            "SSH key + TOTP = two independent factors. "
+            "Even with a stolen key, no access without the second factor."
+        ),
+        "content_de": (
+            "Richte TOTP für SSH ein: `apt install libpam-google-authenticator`, "
+            "dann `google-authenticator` ausführen und PAM in `/etc/pam.d/sshd` "
+            "konfigurieren. SSH-Key + TOTP = zwei unabhängige Faktoren. "
+            "Selbst bei gestohlenem Key kein Zugang ohne den zweiten Faktor."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "uncommon",
+        "category": "auth",
+        "emoji": "\U0001F4F1",
+        "sort_order": 10,
+    },
+    {
+        "slug": "audit-logging",
+        "title": "Audit Logging with auditd",
+        "title_de": "Audit-Logging mit auditd aktivieren",
+        "content": (
+            "Install auditd (`apt install auditd`) and monitor critical "
+            "files: `auditctl -w /etc/ssh/sshd_config -p wa -k ssh_config`. "
+            "Logs in `/var/log/audit/audit.log` show who changed what and when. "
+            "Essential for forensic analysis after an incident."
+        ),
+        "content_de": (
+            "Installiere auditd (`apt install auditd`) und überwache kritische "
+            "Dateien: `auditctl -w /etc/ssh/sshd_config -p wa -k ssh_config`. "
+            "Logs in `/var/log/audit/audit.log` zeigen wer wann was geändert hat. "
+            "Unverzichtbar für forensische Analyse nach einem Vorfall."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave — Server Monitoring",
+        "source_label_de": "DarkWolfCave — Server-Monitoring",
+        "rarity": "uncommon",
+        "category": "monitoring",
+        "emoji": "\U0001F4DD",
+        "sort_order": 11,
+    },
+    {
+        "slug": "lynis-security-audit",
+        "title": "Security Audit with Lynis",
+        "title_de": "Sicherheitsaudit mit Lynis",
+        "content": (
+            "Run `lynis audit system` regularly. Lynis checks over 300 "
+            "security aspects: file permissions, kernel parameters, "
+            "network configuration, installed packages. The hardening index "
+            "gives you a concrete score — aim for above 80 points."
+        ),
+        "content_de": (
+            "Führe regelmäßig `lynis audit system` aus. Lynis prüft über 300 "
+            "Sicherheitsaspekte: Dateiberechtigungen, Kernel-Parameter, "
+            "Netzwerk-Konfiguration, installierte Pakete. Der Hardening-Index "
+            "gibt dir einen konkreten Score — Ziel: über 80 Punkte."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave — Server Monitoring",
+        "source_label_de": "DarkWolfCave — Server-Monitoring",
+        "rarity": "uncommon",
+        "category": "monitoring",
+        "emoji": "\U0001F50D",
+        "sort_order": 12,
+    },
+    {
+        "slug": "backup-321-regel",
+        "title": "Backup Strategy: 3-2-1 Rule",
+        "title_de": "Backup-Strategie: 3-2-1-Regel",
+        "content": (
+            "3 copies of your data, on 2 different media, with 1 offsite. "
+            "Use `restic` or `borgbackup` for encrypted, deduplicated backups. "
+            "Test restores regularly — a backup that doesn't work "
+            "isn't a backup. Ransomware makes backups a matter of survival."
+        ),
+        "content_de": (
+            "3 Kopien deiner Daten, auf 2 verschiedenen Medien, davon 1 offsite. "
+            "Nutze `restic` oder `borgbackup` für verschlüsselte, deduplizierte Backups. "
+            "Teste regelmäßig die Wiederherstellung — ein Backup das nicht "
+            "funktioniert ist keines. Ransomware macht Backups zur Überlebensfrage."
+        ),
+        "source_url": "https://darkwolfcave.de/backup-strategie-defense-in-depth-sicherheit/",
+        "source_label": "DarkWolfCave — Backup & Security Strategy",
+        "source_label_de": "DarkWolfCave — Backup & Sicherheitsstrategie",
+        "rarity": "uncommon",
+        "category": "strategy",
+        "emoji": "\U0001F4BE",
+        "sort_order": 13,
+    },
+    {
+        "slug": "ssh-idle-timeout",
+        "title": "SSH Idle Timeout",
+        "title_de": "SSH-Idle-Timeout konfigurieren",
+        "content": (
+            "Set `ClientAliveInterval 300` and `ClientAliveCountMax 2` in "
+            "sshd_config. Idle SSH sessions are disconnected after 10 minutes. "
+            "Prevents forgotten open terminals — a common security "
+            "risk, especially when someone leaves their workstation."
+        ),
+        "content_de": (
+            "Setze `ClientAliveInterval 300` und `ClientAliveCountMax 2` in "
+            "sshd_config. Inaktive SSH-Sessions werden nach 10 Minuten getrennt. "
+            "Verhindert vergessene offene Terminals — ein häufiges Sicherheits"
+            "risiko, besonders wenn jemand den Arbeitsplatz verlässt."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "uncommon",
+        "category": "ssh",
+        "emoji": "\u23F0",
+        "sort_order": 14,
+    },
+    # --- Rare (5): Advanced ---
+    {
+        "slug": "ssh-certificate-authority",
+        "title": "SSH Certificate Authority",
+        "title_de": "SSH Certificate Authority einrichten",
+        "content": (
+            "Instead of distributing public keys to every server, use an "
+            "SSH CA: `ssh-keygen -f ca_key` and then "
+            "`ssh-keygen -s ca_key -I user_id -n username user_key.pub`. "
+            "Certificates can be time-limited (`-V +52w`) and centrally "
+            "revoked. Scales much better than authorized_keys."
+        ),
+        "content_de": (
+            "Statt einzelne Public Keys auf jedem Server zu verteilen, nutze eine "
+            "SSH-CA: `ssh-keygen -f ca_key` und dann "
+            "`ssh-keygen -s ca_key -I user_id -n username user_key.pub`. "
+            "Zertifikate können zeitlich begrenzt werden (`-V +52w`) und zentral "
+            "widerrufen. Skaliert besser als authorized_keys."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "rare",
+        "category": "ssh",
+        "emoji": "\U0001F3DB\uFE0F",
+        "sort_order": 15,
+    },
+    {
+        "slug": "intrusion-detection-aide",
+        "title": "Intrusion Detection with AIDE",
+        "title_de": "Intrusion Detection mit AIDE",
+        "content": (
+            "AIDE (Advanced Intrusion Detection Environment) monitors file "
+            "integrity: `aideinit && cp /var/lib/aide/aide.db.new /var/lib/aide/"
+            "aide.db`, then regularly run `aide --check`. Detects unauthorized "
+            "changes to system files — an early warning system for compromises."
+        ),
+        "content_de": (
+            "AIDE (Advanced Intrusion Detection Environment) überwacht Datei-"
+            "Integrität: `aideinit && cp /var/lib/aide/aide.db.new /var/lib/aide/"
+            "aide.db`, dann regelmäßig `aide --check`. Erkennt unautorisierte "
+            "Änderungen an System-Dateien — ein Frühwarnsystem für Kompromittierungen."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave — Server Monitoring",
+        "source_label_de": "DarkWolfCave — Server-Monitoring",
+        "rarity": "rare",
+        "category": "monitoring",
+        "emoji": "\U0001F6A8",
+        "sort_order": 16,
+    },
+    {
+        "slug": "apparmor-profile",
+        "title": "AppArmor Profiles for Services",
+        "title_de": "AppArmor-Profile für Dienste erstellen",
+        "content": (
+            "Create AppArmor profiles for critical services: "
+            "`aa-genprof /usr/sbin/sshd`. Profiles restrict file access and "
+            "network permissions of a process to the absolute minimum "
+            "(Mandatory Access Control). Even with a vulnerability, the "
+            "attacker cannot escape the profile."
+        ),
+        "content_de": (
+            "Erstelle AppArmor-Profile für kritische Dienste: "
+            "`aa-genprof /usr/sbin/sshd`. Profile beschränken Dateizugriff und "
+            "Netzwerk-Berechtigungen eines Prozesses auf das absolute Minimum "
+            "(Mandatory Access Control). Selbst bei einer Schwachstelle kann der "
+            "Angreifer nicht aus dem Profil ausbrechen."
+        ),
+        "source_url": "https://darkwolfcave.de/linux-server-haerten-angriffflaeche-minimieren/",
+        "source_label": "DarkWolfCave — Hardening Linux Servers",
+        "source_label_de": "DarkWolfCave — Linux-Server härten",
+        "rarity": "rare",
+        "category": "strategy",
+        "emoji": "\U0001F6E1\uFE0F",
+        "sort_order": 17,
+    },
+    {
+        "slug": "netzwerksegmentierung",
+        "title": "Network Segmentation",
+        "title_de": "Netzwerksegmentierung implementieren",
+        "content": (
+            "Separate services into different network segments (VLANs/subnets). "
+            "A compromised web server should have no direct access to the "
+            "database. Docker networks, WireGuard VPNs, or Tailscale "
+            "ACLs help with implementation — even without expensive hardware firewalls."
+        ),
+        "content_de": (
+            "Trenne Dienste in verschiedene Netzwerksegmente (VLANs/Subnetze). "
+            "Ein kompromittierter Webserver sollte keinen direkten Zugang zur "
+            "Datenbank haben. Docker-Networks, WireGuard-VPNs oder Tailscale "
+            "ACLs helfen bei der Umsetzung — auch ohne teure Hardware-Firewalls."
+        ),
+        "source_url": "https://darkwolfcave.de/netzwerk-sicherheit-firewall-zero-trust/",
+        "source_label": "DarkWolfCave — Network Security",
+        "source_label_de": "DarkWolfCave — Netzwerk-Sicherheit",
+        "rarity": "rare",
+        "category": "network",
+        "emoji": "\U0001F310",
+        "sort_order": 18,
+    },
+    {
+        "slug": "dns-security",
+        "title": "DNS Security: DoT/DoH + DNSSEC",
+        "title_de": "DNS-Security: DoT und DNSSEC",
+        "content": (
+            "Configure DNS-over-TLS with systemd-resolved (`DNSOverTLS=yes` in "
+            "`resolved.conf`) or Unbound. DNSSEC validates DNS responses "
+            "cryptographically (`DNSSEC=yes`). Prevents DNS spoofing and "
+            "man-in-the-middle attacks at the DNS level — an often overlooked attack vector."
+        ),
+        "content_de": (
+            "Konfiguriere DNS-over-TLS mit systemd-resolved (`DNSOverTLS=yes` in "
+            "`resolved.conf`) oder Unbound. DNSSEC validiert DNS-Antworten "
+            "kryptographisch (`DNSSEC=yes`). Verhindert DNS-Spoofing und "
+            "Man-in-the-Middle auf DNS-Ebene — ein oft übersehener Angriffsvektor."
+        ),
+        "source_url": "https://darkwolfcave.de/netzwerk-sicherheit-firewall-zero-trust/",
+        "source_label": "DarkWolfCave — Network Security",
+        "source_label_de": "DarkWolfCave — Netzwerk-Sicherheit",
+        "rarity": "rare",
+        "category": "network",
+        "emoji": "\U0001F9EC",
+        "sort_order": 19,
+    },
+    # --- Epic (4): Expert ---
+    {
+        "slug": "zero-trust-architektur",
+        "title": "Zero-Trust Architecture",
+        "title_de": "Zero-Trust-Architektur implementieren",
+        "content": (
+            "Trust no network, no device, no user by default. "
+            "Every access is verified: identity + device status + context. "
+            "Tools like Tailscale or Cloudflare Access implement zero-trust "
+            "without VPN complexity. The perimeter model (inside=safe) is dead."
+        ),
+        "content_de": (
+            "Vertraue keinem Netzwerk, keinem Gerät, keinem User per Default. "
+            "Jeder Zugriff wird verifiziert: Identität + Gerätestatus + Kontext. "
+            "Tools wie Tailscale oder Cloudflare Access implementieren Zero-Trust "
+            "ohne VPN-Komplexität. Das Perimeter-Modell (innen=sicher) ist tot."
+        ),
+        "source_url": "https://darkwolfcave.de/netzwerk-sicherheit-firewall-zero-trust/",
+        "source_label": "DarkWolfCave — Network Security",
+        "source_label_de": "DarkWolfCave — Netzwerk-Sicherheit",
+        "rarity": "epic",
+        "category": "strategy",
+        "emoji": "\U0001F3F0",
+        "sort_order": 20,
+    },
+    {
+        "slug": "container-hardening",
+        "title": "Container Hardening",
+        "title_de": "Container-Hardening: Minimal & Rootless",
+        "content": (
+            "Run Docker containers with read-only filesystem (`--read-only`), without root "
+            "(`--user 1000:1000`), with limited capabilities (`--cap-drop ALL`). "
+            "Use Trivy or `docker scout` for image vulnerability scans. "
+            "Rootless Podman is the safer alternative to Docker with its root daemon."
+        ),
+        "content_de": (
+            "Docker-Container mit Read-only Filesystem (`--read-only`), ohne Root "
+            "(`--user 1000:1000`), mit begrenzten Capabilities (`--cap-drop ALL`). "
+            "Nutze Trivy oder `docker scout` für Image-Schwachstellenscans. "
+            "Rootless Podman ist die sicherere Alternative zu Docker mit Root-Daemon."
+        ),
+        "source_url": "https://darkwolfcave.de/linux-server-haerten-angriffflaeche-minimieren/",
+        "source_label": "DarkWolfCave — Hardening Linux Servers",
+        "source_label_de": "DarkWolfCave — Linux-Server härten",
+        "rarity": "epic",
+        "category": "container",
+        "emoji": "\U0001F4E6",
+        "sort_order": 21,
+    },
+    {
+        "slug": "kernel-hardening",
+        "title": "Kernel Hardening with sysctl",
+        "title_de": "Kernel-Hardening mit sysctl",
+        "content": (
+            "Harden the kernel via `/etc/sysctl.d/99-hardening.conf`: "
+            "`net.ipv4.conf.all.rp_filter=1` (spoofing protection), "
+            "`kernel.dmesg_restrict=1` (kernel log protection), "
+            "`kernel.unprivileged_bpf_disabled=1` (eBPF protection), "
+            "`kernel.kptr_restrict=2` (pointer obfuscation). "
+            "Activate with `sysctl --system`."
+        ),
+        "content_de": (
+            "Härte den Kernel via `/etc/sysctl.d/99-hardening.conf`: "
+            "`net.ipv4.conf.all.rp_filter=1` (Spoofing-Schutz), "
+            "`kernel.dmesg_restrict=1` (Kernel-Log-Schutz), "
+            "`kernel.unprivileged_bpf_disabled=1` (eBPF-Schutz), "
+            "`kernel.kptr_restrict=2` (Pointer-Verschleierung). "
+            "Aktivieren mit `sysctl --system`."
+        ),
+        "source_url": "https://darkwolfcave.de/linux-server-haerten-angriffflaeche-minimieren/",
+        "source_label": "DarkWolfCave — Hardening Linux Servers",
+        "source_label_de": "DarkWolfCave — Linux-Server härten",
+        "rarity": "epic",
+        "category": "strategy",
+        "emoji": "\u2699\uFE0F",
+        "sort_order": 22,
+    },
+    {
+        "slug": "systemd-hardening",
+        "title": "systemd Service Hardening",
+        "title_de": "systemd-Service-Härtung",
+        "content": (
+            "Use systemd security options in service units: "
+            "`ProtectSystem=strict`, `ProtectHome=yes`, `PrivateTmp=yes`, "
+            "`NoNewPrivileges=yes`, `CapabilityBoundingSet=`. "
+            "Check with `systemd-analyze security <unit>`. Goal: EXPOSED score "
+            "below 5.0 for every critical service."
+        ),
+        "content_de": (
+            "Nutze systemd-Sicherheitsoptionen in Service-Units: "
+            "`ProtectSystem=strict`, `ProtectHome=yes`, `PrivateTmp=yes`, "
+            "`NoNewPrivileges=yes`, `CapabilityBoundingSet=`. "
+            "Prüfe mit `systemd-analyze security <unit>`. Ziel: EXPOSED-Score "
+            "unter 5.0 für jeden kritischen Dienst."
+        ),
+        "source_url": "https://darkwolfcave.de/linux-server-haerten-angriffflaeche-minimieren/",
+        "source_label": "DarkWolfCave — Hardening Linux Servers",
+        "source_label_de": "DarkWolfCave — Linux-Server härten",
+        "rarity": "epic",
+        "category": "strategy",
+        "emoji": "\U0001F9F1",
+        "sort_order": 23,
+    },
+    # --- Legendary (2): Elite ---
+    {
+        "slug": "defense-in-depth",
+        "title": "Defense-in-Depth Strategy",
+        "title_de": "Defense-in-Depth: Sicherheit in Schichten",
+        "content": (
+            "Build security in layers: Firewall \u2192 IDS/IPS \u2192 "
+            "OS hardening \u2192 AppArmor/SELinux \u2192 Monitoring \u2192 Backup "
+            "\u2192 Incident Response. No single measure is perfect — but "
+            "together they form a fortress. Each layer must function independently, "
+            "so that failure of one layer doesn't compromise everything. "
+            "Endlessh itself is one of these layers."
+        ),
+        "content_de": (
+            "Sicherheit in Schichten aufbauen: Firewall \u2192 IDS/IPS \u2192 "
+            "OS-Härtung \u2192 AppArmor/SELinux \u2192 Monitoring \u2192 Backup "
+            "\u2192 Incident Response. Keine einzelne Maßnahme ist perfekt — aber "
+            "zusammen bilden sie eine Festung. Jede Schicht muss unabhängig "
+            "funktionieren, sodass ein Versagen einer Schicht nicht alles "
+            "kompromittiert. Endlessh selbst ist eine dieser Schichten."
+        ),
+        "source_url": "https://darkwolfcave.de/backup-strategie-defense-in-depth-sicherheit/",
+        "source_label": "DarkWolfCave — Backup & Security Strategy",
+        "source_label_de": "DarkWolfCave — Backup & Sicherheitsstrategie",
+        "rarity": "legendary",
+        "category": "strategy",
+        "emoji": "\U0001F3F0",
+        "sort_order": 24,
+    },
+    {
+        "slug": "incident-response-plan",
+        "title": "Incident Response Plan",
+        "title_de": "Incident Response Plan erstellen",
+        "content": (
+            "Create an incident response plan BEFORE something happens: "
+            "1) Detection — monitoring, centralized logs, alerting. "
+            "2) Containment — isolate network, rotate credentials. "
+            "3) Eradication — fix root cause, remove malware. "
+            "4) Recovery — backup restore, verification. "
+            "5) Lessons Learned — document post-mortem. "
+            "Test the plan with tabletop exercises at least once a year."
+        ),
+        "content_de": (
+            "Erstelle einen Incident-Response-Plan BEVOR etwas passiert: "
+            "1) Erkennung — Monitoring, zentrale Logs, Alerting. "
+            "2) Eindämmung — Netzwerk isolieren, Credentials rotieren. "
+            "3) Beseitigung — Rootcause fixen, Malware entfernen. "
+            "4) Wiederherstellung — Backup restore, Verifizierung. "
+            "5) Lessons Learned — Post-Mortem dokumentieren. "
+            "Teste den Plan mit Tabletop-Übungen mindestens einmal jährlich."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave — Server Monitoring",
+        "source_label_de": "DarkWolfCave — Server-Monitoring",
+        "rarity": "legendary",
+        "category": "strategy",
+        "emoji": "\U0001F4DC",
+        "sort_order": 25,
+    },
+]
+
+CHALLENGE_TEMPLATES = [
+    # Easy
+    {
+        "slug": "catch-bots-easy",
+        "name": "Daily Catch",
+        "name_de": "Tagesfang",
+        "description_template": "Catch {threshold} bots today.",
+        "description_template_de": "Fange heute {threshold} Bots.",
+        "metric": "daily_catches",
+        "difficulty": "easy",
+        "threshold_min": 20,
+        "threshold_max": 50,
+        "reward_points": 25,
+        "emoji": "\U0001F3A3",
+    },
+    {
+        "slug": "trap-time-easy",
+        "name": "Time Waster",
+        "name_de": "Zeitverschwender",
+        "description_template": "Waste {threshold} seconds of bot time today.",
+        "description_template_de": "Verschwende heute {threshold} Sekunden Bot-Zeit.",
+        "metric": "daily_trapped_seconds",
+        "difficulty": "easy",
+        "threshold_min": 3600,
+        "threshold_max": 10800,
+        "reward_points": 25,
+        "emoji": "\u23F3",
+    },
+    {
+        "slug": "country-variety-easy",
+        "name": "World Fishing",
+        "name_de": "Weltangeln",
+        "description_template": "Catch bots from {threshold} different countries today.",
+        "description_template_de": "Fange heute Bots aus {threshold} verschiedenen Ländern.",
+        "metric": "daily_unique_countries",
+        "difficulty": "easy",
+        "threshold_min": 3,
+        "threshold_max": 8,
+        "reward_points": 30,
+        "emoji": "\U0001F30D",
+    },
+    {
+        "slug": "collect-treasure-easy",
+        "name": "Beach Patrol",
+        "name_de": "Strandpatrouille",
+        "description_template": "Collect {threshold} treasures today.",
+        "description_template_de": "Sammle heute {threshold} Schätze.",
+        "metric": "daily_treasures",
+        "difficulty": "easy",
+        "threshold_min": 1,
+        "threshold_max": 3,
+        "reward_points": 30,
+        "emoji": "\U0001F48E",
+    },
+    # Medium
+    {
+        "slug": "catch-bots-medium",
+        "name": "Fishing Spree",
+        "name_de": "Fangrekord",
+        "description_template": "Catch {threshold} bots today.",
+        "description_template_de": "Fange heute {threshold} Bots.",
+        "metric": "daily_catches",
+        "difficulty": "medium",
+        "threshold_min": 60,
+        "threshold_max": 120,
+        "reward_points": 50,
+        "emoji": "\U0001F3A3",
+    },
+    {
+        "slug": "species-variety",
+        "name": "Diverse Nets",
+        "name_de": "Vielfalt im Netz",
+        "description_template": "Catch {threshold} different species today.",
+        "description_template_de": "Fange heute {threshold} verschiedene Fischarten.",
+        "metric": "daily_unique_species",
+        "difficulty": "medium",
+        "threshold_min": 3,
+        "threshold_max": 6,
+        "reward_points": 60,
+        "emoji": "\U0001F420",
+    },
+    {
+        "slug": "rare-catches",
+        "name": "Big Game Fisher",
+        "name_de": "Großwildfischer",
+        "description_template": "Catch {threshold} rare or better fish today.",
+        "description_template_de": "Fange heute {threshold} seltene (oder bessere) Fische.",
+        "metric": "daily_rare_catches",
+        "difficulty": "medium",
+        "threshold_min": 1,
+        "threshold_max": 3,
+        "reward_points": 75,
+        "emoji": "\u2B50",
+    },
+    # Hard
+    {
+        "slug": "catch-bots-hard",
+        "name": "Bot Blitz",
+        "name_de": "Bot-Blitz",
+        "description_template": "Catch {threshold} bots today.",
+        "description_template_de": "Fange heute {threshold} Bots.",
+        "metric": "daily_catches",
+        "difficulty": "hard",
+        "threshold_min": 150,
+        "threshold_max": 300,
+        "reward_points": 100,
+        "emoji": "\u26A1",
+    },
+    {
+        "slug": "trap-time-hard",
+        "name": "Endless Trap",
+        "name_de": "Endlose Falle",
+        "description_template": "Waste {threshold} seconds of bot time today.",
+        "description_template_de": "Verschwende heute {threshold} Sekunden Bot-Zeit.",
+        "metric": "daily_trapped_seconds",
+        "difficulty": "hard",
+        "threshold_min": 36000,
+        "threshold_max": 86400,
+        "reward_points": 100,
+        "emoji": "\U0001F570",
+    },
+    {
+        "slug": "collect-treasure-hard",
+        "name": "Treasure Dive",
+        "name_de": "Schatztauchen",
+        "description_template": "Collect {threshold} treasures today.",
+        "description_template_de": "Sammle heute {threshold} Schätze.",
+        "metric": "daily_treasures",
+        "difficulty": "hard",
+        "threshold_min": 5,
+        "threshold_max": 10,
+        "reward_points": 100,
+        "emoji": "\U0001F531",
     },
 ]
 
@@ -244,6 +1109,13 @@ ACHIEVEMENT_CATEGORIES = [
         "name_de": "Datenhamster",
         "icon": "database",
         "sort_order": 7,
+    },
+    {
+        "slug": "treasure-hunter",
+        "name": "Treasure Hunter",
+        "name_de": "Schatzjäger",
+        "icon": "gem",
+        "sort_order": 8,
     },
 ]
 
@@ -354,4 +1226,27 @@ ACHIEVEMENTS = [
     {"slug": "one-gb-sent", "category": "data-hoarder", "name": "Giga Chad Fisher", "name_de": "Giga-Chad-Angler",
      "description": "Send 1 GB of tarpit data.", "description_de": "Sende 1 GB Tarpit-Daten.",
      "metric": "total_bytes_sent", "threshold": 1073741824, "rarity": "diamond", "points": 500, "sort_order": 4},
+    # Treasure Hunter - total treasures collected
+    {"slug": "first-treasure", "category": "treasure-hunter", "name": "Beachcomber", "name_de": "Strandgutsammler",
+     "description": "Collect your first treasure.", "description_de": "Sammle deinen ersten Schatz.",
+     "metric": "total_treasures", "threshold": 1, "rarity": "bronze", "points": 15, "sort_order": 1},
+    {"slug": "ten-treasures", "category": "treasure-hunter", "name": "Treasure Seeker", "name_de": "Schatzsucher",
+     "description": "Collect 10 treasures.", "description_de": "Sammle 10 Schätze.",
+     "metric": "total_treasures", "threshold": 10, "rarity": "silver", "points": 50, "sort_order": 2},
+    {"slug": "fifty-treasures", "category": "treasure-hunter", "name": "Treasure Diver", "name_de": "Schatztaucher",
+     "description": "Collect 50 treasures.", "description_de": "Sammle 50 Schätze.",
+     "metric": "total_treasures", "threshold": 50, "rarity": "gold", "points": 100, "sort_order": 3},
+    {"slug": "all-treasure-types", "category": "treasure-hunter", "name": "Complete Hoard", "name_de": "Vollständiger Hort",
+     "description": "Collect every type of treasure.", "description_de": "Sammle jeden Schatztyp.",
+     "metric": "unique_treasure_types", "threshold": 9, "rarity": "platinum", "points": 250, "sort_order": 4},
+    # Treasure Hunter - challenges completed
+    {"slug": "first-challenge", "category": "treasure-hunter", "name": "Challenge Accepted", "name_de": "Herausforderung angenommen",
+     "description": "Complete your first daily challenge.", "description_de": "Schließe deine erste tägliche Herausforderung ab.",
+     "metric": "challenges_completed", "threshold": 1, "rarity": "bronze", "points": 15, "sort_order": 5},
+    {"slug": "ten-challenges", "category": "treasure-hunter", "name": "Challenge Regular", "name_de": "Stammherausforderer",
+     "description": "Complete 10 daily challenges.", "description_de": "Schließe 10 tägliche Herausforderungen ab.",
+     "metric": "challenges_completed", "threshold": 10, "rarity": "silver", "points": 50, "sort_order": 6},
+    {"slug": "fifty-challenges", "category": "treasure-hunter", "name": "Challenge Champion", "name_de": "Herausforderungs-Champion",
+     "description": "Complete 50 daily challenges.", "description_de": "Schließe 50 tägliche Herausforderungen ab.",
+     "metric": "challenges_completed", "threshold": 50, "rarity": "gold", "points": 150, "sort_order": 7},
 ]

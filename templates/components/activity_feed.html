@@ -5,10 +5,10 @@
           class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
     <div style="flex: 1;">
         <span style="font-weight: 600; color: {{ catch.species.rarity_color }};">
-            {{ catch.species.name_de }}
+            {{ catch.species|lang:"name" }}
         </span>
         <span style="color: var(--color-text-muted);">
-            {{ catch.ip_hash|truncatechars:12 }} &middot; {{ catch.country_code }}
+            {% if SHOW_REAL_IP %}{{ catch.ip_address }}{% else %}{{ catch.ip_hash|truncatechars:12 }}{% endif %} &middot; {{ catch.country_code|country_de }}
         </span>
     </div>
     <div style="text-align: right;">
@@ -18,6 +18,6 @@
 </div>
 {% empty %}
 <div style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
-    Warte auf den ersten Fang...
+    {{ "Warte auf den ersten Fang..."|t }}
 </div>
 {% endfor %}

@@ -11,9 +11,10 @@ db.sqlite3
 static-collected/
 *.log
 
-# Environment
+# Environment & Config (user-specific)
 .env
 *.env.local
+servers.toml
 
 # IDE
 .vscode/

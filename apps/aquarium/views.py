@@ -6,8 +6,10 @@ from django.core.cache import cache
 from django.db.models import Count, Max, Min, Sum
 from django.shortcuts import get_object_or_404, render
 
-from .models import CaughtBot, CountryStats, DailyStats, FishSpecies, Server
+from .challenge_service import get_today_challenges
+from .models import CaughtBot, CollectedTreasure, CountryStats, DailyStats, FishSpecies, SecurityTip, Server
 from .services import get_pond_fish
+from .treasure_service import get_active_treasures
 
 # Cache TTL: stats change only on sync (every 5 min), so 120s is safe
 _STATS_CACHE_TTL = 120
@@ -48,6 +50,8 @@ def dashboard(request):
 
     # Live Pond data for initial render (also provides active_traps)
     pond_data = get_pond_fish()
+    treasures = get_active_treasures(pond_data["total_active"])
+    challenges = get_today_challenges()
 
     return render(request, "aquarium/dashboard.html", {
         "servers": servers,
@@ -58,6 +62,8 @@ def dashboard(request):
         "total_active": pond_data["total_active"],
         "last_updated": pond_data["last_updated"],
         "fish_json": json.dumps(pond_data["fish"]),
+        "treasures": treasures,
+        "challenges": challenges,
     })
 
 
@@ -114,7 +120,7 @@ def server_detail(request, slug):
     daily_stats = DailyStats.objects.filter(server=server)[:30]
     species_counts = (
         CaughtBot.objects.filter(server=server)
-        .values("species__name_de", "species__rarity_color")
+        .values("species__name", "species__name_de", "species__rarity_color")
         .annotate(count=Count("id"))
         .order_by("-count")
     )
@@ -141,6 +147,29 @@ def fish_detail(request, pk):
     return render(request, "aquarium/fish_detail.html", {
         "catch": catch,
         "same_ip_catches": same_ip_catches,
+    })
+
+
+def schatzkammer(request):
+    """Treasure vault - collected treasures with security tips."""
+    collections = (
+        CollectedTreasure.objects
+        .select_related("treasure_type", "security_tip")
+        .order_by("-collected_at")
+    )
+    total_points = sum(c.points_awarded for c in collections)
+    unique_tips = (
+        collections.exclude(security_tip=None)
+        .values("security_tip_id").distinct().count()
+    )
+    total_tips = SecurityTip.objects.count()
+
+    return render(request, "aquarium/schatzkammer.html", {
+        "collections": collections,
+        "total_collected": collections.count(),
+        "unique_tips": unique_tips,
+        "total_tips": total_tips,
+        "total_points": total_points,
     })
 
 

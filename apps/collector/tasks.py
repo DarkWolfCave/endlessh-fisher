@@ -147,6 +147,14 @@ def sync_bot_data(self):
         # Invalidate cached stats so next request gets fresh data
         cache.delete_many(["endlessh:game_stats", "endlessh:ticker_catches"])
 
+        # Evaluate daily challenges right after sync so progress is current
+        if created_count > 0 or updated_count > 0:
+            try:
+                from apps.aquarium.challenge_service import evaluate_daily_challenges
+                evaluate_daily_challenges()
+            except Exception:
+                logger.debug("Challenge evaluation after sync failed", exc_info=True)
+
         logger.info(
             "Sync complete: %d new, %d updated from %d connections",
             created_count, updated_count, len(connections),
@@ -242,6 +250,27 @@ def check_achievements():
     if unlocked:
         logger.info("Unlocked %d achievements: %s", len(unlocked), unlocked)
     return f"{len(unlocked)} newly unlocked"
+
+
+@shared_task
+def generate_daily_challenges_task():
+    """Generate daily challenges at midnight. Runs daily at 00:05."""
+    from apps.aquarium.challenge_service import generate_daily_challenges
+
+    generated = generate_daily_challenges()
+    logger.info("Generated %d daily challenges", len(generated))
+    return f"Generated {len(generated)} challenges"
+
+
+@shared_task
+def evaluate_daily_challenges_task():
+    """Evaluate daily challenge progress. Runs every 10 minutes."""
+    from apps.aquarium.challenge_service import evaluate_daily_challenges
+
+    completed = evaluate_daily_challenges()
+    if completed:
+        logger.info("Completed %d challenges: %s", len(completed), completed)
+    return f"{len(completed)} newly completed"
 
 
 @shared_task

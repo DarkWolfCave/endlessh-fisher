@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% load game_tags %}
 
-{% block title %}Aquarium - {{ GAME_NAME }}{% endblock %}
+{% block title %}{{ "Aquarium"|t }} - {{ GAME_NAME }}{% endblock %}
 
 {% block content %}
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
     <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">
-        &#x1F41F; Aquarium
+        &#x1F41F; {{ "Aquarium"|t }}
     </h2>
 
     <!-- Filters -->
     <div x-data="{ open: false }" style="position: relative;">
         <button @click="open = !open"
                 style="padding: 0.5rem 1rem; background: var(--color-surface-2); border: 1px solid var(--color-border); border-radius: 0.5rem; color: var(--color-text); cursor: pointer;">
-            Filter &#x25BC;
+            {{ "Filter"|t }} &#x25BC;
         </button>
         <div x-show="open" @click.away="open = false"
              style="position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.5rem; padding: 1rem; min-width: 200px; z-index: 10;">
@@ -27,16 +27,16 @@
                 {% endfor %}
             </div>
             <div>
-                <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 0.25rem;">Fischart</label>
+                <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 0.25rem;">{{ "Fischart"|t }}</label>
                 {% for sp in species_list %}
                 <a href="?species={{ sp.slug }}"
                    style="display: block; padding: 0.25rem 0.5rem; border-radius: 0.25rem; color: {% if selected_species == sp.slug %}{{ sp.rarity_color }}{% else %}var(--color-text){% endif %}; text-decoration: none;">
-                    {{ sp.name_de }}
+                    {{ sp|lang:"name" }}
                 </a>
                 {% endfor %}
             </div>
             <div style="margin-top: 0.75rem; border-top: 1px solid var(--color-border); padding-top: 0.75rem;">
-                <a href="{% url 'aquarium:aquarium' %}" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem;">Alle anzeigen</a>
+                <a href="{% url 'aquarium:aquarium' %}" style="color: var(--color-text-muted); text-decoration: none; font-size: 0.875rem;">{{ "Alle anzeigen"|t }}</a>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
     {% empty %}
     <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--color-text-muted);">
         <span style="font-size: 3rem;">&#x1F3A3;</span>
-        <p style="margin-top: 1rem;">Noch keine Fische gefangen. Die Celery-Pipeline synct alle 5 Minuten neue Daten.</p>
+        <p style="margin-top: 1rem;">{{ "Noch keine Fische gefangen."|t }} {{ "Die Celery-Pipeline synct alle 5 Minuten neue Daten."|t }}</p>
     </div>
     {% endfor %}
 </div>

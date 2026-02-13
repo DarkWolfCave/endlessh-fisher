@@ -1,18 +1,33 @@
 """DRF serializers for aquarium models."""
 
+from django.conf import settings
 from rest_framework import serializers
 
 from apps.aquarium.models import CaughtBot, CountryStats, DailyStats, FishSpecies, Server
 
 
 class FishSpeciesSerializer(serializers.ModelSerializer):
+    display_name = serializers.SerializerMethodField()
+    display_description = serializers.SerializerMethodField()
+
     class Meta:
         model = FishSpecies
         fields = [
-            "id", "slug", "name", "name_de", "description_de",
+            "id", "slug", "name", "name_de", "display_name",
+            "description_de", "display_description",
             "min_trapped_seconds", "max_trapped_seconds",
             "rarity", "rarity_color", "points", "sort_order",
         ]
+
+    def get_display_name(self, obj):
+        if settings.GAME_LANGUAGE == "de":
+            return obj.name_de
+        return obj.name
+
+    def get_display_description(self, obj):
+        if settings.GAME_LANGUAGE == "de":
+            return obj.description_de
+        return obj.description
 
 
 class ServerSerializer(serializers.ModelSerializer):
@@ -26,7 +41,12 @@ class ServerSerializer(serializers.ModelSerializer):
 
 
 class CaughtBotSerializer(serializers.ModelSerializer):
-    species_name = serializers.CharField(source="species.name_de", read_only=True)
+    species_name = serializers.SerializerMethodField()
+
+    def get_species_name(self, obj):
+        if settings.GAME_LANGUAGE == "de":
+            return obj.species.name_de
+        return obj.species.name
     species_rarity = serializers.CharField(source="species.rarity", read_only=True)
     species_color = serializers.CharField(source="species.rarity_color", read_only=True)
     server_name = serializers.CharField(source="server.name", read_only=True)

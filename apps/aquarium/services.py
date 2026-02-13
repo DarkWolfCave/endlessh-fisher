@@ -4,11 +4,13 @@ import hashlib
 import math
 from datetime import timedelta
 
+from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
 
 from apps.aquarium.models import CaughtBot, FishSpecies, Server
-from apps.collector.influx_client import query_active_bots
+from apps.collector.influx_client import query_active_bots, query_bot_connections
+from apps.core.templatetags.game_tags import get_country_name, get_rarity_name
 
 
 def classify_fish(trapped_seconds: float) -> FishSpecies | None:
@@ -117,6 +119,21 @@ def get_pond_fish() -> dict:
         .values_list("influx_fingerprint", "country_code")
     )
 
+    # Fallback: query InfluxDB open_count for country of bots not yet in DB
+    missing_fps = [fp for fp in active_fps if fp not in country_map]
+    if missing_fps:
+        missing_ips = {fp.split(":", 1)[1] for fp in missing_fps}
+        try:
+            influx_conns = query_bot_connections("-5m")
+            for conn in influx_conns:
+                if conn["ip"] in missing_ips and conn.get("country"):
+                    fp = f"{conn['host']}:{conn['ip']}"
+                    if fp not in country_map:
+                        country_map[fp] = conn["country"]
+        except Exception:
+            pass  # Graceful fallback — country stays empty
+
+    lang = settings.GAME_LANGUAGE
     fish = []
     for bot in active_bots:
         host = bot["host"]
@@ -135,25 +152,37 @@ def get_pond_fish() -> dict:
                 break
 
         fingerprint = f"{host}:{bot['ip']}"
-        country = country_map.get(fingerprint, "")
+        country_code = country_map.get(fingerprint, "")
+        country = get_country_name(country_code)
         ip_hash = _hash_ip(bot["ip"])
 
         fish_id = f"{host}:{ip_hash[:16]}"
         pos = _compute_fish_position(fish_id)
 
+        ip_display = bot["ip"] if settings.SHOW_REAL_IP else ip_hash[:12]
+
+        # Language-aware species name
+        if species:
+            species_name = species.name_de if lang == "de" else species.name
+        else:
+            species_name = "Plankton"
+
+        rarity = species.rarity if species else "common"
+
         fish.append({
             "id": fish_id,
-            "ip_hash": ip_hash[:12],
+            "ip_hash": ip_display,
             "country": country,
             "server_slug": server.slug,
             "server_name": server.name,
             "server_theme": server.pond_theme,
             "trapped_seconds": trapped,
             "last_seen": bot["last_seen"],
-            "species_name": species.name_de if species else "Plankton",
+            "species_name": species_name,
             "species_slug": species.slug if species else "plankton",
             "species_emoji": _get_fish_emoji(species),
-            "rarity": species.rarity if species else "common",
+            "rarity": rarity,
+            "rarity_de": get_rarity_name(rarity),
             "rarity_color": species.rarity_color if species else "#9CA3AF",
             "points": species.points if species else 1,
             "size": _calculate_fish_size(trapped),
@@ -200,17 +229,20 @@ def check_rare_fish_alerts() -> list[dict]:
 
     alerts = []
     new_seen = set(seen_ids)
+    lang = settings.GAME_LANGUAGE
 
     for catch in recent_rare:
+        sp = catch.species
         alerts.append({
             "id": catch.id,
-            "species_name": catch.species.name_de,
-            "species_emoji": _get_fish_emoji(catch.species),
-            "rarity": catch.species.rarity,
-            "rarity_color": catch.species.rarity_color,
+            "species_name": sp.name_de if lang == "de" else sp.name,
+            "species_emoji": _get_fish_emoji(sp),
+            "rarity": sp.rarity,
+            "rarity_de": get_rarity_name(sp.rarity),
+            "rarity_color": sp.rarity_color,
             "server_name": catch.server.name,
             "trapped_seconds": catch.trapped_seconds,
-            "country": catch.country_code,
+            "country": get_country_name(catch.country_code),
             "ip_hash": catch.ip_hash[:8],
             "is_live": False,
         })

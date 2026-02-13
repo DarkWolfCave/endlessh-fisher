@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load game_tags %}
 
-{% block title %}Bestenliste - {{ GAME_NAME }}{% endblock %}
+{% block title %}{{ "Bestenliste"|t }} - {{ GAME_NAME }}{% endblock %}
 
 {% block content %}
 <div style="margin-bottom: 1.5rem;">
     <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">
-        &#x1F3C6; Bestenliste
+        &#x1F3C6; {{ "Bestenliste"|t }}
     </h2>
 </div>
 
@@ -16,15 +16,15 @@
     <!-- Longest Traps -->
     <div class="game-card">
         <h3 style="font-weight: 700; color: var(--color-accent); margin-bottom: 1rem;">
-            &#x23F1; Längste Fänge
+            &#x23F1; {{ "Längste Fänge"|t }}
         </h3>
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="border-bottom: 1px solid var(--color-border); font-size: 0.75rem; color: var(--color-text-muted);">
                     <th style="text-align: left; padding: 0.5rem 0;">#</th>
-                    <th style="text-align: left; padding: 0.5rem 0;">Fischart</th>
+                    <th style="text-align: left; padding: 0.5rem 0;">{{ "Fischart"|t }}</th>
                     <th style="text-align: left; padding: 0.5rem 0;">Server</th>
-                    <th style="text-align: right; padding: 0.5rem 0;">Trap-Zeit</th>
+                    <th style="text-align: right; padding: 0.5rem 0;">{{ "Trap-Zeit"|t }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,14 +35,14 @@
                     </td>
                     <td style="padding: 0.5rem 0;">
                         <a href="{% url 'aquarium:fish-detail' pk=catch.pk %}" style="text-decoration: none; color: {{ catch.species.rarity_color }};">
-                            {{ catch.species.css_class|species_emoji }} {{ catch.species.name_de }}
+                            {{ catch.species.css_class|species_emoji }} {{ catch.species|lang:"name" }}
                         </a>
                     </td>
                     <td style="padding: 0.5rem 0; font-size: 0.8rem; color: var(--color-text-muted);">{{ catch.server.name }}</td>
                     <td style="padding: 0.5rem 0; text-align: right; font-weight: 700; color: var(--color-accent);">{{ catch.trapped_seconds|duration_format }}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4" style="padding: 1rem 0; text-align: center; color: var(--color-text-muted);">Noch keine Fänge.</td></tr>
+                <tr><td colspan="4" style="padding: 1rem 0; text-align: center; color: var(--color-text-muted);">{{ "Noch keine Fänge."|t }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -51,13 +51,13 @@
     <!-- Highest Scores -->
     <div class="game-card">
         <h3 style="font-weight: 700; color: var(--color-legendary); margin-bottom: 1rem;">
-            &#x2B50; Höchste Scores
+            &#x2B50; {{ "Höchste Scores"|t }}
         </h3>
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="border-bottom: 1px solid var(--color-border); font-size: 0.75rem; color: var(--color-text-muted);">
                     <th style="text-align: left; padding: 0.5rem 0;">#</th>
-                    <th style="text-align: left; padding: 0.5rem 0;">Fischart</th>
+                    <th style="text-align: left; padding: 0.5rem 0;">{{ "Fischart"|t }}</th>
                     <th style="text-align: left; padding: 0.5rem 0;">Server</th>
                     <th style="text-align: right; padding: 0.5rem 0;">Score</th>
                 </tr>
@@ -70,14 +70,14 @@
                     </td>
                     <td style="padding: 0.5rem 0;">
                         <a href="{% url 'aquarium:fish-detail' pk=catch.pk %}" style="text-decoration: none; color: {{ catch.species.rarity_color }};">
-                            {{ catch.species.css_class|species_emoji }} {{ catch.species.name_de }}
+                            {{ catch.species.css_class|species_emoji }} {{ catch.species|lang:"name" }}
                         </a>
                     </td>
                     <td style="padding: 0.5rem 0; font-size: 0.8rem; color: var(--color-text-muted);">{{ catch.server.name }}</td>
                     <td style="padding: 0.5rem 0; text-align: right; font-weight: 700; color: var(--color-legendary);">{{ catch.score|score_format }}</td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4" style="padding: 1rem 0; text-align: center; color: var(--color-text-muted);">Noch keine Fänge.</td></tr>
+                <tr><td colspan="4" style="padding: 1rem 0; text-align: center; color: var(--color-text-muted);">{{ "Noch keine Fänge."|t }}</td></tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -87,7 +87,7 @@
 <!-- Species Records -->
 <div class="game-card">
     <h3 style="font-weight: 700; color: var(--color-accent); margin-bottom: 1rem;">
-        &#x1F3C5; Rekorde pro Fischart
+        &#x1F3C5; {{ "Rekorde pro Fischart"|t }}
     </h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.75rem;">
         {% for entry in species_records %}
@@ -97,12 +97,12 @@
                 {{ entry.species.css_class|species_emoji }}
             </span>
             <div style="flex: 1; min-width: 0;">
-                <div style="font-weight: 700; color: {{ entry.species.rarity_color }};">{{ entry.species.name_de }}</div>
+                <div style="font-weight: 700; color: {{ entry.species.rarity_color }};">{{ entry.species|lang:"name" }}</div>
                 <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ entry.record.server.name }}</div>
             </div>
             <div style="text-align: right;">
                 <div style="font-weight: 700; color: var(--color-accent);">{{ entry.record.trapped_seconds|duration_format }}</div>
-                <div style="font-size: 0.75rem; color: var(--color-legendary);">{{ entry.record.score|score_format }} Pkt.</div>
+                <div style="font-size: 0.75rem; color: var(--color-legendary);">{{ entry.record.score|score_format }} {{ "Pkt."|t }}</div>
             </div>
         </a>
         {% endfor %}

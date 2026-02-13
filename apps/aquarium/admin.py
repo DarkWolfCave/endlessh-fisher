@@ -2,7 +2,18 @@
 
 from django.contrib import admin
 
-from .models import CaughtBot, CountryStats, DailyStats, FishSpecies, Server
+from .models import (
+    CaughtBot, ChallengeTemplate, CollectedTreasure, CountryStats,
+    DailyChallenge, DailyStats, FishSpecies, SecurityTip, Server, TreasureType,
+)
+
+
+@admin.register(SecurityTip)
+class SecurityTipAdmin(admin.ModelAdmin):
+    list_display = ["title_de", "slug", "emoji", "rarity", "category", "sort_order"]
+    list_filter = ["rarity", "category"]
+    ordering = ["rarity", "sort_order"]
+    search_fields = ["title_de", "content_de"]
 
 
 @admin.register(FishSpecies)
@@ -44,3 +55,31 @@ class DailyStatsAdmin(admin.ModelAdmin):
 class CountryStatsAdmin(admin.ModelAdmin):
     list_display = ["country_code", "country_name", "total_catches", "unique_ips"]
     ordering = ["-total_catches"]
+
+
+@admin.register(TreasureType)
+class TreasureTypeAdmin(admin.ModelAdmin):
+    list_display = ["name_de", "slug", "emoji", "rarity", "points", "spawn_weight", "sort_order"]
+    list_filter = ["rarity"]
+    ordering = ["sort_order"]
+
+
+@admin.register(CollectedTreasure)
+class CollectedTreasureAdmin(admin.ModelAdmin):
+    list_display = ["treasure_type", "pond_treasure_id", "collected_at", "points_awarded"]
+    list_filter = ["treasure_type"]
+    ordering = ["-collected_at"]
+
+
+@admin.register(ChallengeTemplate)
+class ChallengeTemplateAdmin(admin.ModelAdmin):
+    list_display = ["name_de", "slug", "metric", "difficulty", "threshold_min", "threshold_max", "reward_points"]
+    list_filter = ["difficulty", "metric"]
+    ordering = ["difficulty", "slug"]
+
+
+@admin.register(DailyChallenge)
+class DailyChallengeAdmin(admin.ModelAdmin):
+    list_display = ["date", "template", "threshold", "current_value", "is_completed", "reward_points"]
+    list_filter = ["is_completed", "date"]
+    ordering = ["-date"]

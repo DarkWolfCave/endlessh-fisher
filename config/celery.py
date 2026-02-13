@@ -49,4 +49,12 @@ app.conf.beat_schedule = {
         "task": "apps.collector.tasks.full_recalculate",
         "schedule": crontab(hour=3, minute=0),  # daily 3 AM
     },
+    "generate-daily-challenges": {
+        "task": "apps.collector.tasks.generate_daily_challenges_task",
+        "schedule": crontab(hour=0, minute=5),  # daily at 00:05
+    },
+    "evaluate-daily-challenges": {
+        "task": "apps.collector.tasks.evaluate_daily_challenges_task",
+        "schedule": 600.0,  # every 10 minutes
+    },
 }

@@ -8,7 +8,7 @@ x-traefik-labels: &traefik-labels
 x-backend-env: &backend-env
   - DJANGO_SETTINGS_MODULE=config.settings.production
   - SECRET_KEY=${SECRET_KEY}
-  - ALLOWED_HOSTS=${ALLOWED_HOSTS:-endlessh.cronwolf.de}
+  - ALLOWED_HOSTS=${ALLOWED_HOSTS}
   - ADMIN_URL=${ADMIN_URL:-secret-admin/}
   - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
   - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
@@ -19,8 +19,10 @@ x-backend-env: &backend-env
   - CELERY_RESULT_BACKEND=redis://:${REDIS_PASSWORD}@redis:6379/0
   - INFLUXDB_URL=${INFLUXDB_URL}
   - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
-  - INFLUXDB_ORG=${INFLUXDB_ORG:-dwc}
-  - INFLUXDB_BUCKET=${INFLUXDB_BUCKET:-external_monitoring}
+  - INFLUXDB_ORG=${INFLUXDB_ORG}
+  - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+  - SHOW_REAL_IP=${SHOW_REAL_IP:-false}
+  - GAME_LANGUAGE=${GAME_LANGUAGE:-de}
 
 x-backend-common: &backend-common
   build:
@@ -89,7 +91,7 @@ services:
           - backend
     labels:
       <<: *traefik-labels
-      traefik.http.routers.endlessh-game.rule: "Host(`endlessh.cronwolf.de`)"
+      traefik.http.routers.endlessh-game.rule: "Host(`${GAME_DOMAIN}`)"
       traefik.http.routers.endlessh-game.entrypoints: https
       traefik.http.routers.endlessh-game.tls: "true"
       traefik.http.routers.endlessh-game.tls.certresolver: netcup

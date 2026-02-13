@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load game_tags %}
 
-{% block title %}{{ catch.species.name_de }} - {{ GAME_NAME }}{% endblock %}
+{% block title %}{{ catch.species|lang:"name" }} - {{ GAME_NAME }}{% endblock %}
 
 {% block content %}
 <div style="margin-bottom: 1.5rem;">
-    <a href="{% url 'aquarium:aquarium' %}" style="color: var(--color-text-muted); text-decoration: none;">&larr; Aquarium</a>
+    <a href="{% url 'aquarium:dashboard' %}" style="color: var(--color-text-muted); text-decoration: none;">&larr; {{ "Aquarium"|t }}</a>
 </div>
 
 <div class="game-card" style="max-width: 600px;">
@@ -13,20 +13,20 @@
         <span style="font-size: 4rem; color: {{ catch.species.rarity_color }};"
               class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
         <h2 style="font-size: 1.5rem; font-weight: 700; color: {{ catch.species.rarity_color }}; margin-top: 0.5rem;">
-            {{ catch.species.name_de }}
+            {{ catch.species|lang:"name" }}
         </h2>
-        <span class="badge badge-{{ catch.species.rarity }}" style="margin-top: 0.5rem; text-transform: capitalize;">
-            {{ catch.species.rarity }}
+        <span class="badge badge-{{ catch.species.rarity }}" style="margin-top: 0.5rem;">
+            {{ catch.species.rarity|rarity_de }}
         </span>
     </div>
 
     <p style="color: var(--color-text-muted); text-align: center; margin-bottom: 1.5rem;">
-        {{ catch.species.description_de }}
+        {{ catch.species|lang:"description" }}
     </p>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-            <div style="font-size: 0.75rem; color: var(--color-text-muted);">Trap-Zeit</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ "Trap-Zeit"|t }}</div>
             <div style="font-weight: 700; font-size: 1.25rem; color: var(--color-accent);">{{ catch.trapped_seconds|duration_format }}</div>
         </div>
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
@@ -34,19 +34,19 @@
             <div style="font-weight: 700; font-size: 1.25rem; color: var(--color-legendary);">{{ catch.score|score_format }}</div>
         </div>
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-            <div style="font-size: 0.75rem; color: var(--color-text-muted);">IP Hash</div>
-            <div style="font-family: monospace; font-size: 0.8rem; word-break: break-all;">{{ catch.ip_hash|truncatechars:24 }}</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">{% if SHOW_REAL_IP %}{{ "IP-Adresse"|t }}{% else %}IP Hash{% endif %}</div>
+            <div style="font-family: monospace; font-size: 0.8rem; word-break: break-all;">{% if SHOW_REAL_IP %}{{ catch.ip_address }}{% else %}{{ catch.ip_hash|truncatechars:24 }}{% endif %}</div>
         </div>
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-            <div style="font-size: 0.75rem; color: var(--color-text-muted);">Land</div>
-            <div style="font-weight: 600;">{{ catch.country_name|default:catch.country_code|default:"Unbekannt" }}</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ "Land"|t }}</div>
+            <div style="font-weight: 600;">{{ catch.country_code|country_de }}</div>
         </div>
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
             <div style="font-size: 0.75rem; color: var(--color-text-muted);">Server</div>
             <div style="font-weight: 600;">{{ catch.server.name }}</div>
         </div>
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-            <div style="font-size: 0.75rem; color: var(--color-text-muted);">Erstmals gesehen</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ "Erstmals gesehen"|t }}</div>
             <div style="font-weight: 600;">{{ catch.first_seen|date:"d.m.Y H:i" }}</div>
         </div>
     </div>
@@ -54,7 +54,7 @@
 
 {% if same_ip_catches %}
 <h3 style="font-weight: 700; margin: 2rem 0 1rem; color: var(--color-accent);">
-    Andere Fänge von dieser IP
+    {{ "Andere Fänge von dieser IP"|t }}
 </h3>
 <div class="grid-fish">
     {% for other in same_ip_catches %}

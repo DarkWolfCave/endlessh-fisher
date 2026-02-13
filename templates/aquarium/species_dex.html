@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load game_tags %}
 
-{% block title %}Fischlexikon - {{ GAME_NAME }}{% endblock %}
+{% block title %}{{ "Fischlexikon"|t }} - {{ GAME_NAME }}{% endblock %}
 
 {% block content %}
 <div style="margin-bottom: 1.5rem;">
     <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">
-        &#x1F4D6; Fischlexikon
+        &#x1F4D6; {{ "Fischlexikon"|t }}
     </h2>
     <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-top: 0.25rem;">
-        {{ species_list|length }} Arten &middot; Fange sie alle!
+        {{ species_list|length }} {{ "Arten"|t }} &middot; {{ "Fange sie alle!"|t }}
     </p>
 </div>
 
@@ -23,8 +23,8 @@
                 {{ sp.css_class|species_emoji }}
             </span>
             <div style="text-align: right;">
-                <span class="badge badge-{{ sp.rarity }}" style="text-transform: capitalize;">
-                    {{ sp.rarity }}
+                <span class="badge badge-{{ sp.rarity }}">
+                    {{ sp.rarity|rarity_de }}
                 </span>
                 <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.25rem;">
                     #{{ sp.sort_order|stringformat:"02d" }}
@@ -34,41 +34,41 @@
 
         <!-- Name & Description -->
         <h3 style="font-weight: 700; margin-top: 0.75rem; color: {% if sp.catch_count %}{{ sp.rarity_color }}{% else %}var(--color-text-muted){% endif %};">
-            {% if sp.catch_count %}{{ sp.name_de }}{% else %}???{% endif %}
+            {% if sp.catch_count %}{{ sp|lang:"name" }}{% else %}???{% endif %}
         </h3>
         <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.25rem; min-height: 2.4rem;">
-            {% if sp.catch_count %}{{ sp.description_de }}{% else %}Noch nicht entdeckt...{% endif %}
+            {% if sp.catch_count %}{{ sp|lang:"description" }}{% else %}{{ "Noch nicht entdeckt..."|t }}{% endif %}
         </p>
 
         <!-- Trap time range -->
         <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--color-text-muted); background: var(--color-surface-2); padding: 0.35rem 0.5rem; border-radius: 0.25rem;">
             &#x23F1; {{ sp.min_trapped_seconds|duration_format }}{% if sp.max_trapped_seconds %} &ndash; {{ sp.max_trapped_seconds|duration_format }}{% else %}+{% endif %}
-            &middot; {{ sp.points }} Pkt.
+            &middot; {{ sp.points }} {{ "Pkt."|t }}
         </div>
 
         <!-- Stats -->
         {% if sp.catch_count %}
         <div style="margin-top: 0.75rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
             <div>
-                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Gefangen</div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">{{ "Gefangen"|t }}</div>
                 <div style="font-weight: 700; color: var(--color-text);">{{ sp.catch_count }}x</div>
             </div>
             <div>
-                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Rekord</div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">{{ "Rekord"|t }}</div>
                 <div style="font-weight: 700; color: var(--color-accent);">{{ sp.best_trapped|duration_format }}</div>
             </div>
             <div>
-                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Bester Score</div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">{{ "Bester Score"|t }}</div>
                 <div style="font-weight: 700; color: var(--color-legendary);">{{ sp.best_score|score_format }}</div>
             </div>
             <div>
-                <div style="font-size: 0.7rem; color: var(--color-text-muted);">Erstfang</div>
+                <div style="font-size: 0.7rem; color: var(--color-text-muted);">{{ "Erstfang"|t }}</div>
                 <div style="font-weight: 700; color: var(--color-text);">{{ sp.first_caught|date:"d.m.Y" }}</div>
             </div>
         </div>
         {% else %}
         <div style="margin-top: 0.75rem; text-align: center; padding: 1rem 0; color: var(--color-text-muted); font-size: 0.875rem;">
-            &#x1F512; Noch nicht entdeckt
+            &#x1F512; {{ "Noch nicht entdeckt"|t }}
         </div>
         {% endif %}
     </div>

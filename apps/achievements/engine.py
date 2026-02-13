@@ -5,7 +5,9 @@ import logging
 from django.db.models import Count, Max, Sum
 from django.utils import timezone
 
-from apps.aquarium.models import CaughtBot, CountryStats, Server
+from apps.aquarium.models import (
+    CaughtBot, CollectedTreasure, CountryStats, DailyChallenge, Server,
+)
 
 from .models import Achievement, UnlockedAchievement
 
@@ -56,6 +58,15 @@ def _get_current_stats() -> dict:
         DailyStats.objects.aggregate(m=Max("new_catches"))["m"] or 0
     )
 
+    # Treasure & challenge stats
+    total_treasures = CollectedTreasure.objects.count()
+    unique_treasure_types = (
+        CollectedTreasure.objects.values("treasure_type").distinct().count()
+    )
+    challenges_completed = DailyChallenge.objects.filter(
+        is_completed=True
+    ).count()
+
     return {
         "total_catches": total_catches,
         "total_trapped_seconds": total_trapped,
@@ -67,6 +78,9 @@ def _get_current_stats() -> dict:
         "daily_catches": daily_best,
         "server_catches": server_catches,
         "min_server_catches": min_server,
+        "total_treasures": total_treasures,
+        "unique_treasure_types": unique_treasure_types,
+        "challenges_completed": challenges_completed,
     }
 
 

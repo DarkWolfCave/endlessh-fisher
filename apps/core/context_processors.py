@@ -27,6 +27,8 @@ def game_context(request):
         "GAME_NAME": "Endlessh Fisher",
         "GAME_VERSION": "1.0.0",
         "DEBUG": settings.DEBUG,
+        "SHOW_REAL_IP": settings.SHOW_REAL_IP,
+        "GAME_LANGUAGE": settings.GAME_LANGUAGE,
         "ticker_catches": ticker_catches,
         **stats,
     }

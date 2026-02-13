@@ -6,7 +6,7 @@
 {% block content %}
 <!-- Live Pond (main feature, HTMX polling every 15s) -->
 <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
-    &#x1F30A; Live-Teich &mdash; Aktuell gefangene Bots
+    &#x1F30A; {{ "Live-Teich"|t }} &mdash; {{ "Aktuell gefangene Bots"|t }}
 </h2>
 <div class="live-pond-container" style="margin-bottom: 2rem;"
      id="live-pond-container"
@@ -16,9 +16,21 @@
     {% include "components/live_pond.html" %}
 </div>
 
+<!-- Daily Challenges (HTMX polling every 60s) -->
+<h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
+    &#x1F3AF; {{ "Tägliche Herausforderungen"|t }}
+</h2>
+<div class="game-card" style="margin-bottom: 2rem; padding: 1rem 1.5rem;"
+     id="daily-challenges-container"
+     hx-get="{% url 'htmx:daily-challenges' %}"
+     hx-trigger="every 60s, challenges-updated from:body"
+     hx-swap="innerHTML">
+    {% include "components/daily_challenges.html" %}
+</div>
+
 <!-- Server Ponds -->
 <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
-    &#x1F3A3; Angelteiche
+    &#x1F3A3; {{ "Angelteiche"|t }}
 </h2>
 <div class="grid-ponds" style="margin-bottom: 2rem;">
     {% for server in servers %}
@@ -31,7 +43,7 @@
     <!-- Activity Feed -->
     <div class="game-card">
         <h3 style="font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
-            &#x1F4E1; Live-Fänge
+            &#x1F4E1; {{ "Live-Fänge"|t }}
         </h3>
         <div hx-get="{% url 'htmx:activity-feed' %}"
              hx-trigger="every 15s"
@@ -43,27 +55,27 @@
     <!-- Quick Stats -->
     <div class="game-card">
         <h3 style="font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
-            &#x1F4CA; Statistiken
+            &#x1F4CA; {{ "Statistiken"|t }}
         </h3>
         <div style="display: grid; gap: 1rem;">
             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-                <span style="color: var(--color-text-muted);">Gesamt-Fänge</span>
+                <span style="color: var(--color-text-muted);">{{ "Gesamt-Fänge"|t }}</span>
                 <span style="font-weight: 700; color: var(--color-accent);">{{ total_catches|score_format }}</span>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-                <span style="color: var(--color-text-muted);">Aktuell in Falle</span>
+                <span style="color: var(--color-text-muted);">{{ "Aktuell in Falle"|t }}</span>
                 <span style="font-weight: 700; color: var(--color-uncommon);">{{ active_traps }}</span>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-                <span style="color: var(--color-text-muted);">Verschwendete Zeit</span>
+                <span style="color: var(--color-text-muted);">{{ "Verschwendete Zeit"|t }}</span>
                 <span style="font-weight: 700; color: var(--color-epic);">{{ total_trapped_seconds|duration_format }}</span>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-                <span style="color: var(--color-text-muted);">Verschiedene Länder</span>
+                <span style="color: var(--color-text-muted);">{{ "Verschiedene Länder"|t }}</span>
                 <span style="font-weight: 700; color: var(--color-rare);">{{ total_countries }}</span>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
-                <span style="color: var(--color-text-muted);">Gesamt-Score</span>
+                <span style="color: var(--color-text-muted);">{{ "Gesamt-Score"|t }}</span>
                 <span style="font-weight: 700; color: var(--color-legendary);">{{ total_score|score_format }}</span>
             </div>
         </div>

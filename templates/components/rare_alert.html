@@ -23,12 +23,12 @@
                 <div class="rare-alert-info">
                     <span class="rare-alert-label"
                           :style="'color: ' + alert.rarity_color">
-                        <span x-text="alert.rarity.toUpperCase()"></span> FANG!
+                        <span x-text="alert.rarity.toUpperCase()"></span> {{ "FANG!"|t }}
                     </span>
                     <span class="rare-alert-species" x-text="alert.species_name"
                           :style="'color: ' + alert.rarity_color"></span>
                     <span class="rare-alert-meta">
-                        auf <span x-text="alert.server_name"></span>
+                        {{ "auf"|t }} <span x-text="alert.server_name"></span>
                         &middot;
                         <span x-text="alert.trapped_seconds > 86400
                             ? (alert.trapped_seconds/86400).toFixed(1) + 'd'

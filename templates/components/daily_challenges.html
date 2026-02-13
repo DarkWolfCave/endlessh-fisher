@@ -1,0 +1,30 @@
+{% load game_tags %}
+<div class="daily-challenges-inner">
+    {% if challenges %}
+    {% for challenge in challenges %}
+    <div class="challenge-item {% if challenge.is_completed %}challenge-completed{% endif %} challenge-{{ challenge.difficulty }}">
+        <div class="challenge-header">
+            <span class="challenge-emoji">{{ challenge.emoji }}</span>
+            <span class="challenge-desc">{{ challenge|lang:"description" }}</span>
+            <span class="challenge-reward">+{{ challenge.reward_points }}</span>
+        </div>
+        <div class="challenge-progress-bar">
+            <div class="challenge-progress-fill challenge-fill-{{ challenge.difficulty }}"
+                 style="width: {{ challenge.progress_percent }}%;"></div>
+        </div>
+        <div class="challenge-progress-text">
+            {% if challenge.is_completed %}
+                <span style="color: var(--color-uncommon);">&#x2714; {{ "Abgeschlossen!"|t }}</span>
+            {% else %}
+                {{ challenge.current_value|floatformat:0 }} / {{ challenge.threshold }}
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="challenge-empty">
+        <span>&#x1F3AF;</span>
+        <p>{{ "Keine Herausforderungen heute. Morgen gibt es neue!"|t }}</p>
+    </div>
+    {% endif %}
+</div>

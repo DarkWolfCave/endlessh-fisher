@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" class="dark">
+<html lang="{{ GAME_LANGUAGE|default:'de' }}" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -540,9 +540,405 @@
         .alert-leave { transition: all 0.3s ease-in; }
         .alert-leave-start { opacity: 1; transform: translateX(0); }
         .alert-leave-end { opacity: 0; transform: translateX(100px); }
+
+        /* ========================================
+           POND TREASURES
+           ======================================== */
+        .pond-treasure {
+            position: absolute;
+            cursor: pointer;
+            user-select: none;
+            z-index: 4;
+            transition: transform 0.2s, filter 0.2s;
+            animation: treasure-bob 3s ease-in-out infinite;
+        }
+        .pond-treasure:hover {
+            transform: scale(1.3);
+            filter: brightness(1.5);
+            z-index: 10;
+        }
+        .treasure-body {
+            display: inline-block;
+            font-size: 1.6rem;
+        }
+        .treasure-sparkle {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: treasure-sparkle 2s ease-in-out infinite;
+        }
+        .treasure-common .treasure-sparkle {
+            box-shadow: 0 0 8px rgba(156, 163, 175, 0.4);
+        }
+        .treasure-uncommon .treasure-sparkle {
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+        }
+        .treasure-rare .treasure-sparkle {
+            box-shadow: 0 0 14px rgba(96, 165, 250, 0.6);
+        }
+        .treasure-epic .treasure-sparkle {
+            box-shadow: 0 0 18px rgba(167, 139, 250, 0.6);
+            animation: treasure-sparkle-epic 1.5s ease-in-out infinite;
+        }
+        .treasure-legendary .treasure-sparkle {
+            box-shadow: 0 0 24px rgba(251, 191, 36, 0.7);
+            animation: treasure-sparkle-legendary 1s ease-in-out infinite;
+        }
+        @keyframes treasure-bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes treasure-sparkle {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        @keyframes treasure-sparkle-epic {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        @keyframes treasure-sparkle-legendary {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+        .treasure-collected {
+            animation: treasure-collect 0.8s ease-out forwards !important;
+            pointer-events: none;
+        }
+        @keyframes treasure-collect {
+            0% { transform: scale(1); opacity: 1; }
+            40% { transform: scale(1.5); opacity: 1; }
+            100% { transform: scale(0) translateY(-60px); opacity: 0; }
+        }
+        .treasure-toast {
+            position: fixed;
+            bottom: 3.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 120;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+            animation: toast-slide-up 0.4s ease-out;
+        }
+        .treasure-toast-leave {
+            animation: toast-slide-down 0.4s ease-in forwards;
+        }
+        .treasure-toast-emoji { font-size: 1.8rem; }
+        .treasure-toast-info { display: flex; flex-direction: column; gap: 0.1rem; }
+        .treasure-toast-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; }
+        .treasure-toast-name { font-size: 1rem; font-weight: 700; color: var(--color-text); }
+        .treasure-toast-points { font-size: 0.8rem; color: var(--color-accent); font-weight: 700; }
+        @keyframes toast-slide-up {
+            from { transform: translateX(-50%) translateY(40px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        @keyframes toast-slide-down {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(40px); opacity: 0; }
+        }
+
+        /* ========================================
+           DAILY CHALLENGES
+           ======================================== */
+        .challenge-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--color-surface-2);
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--color-border);
+            transition: border-color 0.3s;
+        }
+        .challenge-item:last-child { margin-bottom: 0; }
+        .challenge-easy { border-left-color: var(--color-uncommon); }
+        .challenge-medium { border-left-color: var(--color-rare); }
+        .challenge-hard { border-left-color: var(--color-epic); }
+        .challenge-completed {
+            opacity: 0.7;
+            border-left-color: var(--color-uncommon) !important;
+        }
+        .challenge-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .challenge-emoji { font-size: 1.2rem; }
+        .challenge-desc {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        .challenge-reward {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-legendary);
+            background: rgba(251, 191, 36, 0.1);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .challenge-progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .challenge-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .challenge-fill-easy { background: var(--color-uncommon); }
+        .challenge-fill-medium { background: var(--color-rare); }
+        .challenge-fill-hard { background: var(--color-epic); }
+        .challenge-progress-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+        .challenge-empty {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-muted);
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        /* ========================================
+           SECURITY TIP MODAL
+           ======================================== */
+        .tip-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modal-fade-in 0.3s ease-out;
+            padding: 1rem;
+        }
+        @keyframes modal-fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .tip-modal {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+            animation: modal-scale-in 0.3s ease-out;
+            overflow: hidden;
+        }
+        @keyframes modal-scale-in {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .tip-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: var(--color-surface-2);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .tip-modal-treasure {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .tip-modal-emoji { font-size: 2rem; }
+        .tip-modal-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: block;
+        }
+        .tip-modal-points {
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            font-weight: 700;
+        }
+        .tip-modal-close {
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+        .tip-modal-close:hover { color: var(--color-text); }
+        .tip-modal-body {
+            padding: 1.25rem;
+        }
+        .tip-modal-category {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        .tip-modal-rarity {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .tip-rarity-common { color: var(--color-common); }
+        .tip-rarity-uncommon { color: var(--color-uncommon); }
+        .tip-rarity-rare { color: var(--color-rare); }
+        .tip-rarity-epic { color: var(--color-epic); }
+        .tip-rarity-legendary { color: var(--color-legendary); }
+        .tip-modal-content {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: var(--color-text);
+            margin-bottom: 0.75rem;
+        }
+        .tip-code {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 0.15em 0.45em;
+            color: #7dd3fc;
+            cursor: pointer;
+            transition: all 0.2s;
+            word-break: break-all;
+        }
+        .tip-code:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(125, 211, 252, 0.3);
+        }
+        .tip-code-copied {
+            background: rgba(34, 197, 94, 0.2) !important;
+            border-color: rgba(34, 197, 94, 0.4) !important;
+            color: #4ade80 !important;
+        }
+        .tip-code-copied::after {
+            content: ' \2713';
+            font-size: 0.75em;
+        }
+        .tip-modal-source {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--color-accent);
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        .tip-modal-source:hover { opacity: 1; text-decoration: underline; }
+        .tip-modal-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .tip-modal-btn:hover { background: #2563eb; }
+
+        /* ========================================
+           SCHATZKAMMER PAGE
+           ======================================== */
+        .vault-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+        .vault-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .vault-card:hover { border-color: var(--color-accent); }
+        .vault-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--color-surface-2);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .vault-card-emoji { font-size: 1.5rem; }
+        .vault-card-name { font-weight: 700; font-size: 0.95rem; }
+        .vault-card-date {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+        .vault-card-body { padding: 1rem; }
+        .vault-tip-title {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .vault-tip-content {
+            font-size: 0.85rem;
+            line-height: 1.55;
+            color: var(--color-text-muted);
+        }
+        .vault-tip-source {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+        .vault-tip-source:hover { text-decoration: underline; }
+        .vault-empty {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-text-muted);
+        }
+        .vault-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .vault-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .vault-stat {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .vault-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+        .vault-stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
     </style>
 </head>
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <script>window.GAME_LANG = '{{ GAME_LANGUAGE|default:"de" }}';</script>
     <!-- Header -->
     <header style="background: var(--color-surface); border-bottom: 1px solid var(--color-border); padding: 1rem 0;">
         <div class="container flex-between">
@@ -550,11 +946,13 @@
                 <span style="font-size: 1.5rem;">&#x1F3A3;</span>
                 <h1 style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">Endlessh Fisher</h1>
             </div>
+            {% load game_tags %}
             <nav style="display: flex; gap: 0.25rem;">
                 <a href="{% url 'aquarium:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a>
-                <a href="{% url 'aquarium:species-dex' %}" class="nav-link {% if request.resolver_match.url_name == 'species-dex' %}active{% endif %}">Fischlexikon</a>
-                <a href="{% url 'aquarium:bestenliste' %}" class="nav-link {% if request.resolver_match.url_name == 'bestenliste' %}active{% endif %}">Bestenliste</a>
-                <a href="{% url 'aquarium:world-map' %}" class="nav-link {% if request.resolver_match.url_name == 'world-map' %}active{% endif %}">Weltkarte</a>
+                <a href="{% url 'aquarium:species-dex' %}" class="nav-link {% if request.resolver_match.url_name == 'species-dex' %}active{% endif %}">{{ "Fischlexikon"|t }}</a>
+                <a href="{% url 'aquarium:bestenliste' %}" class="nav-link {% if request.resolver_match.url_name == 'bestenliste' %}active{% endif %}">{{ "Bestenliste"|t }}</a>
+                <a href="{% url 'aquarium:schatzkammer' %}" class="nav-link {% if request.resolver_match.url_name == 'schatzkammer' %}active{% endif %}">{{ "Schatzkammer"|t }}</a>
+                <a href="{% url 'aquarium:world-map' %}" class="nav-link {% if request.resolver_match.url_name == 'world-map' %}active{% endif %}">{{ "Weltkarte"|t }}</a>
                 <a href="{% url 'achievements:gallery' %}" class="nav-link {% if 'achievements' in request.resolver_match.app_name %}active{% endif %}">Achievements</a>
             </nav>
         </div>

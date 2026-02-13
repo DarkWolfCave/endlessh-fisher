@@ -5,20 +5,20 @@
             <span style="font-size: 2rem; color: {{ catch.species.rarity_color }};"
                   class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
         </div>
-        <span class="badge badge-{{ catch.species.rarity|default:'common' }}" style="text-transform: capitalize;">
-            {{ catch.species.rarity }}
+        <span class="badge badge-{{ catch.species.rarity|default:'common' }}">
+            {{ catch.species.rarity|rarity_de }}
         </span>
     </div>
     <h3 style="font-weight: 700; margin-top: 0.5rem; color: {{ catch.species.rarity_color }};">
-        {{ catch.species.name_de }}
+        {{ catch.species|lang:"name" }}
     </h3>
     <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--color-text-muted);">
-        <div>{{ catch.ip_hash|truncatechars:16 }}</div>
-        <div>{{ catch.country_name|default:catch.country_code }} &middot; {{ catch.server.name }}</div>
+        <div style="font-family: monospace;">{% if SHOW_REAL_IP %}{{ catch.ip_address }}{% else %}{{ catch.ip_hash|truncatechars:16 }}{% endif %}</div>
+        <div>{{ catch.country_code|country_de }} &middot; {{ catch.server.name }}</div>
     </div>
     <div style="margin-top: 0.75rem; display: flex; justify-content: space-between;">
         <div>
-            <div style="font-size: 0.75rem; color: var(--color-text-muted);">Trap-Zeit</div>
+            <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ "Trap-Zeit"|t }}</div>
             <div style="font-weight: 700; color: var(--color-accent);">{{ catch.trapped_seconds|duration_format }}</div>
         </div>
         <div style="text-align: right;">
