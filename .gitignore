@@ -16,6 +16,9 @@ static-collected/
 *.env.local
 servers.toml
 
+# Claude Code (user-specific)
+CLAUDE.md
+
 # IDE
 .vscode/
 .idea/

@@ -1,5 +1,8 @@
 # Endlessh Game - Production Docker Compose
-# Blue-Green Deployment with Traefik
+#
+# This example uses Traefik as reverse proxy with Blue-Green deployment.
+# If you use a different reverse proxy (Nginx, Caddy, etc.), remove
+# the Traefik labels and expose port 8000 on the backend service instead.
 
 x-traefik-labels: &traefik-labels
   traefik.enable: "true"
@@ -9,7 +12,7 @@ x-backend-env: &backend-env
   - DJANGO_SETTINGS_MODULE=config.settings.production
   - SECRET_KEY=${SECRET_KEY}
   - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-  - ADMIN_URL=${ADMIN_URL:-secret-admin/}
+  - ADMIN_URL=${ADMIN_URL}
   - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
   - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -95,7 +98,7 @@ services:
       traefik.http.routers.endlessh-game.rule: "Host(`${GAME_DOMAIN}`)"
       traefik.http.routers.endlessh-game.entrypoints: https
       traefik.http.routers.endlessh-game.tls: "true"
-      traefik.http.routers.endlessh-game.tls.certresolver: netcup
+      traefik.http.routers.endlessh-game.tls.certresolver: ${CERT_RESOLVER:-letsencrypt}
       traefik.http.routers.endlessh-game.service: endlessh-game
       traefik.http.services.endlessh-game.loadbalancer.server.port: "8000"
       traefik.http.services.endlessh-game.loadbalancer.healthcheck.path: /api/v1/health/
