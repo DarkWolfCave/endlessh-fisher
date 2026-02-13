@@ -7,6 +7,11 @@ rarities, achievements, and a live aquarium dashboard.
 
 ![Dashboard Screenshot](docs/screenshots/dashboard.png)
 
+> **Note:** Endlessh Fisher is a gamification and visualization layer — it does
+> not provide any security functionality on its own. All the actual trapping is
+> done by [endlessh-go](https://github.com/shizunge/endlessh-go). This project
+> simply reads that data and turns it into a fishing game for your entertainment.
+
 ## Features
 
 - **Live Aquarium Dashboard** — Watch trapped bots swim as fish in real-time,
