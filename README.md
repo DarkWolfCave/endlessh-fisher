@@ -15,8 +15,8 @@ rarities, achievements, and a live aquarium dashboard.
 ## Features
 
 - **Live Aquarium Dashboard** — Watch trapped bots swim as fish in real-time,
-  with species determined by how long they stay trapped (10 seconds = Sardine,
-  30 days = Leviathan)
+  with species determined by how long they stay trapped (30 seconds = Sardine,
+  14 days = Leviathan)
 - **12 Fish Species** — From common Plankton to mythic Leviathan, each with
   unique rarity tiers and point values
 - **Multi-Server Support** — Monitor multiple endlessh instances as separate
@@ -149,18 +149,18 @@ endlessh-go → InfluxDB → [Celery Sync every 5min] → PostgreSQL → Django/
 
 | Species | Trap Duration | Rarity |
 |---------|--------------|--------|
-| Plankton | 0 – 10s | Common |
-| Sardine | 10s – 1min | Common |
-| Anchovy | 1 – 5min | Common |
-| Trout | 5 – 15min | Uncommon |
-| Pike | 15 – 30min | Uncommon |
-| Salmon | 30min – 1h | Rare |
-| Tuna | 1 – 4h | Rare |
-| Swordfish | 4 – 12h | Epic |
-| Marlin | 12h – 1d | Epic |
-| Whale Shark | 1 – 7d | Legendary |
-| Kraken | 7 – 30d | Legendary |
-| Leviathan | 30d+ | Mythic |
+| Plankton | 0 – 30s | Common |
+| Sardine | 30s – 2min | Common |
+| Anchovy | 2 – 10min | Common |
+| Trout | 10 – 30min | Uncommon |
+| Pike | 30min – 1h | Uncommon |
+| Salmon | 1 – 4h | Rare |
+| Tuna | 4 – 12h | Rare |
+| Swordfish | 12h – 1d | Epic |
+| Marlin | 1 – 3d | Epic |
+| Whale Shark | 3 – 7d | Legendary |
+| Kraken | 7 – 14d | Legendary |
+| Leviathan | 14d+ | Mythic |
 
 ## Tech Stack
 

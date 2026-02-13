@@ -16,7 +16,7 @@ Initial public release.
 
 ### Game Systems
 
-- **12 Fish Species** from Plankton (0-10s) to Leviathan (30d+) across
+- **12 Fish Species** from Plankton (0-30s) to Leviathan (14d+) across
   6 rarity tiers (common, uncommon, rare, epic, legendary, mythic)
 - **Achievement System** — 50+ achievements across 8 categories
   (bronze to diamond), including secret achievements
