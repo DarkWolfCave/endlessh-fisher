@@ -114,6 +114,20 @@
         </div>
         {% endif %}
 
+        {% if result.abuseipdb.domain %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">Domain</span>
+            <span class="ip-lookup-value">{{ result.abuseipdb.domain }}</span>
+        </div>
+        {% endif %}
+
+        {% if result.abuseipdb.is_whitelisted %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">{{ "Whitelist"|t }}</span>
+            <span class="ip-lookup-value" style="color: var(--color-uncommon);">{{ "Ja"|t }}</span>
+        </div>
+        {% endif %}
+
         {% if result.abuseipdb.is_tor %}
         <div class="ip-lookup-row">
             <span class="ip-lookup-label">{{ "Tor-Exit-Node"|t }}</span>
@@ -124,7 +138,7 @@
         {% if result.abuseipdb.last_reported %}
         <div class="ip-lookup-row">
             <span class="ip-lookup-label">{{ "Zuletzt gemeldet"|t }}</span>
-            <span class="ip-lookup-value">{{ result.abuseipdb.last_reported|truncatechars:10 }}</span>
+            <span class="ip-lookup-value">{{ result.abuseipdb.last_reported|slice:":10" }}</span>
         </div>
         {% endif %}
     </div>

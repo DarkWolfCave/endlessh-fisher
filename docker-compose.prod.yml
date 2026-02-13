@@ -23,6 +23,7 @@ x-backend-env: &backend-env
   - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
   - SHOW_REAL_IP=${SHOW_REAL_IP:-false}
   - GAME_LANGUAGE=${GAME_LANGUAGE:-de}
+  - ABUSEIPDB_API_KEY=${ABUSEIPDB_API_KEY:-}
 
 x-backend-common: &backend-common
   build:

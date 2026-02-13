@@ -12,7 +12,7 @@ from django.core.cache import cache
 logger = logging.getLogger(__name__)
 
 _CACHE_PREFIX = "endlessh:ip_lookup:"
-_CACHE_TTL = 3600  # 1 hour
+_CACHE_TTL = 21600  # 6 hours
 
 # Ports commonly associated with dangerous/exploitable services
 _DANGEROUS_PORTS = {
@@ -119,8 +119,14 @@ def lookup_ip(ip_address: str) -> dict:
     cache_key = f"{_CACHE_PREFIX}{ip_address}"
     cached = cache.get(cache_key)
     if cached:
-        cached["cached"] = True
-        return cached
+        # Invalidate cache if AbuseIPDB key was added after caching
+        abuse_stale = (
+            cached.get("abuseipdb", {}).get("reason") == "no_key"
+            and getattr(settings, "ABUSEIPDB_API_KEY", "")
+        )
+        if not abuse_stale:
+            cached["cached"] = True
+            return cached
 
     result = {
         "ip": ip_address,
