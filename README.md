@@ -45,8 +45,8 @@ rarities, achievements, and a live aquarium dashboard.
 
 ```bash
 # Clone the repository
-git clone https://github.com/DarkWolfCave/endlessh-game.git
-cd endlessh-game
+git clone https://github.com/DarkWolfCave/endlessh-fisher.git
+cd endlessh-fisher
 
 # Configure environment
 cp .env.example .env

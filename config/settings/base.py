@@ -1,5 +1,5 @@
 """
-Base settings for Endlessh Game project.
+Base settings for Endlessh Fisher project.
 Shared between development and production.
 """
 
@@ -69,8 +69,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "endlessh_game"),
-        "USER": os.environ.get("POSTGRES_USER", "endlessh_game"),
+        "NAME": os.environ.get("POSTGRES_DB", "endlessh_fisher"),
+        "USER": os.environ.get("POSTGRES_USER", "endlessh_fisher"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
         "HOST": os.environ.get("POSTGRES_HOST", "postgres"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),

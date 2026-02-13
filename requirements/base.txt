@@ -1,4 +1,4 @@
-# Endlessh Game - Base Dependencies
+# Endlessh Fisher - Base Dependencies
 
 # Core Framework
 Django==6.0.2

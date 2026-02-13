@@ -1,5 +1,5 @@
 """
-Celery App Configuration for Endlessh Game.
+Celery App Configuration for Endlessh Fisher.
 
 Scheduled Tasks:
 - Every 5 min:  Sync bot data from InfluxDB
@@ -15,7 +15,7 @@ from celery.schedules import crontab
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
 
-app = Celery("endlessh_game")
+app = Celery("endlessh_fisher")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks(["apps.collector"])
 

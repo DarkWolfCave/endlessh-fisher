@@ -1,4 +1,4 @@
-"""WSGI config for Endlessh Game project."""
+"""WSGI config for Endlessh Fisher project."""
 
 import os
 

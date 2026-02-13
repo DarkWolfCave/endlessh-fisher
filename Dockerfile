@@ -1,4 +1,4 @@
-# Endlessh Game - Multi-Stage Dockerfile
+# Endlessh Fisher - Multi-Stage Dockerfile
 
 # Stage 1: Build Dependencies
 FROM python:3.14-slim AS builder

@@ -1,4 +1,4 @@
-"""Base models for Endlessh Game."""
+"""Base models for Endlessh Fisher."""
 
 from django.db import models
 

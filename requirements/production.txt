@@ -1,4 +1,4 @@
-# Endlessh Game - Production Dependencies
+# Endlessh Fisher - Production Dependencies
 
 -r base.txt
 

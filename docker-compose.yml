@@ -1,27 +1,27 @@
-# Endlessh Game - Development Docker Compose
+# Endlessh Fisher - Development Docker Compose
 
 services:
   postgres:
     image: postgres:18-alpine
-    container_name: endlessh_game_postgres
+    container_name: endlessh_fisher_postgres
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-      - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+      - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+      - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-devpassword}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_game}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_fisher}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:8.6-alpine
-    container_name: endlessh_game_redis
+    container_name: endlessh_fisher_redis
     restart: unless-stopped
     command: redis-server --appendonly yes
     volumes:
@@ -39,13 +39,13 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: endlessh_game_backend
+    container_name: endlessh_fisher_backend
     restart: unless-stopped
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - SECRET_KEY=dev-secret-key-not-for-production
-      - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-      - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+      - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+      - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-devpassword}
       - POSTGRES_HOST=postgres
       - REDIS_URL=redis://redis:6379/1
@@ -74,14 +74,14 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: endlessh_game_celery_worker
+    container_name: endlessh_fisher_celery_worker
     restart: unless-stopped
     command: celery -A config worker -l info --concurrency=2
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - SECRET_KEY=dev-secret-key-not-for-production
-      - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-      - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+      - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+      - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-devpassword}
       - POSTGRES_HOST=postgres
       - REDIS_URL=redis://redis:6379/1
@@ -113,14 +113,14 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: endlessh_game_celery_beat
+    container_name: endlessh_fisher_celery_beat
     restart: unless-stopped
     command: celery -A config beat -l info --schedule=/tmp/celerybeat-schedule
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - SECRET_KEY=dev-secret-key-not-for-production
-      - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-      - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+      - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+      - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-devpassword}
       - POSTGRES_HOST=postgres
       - REDIS_URL=redis://redis:6379/1

@@ -1,5 +1,5 @@
 """
-Production settings for Endlessh Game project.
+Production settings for Endlessh Fisher project.
 """
 
 import os

@@ -1,4 +1,4 @@
-"""Custom template tags for Endlessh Game."""
+"""Custom template tags for Endlessh Fisher."""
 
 import re
 

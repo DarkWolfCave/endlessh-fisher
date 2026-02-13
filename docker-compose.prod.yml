@@ -1,4 +1,4 @@
-# Endlessh Game - Production Docker Compose
+# Endlessh Fisher - Production Docker Compose
 #
 # Simple production setup — exposes port 8000.
 # Put your own reverse proxy (Nginx, Caddy, Traefik, etc.) in front.
@@ -10,8 +10,8 @@ x-backend-env: &backend-env
   - SECRET_KEY=${SECRET_KEY}
   - ALLOWED_HOSTS=${ALLOWED_HOSTS}
   - ADMIN_URL=${ADMIN_URL}
-  - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-  - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+  - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+  - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
   - POSTGRES_HOST=postgres
   - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
@@ -41,23 +41,23 @@ x-backend-common: &backend-common
 services:
   postgres:
     image: postgres:18-alpine
-    container_name: endlessh_game_postgres
+    container_name: endlessh_fisher_postgres
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-      - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+      - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+      - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_game}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_fisher}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:8.6-alpine
-    container_name: endlessh_game_redis
+    container_name: endlessh_fisher_redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     volumes:
@@ -70,7 +70,7 @@ services:
 
   backend:
     <<: *backend-common
-    container_name: endlessh_game_backend
+    container_name: endlessh_fisher_backend
     ports:
       - "8000:8000"
     healthcheck:
@@ -82,7 +82,7 @@ services:
 
   celery_worker:
     <<: *backend-common
-    container_name: endlessh_game_celery_worker
+    container_name: endlessh_fisher_celery_worker
     command: celery -A config worker -l info --concurrency=2
     deploy:
       resources:
@@ -95,7 +95,7 @@ services:
 
   celery_beat:
     <<: *backend-common
-    container_name: endlessh_game_celery_beat
+    container_name: endlessh_fisher_celery_beat
     command: celery -A config beat -l info --schedule=/tmp/celerybeat-schedule
     healthcheck:
       disable: true

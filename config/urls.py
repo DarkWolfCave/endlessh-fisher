@@ -1,4 +1,4 @@
-"""URL configuration for Endlessh Game."""
+"""URL configuration for Endlessh Fisher."""
 
 import os
 

@@ -1,4 +1,4 @@
-# Endlessh Game - Production with Traefik & Blue-Green Deployment
+# Endlessh Fisher - Production with Traefik & Blue-Green Deployment
 #
 # Advanced setup for Traefik reverse proxy with zero-downtime deployments.
 # Requires: external "proxy" Docker network with Traefik running.
@@ -14,8 +14,8 @@ x-backend-env: &backend-env
   - SECRET_KEY=${SECRET_KEY}
   - ALLOWED_HOSTS=${ALLOWED_HOSTS}
   - ADMIN_URL=${ADMIN_URL}
-  - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-  - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+  - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+  - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
   - POSTGRES_HOST=postgres
   - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/1
@@ -54,16 +54,16 @@ x-backend-common: &backend-common
 services:
   postgres:
     image: postgres:18-alpine
-    container_name: endlessh_game_postgres
+    container_name: endlessh_fisher_postgres
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-endlessh_game}
-      - POSTGRES_USER=${POSTGRES_USER:-endlessh_game}
+      - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
+      - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_game}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_fisher}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -72,7 +72,7 @@ services:
 
   redis:
     image: redis:8.6-alpine
-    container_name: endlessh_game_redis
+    container_name: endlessh_fisher_redis
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     volumes:
@@ -88,7 +88,7 @@ services:
   # Blue-Green Backend
   backend_blue:
     <<: *backend-common
-    container_name: endlessh_game_blue
+    container_name: endlessh_fisher_blue
     networks:
       proxy:
       endlessh_internal:
@@ -96,25 +96,25 @@ services:
           - backend
     labels:
       <<: *traefik-labels
-      traefik.http.routers.endlessh-game.rule: "Host(`${GAME_DOMAIN}`)"
-      traefik.http.routers.endlessh-game.entrypoints: https
-      traefik.http.routers.endlessh-game.tls: "true"
-      traefik.http.routers.endlessh-game.tls.certresolver: ${CERT_RESOLVER:-letsencrypt}
-      traefik.http.routers.endlessh-game.service: endlessh-game
-      traefik.http.services.endlessh-game.loadbalancer.server.port: "8000"
-      traefik.http.services.endlessh-game.loadbalancer.healthcheck.path: /api/v1/health/
+      traefik.http.routers.endlessh-fisher.rule: "Host(`${GAME_DOMAIN}`)"
+      traefik.http.routers.endlessh-fisher.entrypoints: https
+      traefik.http.routers.endlessh-fisher.tls: "true"
+      traefik.http.routers.endlessh-fisher.tls.certresolver: ${CERT_RESOLVER:-letsencrypt}
+      traefik.http.routers.endlessh-fisher.service: endlessh-fisher
+      traefik.http.services.endlessh-fisher.loadbalancer.server.port: "8000"
+      traefik.http.services.endlessh-fisher.loadbalancer.healthcheck.path: /api/v1/health/
 
   backend_green:
     <<: *backend-common
-    container_name: endlessh_game_green
+    container_name: endlessh_fisher_green
     labels:
       <<: *traefik-labels
-      traefik.http.services.endlessh-game.loadbalancer.server.port: "8000"
-      traefik.http.services.endlessh-game.loadbalancer.healthcheck.path: /api/v1/health/
+      traefik.http.services.endlessh-fisher.loadbalancer.server.port: "8000"
+      traefik.http.services.endlessh-fisher.loadbalancer.healthcheck.path: /api/v1/health/
 
   celery_worker:
     <<: *backend-common
-    container_name: endlessh_game_celery_worker
+    container_name: endlessh_fisher_celery_worker
     command: celery -A config worker -l info --concurrency=2
     deploy:
       resources:
@@ -130,7 +130,7 @@ services:
 
   celery_beat:
     <<: *backend-common
-    container_name: endlessh_game_celery_beat
+    container_name: endlessh_fisher_celery_beat
     command: celery -A config beat -l info --schedule=/tmp/celerybeat-schedule
     labels: {}
     healthcheck:

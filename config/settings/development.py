@@ -1,5 +1,5 @@
 """
-Development settings for Endlessh Game project.
+Development settings for Endlessh Fisher project.
 """
 
 from .base import *  # noqa: F401, F403

@@ -1,4 +1,4 @@
-"""ASGI config for Endlessh Game project."""
+"""ASGI config for Endlessh Fisher project."""
 
 import os
 
