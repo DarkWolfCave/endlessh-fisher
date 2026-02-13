@@ -5,8 +5,7 @@ Turn your SSH tarpit into a fishing game. Endlessh Fisher connects to your
 and transforms trapped SSH bots into collectible fish — complete with species,
 rarities, achievements, and a live aquarium dashboard.
 
-<!-- TODO: Add screenshot -->
-<!-- ![Dashboard Screenshot](docs/screenshots/dashboard.png) -->
+![Dashboard Screenshot](docs/screenshots/dashboard.png)
 
 ## Features
 

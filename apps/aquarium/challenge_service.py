@@ -157,6 +157,7 @@ def get_today_challenges() -> list[dict]:
     return [
         {
             "id": c.id,
+            "description": c.description,
             "description_de": c.description_de,
             "emoji": c.template.emoji,
             "difficulty": c.template.difficulty,
