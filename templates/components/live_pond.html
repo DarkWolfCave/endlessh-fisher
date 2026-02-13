@@ -18,6 +18,14 @@
          data-fish-id="{{ fish.id }}"
          data-trapped="{{ fish.trapped_seconds }}"
          data-last-seen="{{ fish.last_seen }}"
+         data-fish-ip="{{ fish.ip_hash }}"
+         data-fish-species="{{ fish.species_name }}"
+         data-fish-emoji="{{ fish.species_emoji }}"
+         data-fish-country="{{ fish.country|default:"??" }}"
+         data-fish-server="{{ fish.server_name }}"
+         data-fish-rarity="{{ fish.rarity }}"
+         data-fish-rarity-color="{{ fish.rarity_color }}"
+         data-fish-rarity-de="{{ fish.rarity_de }}"
          style="top: {{ fish.pos_top }}%; left: {{ fish.pos_left }}%; color: {{ fish.rarity_color }};">
 
         <!-- Swim wrapper: gets the animation (scaleX + translateX) -->

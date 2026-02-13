@@ -1,8 +1,11 @@
 """HTMX partial views for live-updating dashboard components."""
 
+import ipaddress
 import json
 
-from django.http import JsonResponse
+from django.conf import settings
+from django.core.cache import cache
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render
 from django.utils.html import strip_tags
 from django.views.decorators.http import require_POST
@@ -89,4 +92,48 @@ def daily_challenges(request):
     challenges = get_today_challenges()
     return render(request, "components/daily_challenges.html", {
         "challenges": challenges,
+    })
+
+
+def ip_lookup(request):
+    """IP intelligence lookup — returns HTMX partial or JSON.
+
+    Only available when SHOW_REAL_IP=true.
+    Rate-limited to 10 lookups per minute.
+    """
+    if not settings.SHOW_REAL_IP:
+        return HttpResponseForbidden("IP lookup disabled")
+
+    ip = strip_tags(request.GET.get("ip", ""))[:45]
+    if not ip:
+        return render(request, "components/ip_lookup_result.html", {
+            "error": "missing_ip",
+        })
+
+    # Validate IP format
+    try:
+        ipaddress.ip_address(ip)
+    except ValueError:
+        return render(request, "components/ip_lookup_result.html", {
+            "error": "invalid_ip",
+        })
+
+    # Rate limit: 10 lookups per minute
+    rate_key = "endlessh:ip_lookup_rate"
+    count = cache.get(rate_key, 0)
+    if count >= 10:
+        return render(request, "components/ip_lookup_result.html", {
+            "error": "rate_limited",
+        })
+    cache.set(rate_key, count + 1, 60)
+
+    from .ip_lookup_service import lookup_ip
+    result = lookup_ip(ip)
+
+    # Return JSON if requested (for live pond modal)
+    if request.headers.get("Accept") == "application/json":
+        return JsonResponse(result)
+
+    return render(request, "components/ip_lookup_result.html", {
+        "result": result,
     })

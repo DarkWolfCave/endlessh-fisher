@@ -138,6 +138,9 @@ INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET", "")
 # Game settings
 SHOW_REAL_IP = os.environ.get("SHOW_REAL_IP", "false").lower() in ("true", "1", "yes")
 GAME_LANGUAGE = os.environ.get("GAME_LANGUAGE", "de").lower()  # "de" or "en"
+
+# IP Intelligence — optional AbuseIPDB API key for threat data
+ABUSEIPDB_API_KEY = os.environ.get("ABUSEIPDB_API_KEY", "")
 GAME_SCORE_FORMULA = "species_points + log2(trapped_seconds + 1)"
 GAME_SYNC_INTERVAL_SECONDS = 300  # 5 minutes
 GAME_STATS_AGGREGATE_INTERVAL_SECONDS = 3600  # 1 hour

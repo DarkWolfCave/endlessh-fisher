@@ -14,4 +14,5 @@ urlpatterns = [
     path("rare-alert/", views_htmx.rare_alert, name="rare-alert"),
     path("collect-treasure/", views_htmx.collect_treasure_view, name="collect-treasure"),
     path("daily-challenges/", views_htmx.daily_challenges, name="daily-challenges"),
+    path("ip-lookup/", views_htmx.ip_lookup, name="ip-lookup"),
 ]

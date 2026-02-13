@@ -36,6 +36,14 @@
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
             <div style="font-size: 0.75rem; color: var(--color-text-muted);">{% if SHOW_REAL_IP %}{{ "IP-Adresse"|t }}{% else %}IP Hash{% endif %}</div>
             <div style="font-family: monospace; font-size: 0.8rem; word-break: break-all;">{% if SHOW_REAL_IP %}{{ catch.ip_address }}{% else %}{{ catch.ip_hash|truncatechars:24 }}{% endif %}</div>
+            {% if SHOW_REAL_IP %}
+            <button class="ip-lookup-btn"
+                    hx-get="{% url 'htmx:ip-lookup' %}?ip={{ catch.ip_address }}"
+                    hx-target="#ip-lookup-result"
+                    hx-swap="innerHTML">
+                {{ "IP analysieren"|t }}
+            </button>
+            {% endif %}
         </div>
         <div style="padding: 0.75rem; background: var(--color-surface-2); border-radius: 0.5rem;">
             <div style="font-size: 0.75rem; color: var(--color-text-muted);">{{ "Land"|t }}</div>
@@ -50,6 +58,10 @@
             <div style="font-weight: 600;">{{ catch.first_seen|date:"d.m.Y H:i" }}</div>
         </div>
     </div>
+
+    {% if SHOW_REAL_IP %}
+    <div id="ip-lookup-result" style="margin-top: 1rem;"></div>
+    {% endif %}
 </div>
 
 {% if same_ip_catches %}

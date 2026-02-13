@@ -13,6 +13,11 @@
         'Punkte': 'Points',
         'Klicken zum Kopieren': 'Click to copy',
         'Verstanden': 'Got it',
+        'IP analysieren': 'Analyze IP',
+        'Land': 'Country',
+        'Trap-Zeit': 'Trap Time',
+        'Laden...': 'Loading...',
+        'Fehler beim Laden': 'Failed to load',
     };
     function _t(s) {
         return (window.GAME_LANG === 'en') ? (_jsT[s] || s) : s;
@@ -208,10 +213,112 @@
         document.addEventListener('keydown', escHandler);
     }
 
+    // --- Fish Click → IP Lookup Modal (only when SHOW_REAL_IP) ---
+    // Uses document-level delegation so it survives HTMX pond swaps.
+    var fishClickBound = false;
+    function initFishClick() {
+        if (!window.SHOW_REAL_IP || fishClickBound) return;
+        fishClickBound = true;
+
+        document.addEventListener('click', function(e) {
+            var fishEl = e.target.closest('.pond-fish');
+            if (!fishEl) return;
+            // Don't open modal if user clicked a treasure
+            if (e.target.closest('.pond-treasure')) return;
+            showFishModal(fishEl);
+        });
+    }
+
+    function showFishModal(fishEl) {
+        var ip = fishEl.dataset.fishIp || '';
+        var species = fishEl.dataset.fishSpecies || '';
+        var emoji = fishEl.dataset.fishEmoji || '';
+        var country = fishEl.dataset.fishCountry || '??';
+        var server = fishEl.dataset.fishServer || '';
+        var rarityColor = fishEl.dataset.fishRarityColor || '';
+        var rarityDe = fishEl.dataset.fishRarityDe || '';
+        var trapped = parseFloat(fishEl.dataset.trapped) || 0;
+        var lastSeen = fishEl.dataset.lastSeen;
+
+        // Calculate current trap time
+        var now = Date.now() / 1000;
+        var lastSeenTs = Date.parse(lastSeen) / 1000;
+        var currentTrapped = trapped + Math.max(0, now - (lastSeenTs || now));
+
+        var overlay = document.createElement('div');
+        overlay.className = 'ip-modal-overlay';
+
+        overlay.innerHTML =
+            '<div class="ip-modal">' +
+                '<div class="ip-modal-header">' +
+                    '<div class="ip-modal-fish-info">' +
+                        '<span class="ip-modal-emoji">' + emoji + '</span>' +
+                        '<div>' +
+                            '<span class="ip-modal-species" style="color:' + escapeHtml(rarityColor) + ';">' + escapeHtml(species) + '</span>' +
+                            '<span class="ip-modal-rarity-badge" style="color:' + escapeHtml(rarityColor) + ';">' + escapeHtml(rarityDe) + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<button class="ip-modal-close">&times;</button>' +
+                '</div>' +
+                '<div class="ip-modal-body">' +
+                    '<div class="ip-modal-details">' +
+                        '<div class="ip-modal-row"><span class="ip-modal-label">IP</span><span class="ip-modal-value"><code>' + escapeHtml(ip) + '</code></span></div>' +
+                        '<div class="ip-modal-row"><span class="ip-modal-label">' + _t('Land') + '</span><span class="ip-modal-value">' + escapeHtml(country) + '</span></div>' +
+                        '<div class="ip-modal-row"><span class="ip-modal-label">Server</span><span class="ip-modal-value">' + escapeHtml(server) + '</span></div>' +
+                        '<div class="ip-modal-row"><span class="ip-modal-label">' + _t('Trap-Zeit') + '</span><span class="ip-modal-value">' + formatDuration(currentTrapped) + '</span></div>' +
+                    '</div>' +
+                    '<button class="ip-lookup-btn ip-modal-lookup-btn">' + _t('IP analysieren') + '</button>' +
+                    '<div class="ip-modal-lookup-result"></div>' +
+                '</div>' +
+            '</div>';
+
+        // Close button handler
+        overlay.querySelector('.ip-modal-close').addEventListener('click', function() {
+            overlay.remove();
+        });
+
+        // Lookup button handler
+        var lookupBtn = overlay.querySelector('.ip-modal-lookup-btn');
+        lookupBtn.addEventListener('click', function() {
+            var container = overlay.querySelector('.ip-modal-lookup-result');
+            lookupBtn.disabled = true;
+            lookupBtn.textContent = _t('Laden...');
+
+            fetch('/htmx/ip-lookup/?ip=' + encodeURIComponent(ip))
+                .then(function(resp) { return resp.text(); })
+                .then(function(html) {
+                    container.innerHTML = html;
+                    lookupBtn.style.display = 'none';
+                })
+                .catch(function() {
+                    container.innerHTML = '<div class="ip-lookup-error">' + _t('Fehler beim Laden') + '</div>';
+                    lookupBtn.disabled = false;
+                    lookupBtn.textContent = _t('IP analysieren');
+                });
+        });
+
+        document.body.appendChild(overlay);
+
+        // Close on overlay click (outside modal)
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) overlay.remove();
+        });
+
+        // Close on Escape key
+        var escHandler = function(e) {
+            if (e.key === 'Escape') {
+                overlay.remove();
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+    }
+
     // Initial setup
     document.addEventListener('DOMContentLoaded', function() {
         initFish();
         initTreasures();
+        initFishClick();
         setInterval(updateTimers, 1000);
     });
 

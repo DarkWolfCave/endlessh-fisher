@@ -1,0 +1,138 @@
+{% load game_tags %}
+
+{% if error == "missing_ip" or error == "invalid_ip" %}
+<div class="ip-lookup-error">{{ "Ungültige IP-Adresse"|t }}</div>
+{% elif error == "rate_limited" %}
+<div class="ip-lookup-error">{{ "Zu viele Anfragen — bitte kurz warten"|t }}</div>
+{% elif error == "private_ip" or result.error == "private_ip" %}
+<div class="ip-lookup-error">{{ "Keine Daten für private IPs"|t }}</div>
+{% elif result %}
+
+<div class="ip-lookup-result">
+    <div class="ip-lookup-header">
+        <span class="ip-lookup-title">{{ "IP-Analyse"|t }}: <code>{{ result.ip }}</code></span>
+        {% if result.cached %}<span class="ip-lookup-cached">{{ "Aus Cache"|t }}</span>{% endif %}
+    </div>
+
+    {# --- Shodan InternetDB --- #}
+    {% if result.shodan.available %}
+    <div class="ip-lookup-section">
+        <div class="ip-lookup-section-title">{{ "Offene Ports"|t }} <a class="ip-lookup-source" href="https://www.shodan.io/host/{{ result.ip }}" target="_blank" rel="noopener noreferrer">via Shodan InternetDB &rarr;</a></div>
+        {% if result.shodan.ports %}
+        <div class="ip-lookup-ports">
+            {% for port in result.shodan.ports %}
+            <span class="ip-lookup-port {% if port in result.shodan.dangerous_ports %}ip-port-danger{% endif %}">{{ port }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="ip-lookup-muted">{{ "Keine offenen Ports gefunden"|t }}</div>
+        {% endif %}
+
+        {% if result.shodan.cpes %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">{{ "Dienste"|t }}</span>
+            <span class="ip-lookup-value">
+                {% for cpe in result.shodan.cpes %}{{ cpe }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            </span>
+        </div>
+        {% endif %}
+
+        {% if result.shodan.tags %}
+        <div class="ip-lookup-tags">
+            {% for tag in result.shodan.tags %}
+            <span class="ip-lookup-tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if result.shodan.vulns %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label ip-port-danger">{{ "Schwachstellen"|t }}</span>
+            <span class="ip-lookup-value">
+                {% for vuln in result.shodan.vulns %}
+                <span class="ip-lookup-vuln">{{ vuln }}</span>{% if not forloop.last %} {% endif %}
+                {% endfor %}
+            </span>
+        </div>
+        {% endif %}
+
+        {% if result.shodan.hostnames %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">Hostnames</span>
+            <span class="ip-lookup-value">
+                {% for h in result.shodan.hostnames %}{{ h }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="ip-lookup-section">
+        <div class="ip-lookup-muted">Shodan: {{ "Keine Daten verfügbar"|t }}</div>
+    </div>
+    {% endif %}
+
+    {# --- AbuseIPDB --- #}
+    {% if result.abuseipdb.available %}
+    <div class="ip-lookup-section">
+        <div class="ip-lookup-section-title">{{ "Missbrauchsbewertung"|t }} <a class="ip-lookup-source" href="https://www.abuseipdb.com/check/{{ result.ip }}" target="_blank" rel="noopener noreferrer">via AbuseIPDB &rarr;</a></div>
+
+        <div class="ip-lookup-abuse-score">
+            <div class="ip-lookup-score-bar">
+                <div class="ip-lookup-score-fill
+                    {% if result.abuseipdb.abuse_score >= 75 %}ip-score-high
+                    {% elif result.abuseipdb.abuse_score >= 25 %}ip-score-medium
+                    {% else %}ip-score-low{% endif %}"
+                    style="width: {{ result.abuseipdb.abuse_score }}%;">
+                </div>
+            </div>
+            <span class="ip-lookup-score-value
+                {% if result.abuseipdb.abuse_score >= 75 %}ip-score-high
+                {% elif result.abuseipdb.abuse_score >= 25 %}ip-score-medium
+                {% else %}ip-score-low{% endif %}">
+                {{ result.abuseipdb.abuse_score }}%
+            </span>
+        </div>
+
+        {% if result.abuseipdb.total_reports %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">{{ "Berichte"|t }}</span>
+            <span class="ip-lookup-value">{{ result.abuseipdb.total_reports }} {{ "von Nutzern"|t }}: {{ result.abuseipdb.distinct_users }}</span>
+        </div>
+        {% endif %}
+
+        {% if result.abuseipdb.isp %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">{{ "Anbieter"|t }}</span>
+            <span class="ip-lookup-value">{{ result.abuseipdb.isp }}</span>
+        </div>
+        {% endif %}
+
+        {% if result.abuseipdb.usage_type %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">{{ "Nutzungstyp"|t }}</span>
+            <span class="ip-lookup-value">{{ result.abuseipdb.usage_type }}</span>
+        </div>
+        {% endif %}
+
+        {% if result.abuseipdb.is_tor %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">{{ "Tor-Exit-Node"|t }}</span>
+            <span class="ip-lookup-value ip-port-danger">{{ "Ja"|t }}</span>
+        </div>
+        {% endif %}
+
+        {% if result.abuseipdb.last_reported %}
+        <div class="ip-lookup-row">
+            <span class="ip-lookup-label">{{ "Zuletzt gemeldet"|t }}</span>
+            <span class="ip-lookup-value">{{ result.abuseipdb.last_reported|truncatechars:10 }}</span>
+        </div>
+        {% endif %}
+    </div>
+    {% elif result.abuseipdb.reason == "no_key" %}
+    <div class="ip-lookup-section">
+        <div class="ip-lookup-muted">{{ "AbuseIPDB nicht konfiguriert"|t }}</div>
+    </div>
+    {% endif %}
+</div>
+
+{% endif %}
