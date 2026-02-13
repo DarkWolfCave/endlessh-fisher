@@ -34,7 +34,7 @@ def _is_public_ip(ip_str: str) -> bool:
 
 def _fetch_json(url: str, headers: dict | None = None) -> dict | None:
     """Fetch JSON from URL with timeout. Returns None on any error."""
-    all_headers = {"User-Agent": "EndlesshGame/1.0"}
+    all_headers = {"User-Agent": "EndlesshFisher/1.0"}
     if headers:
         all_headers.update(headers)
     req = urllib.request.Request(url, headers=all_headers)
