@@ -6,7 +6,8 @@ from django.db.models import Count, Max, Sum
 from django.utils import timezone
 
 from apps.aquarium.models import (
-    CaughtBot, CollectedTreasure, CountryStats, DailyChallenge, Server,
+    CaughtBot, CollectedTreasure, CountryStats, DailyChallenge, IPLookupLog,
+    Server,
 )
 
 from .models import Achievement, UnlockedAchievement
@@ -67,6 +68,13 @@ def _get_current_stats() -> dict:
         is_completed=True
     ).count()
 
+    # IP lookup stats
+    ip_lookups_total = IPLookupLog.objects.count()
+    ip_lookups_high_abuse = IPLookupLog.objects.filter(abuse_score__gte=90).count()
+    ip_lookups_tor = IPLookupLog.objects.filter(is_tor=True).count()
+    ip_lookups_dangerous_ports = IPLookupLog.objects.filter(has_dangerous_ports=True).count()
+    ip_lookups_vulns = IPLookupLog.objects.filter(has_vulns=True).count()
+
     return {
         "total_catches": total_catches,
         "total_trapped_seconds": total_trapped,
@@ -81,6 +89,11 @@ def _get_current_stats() -> dict:
         "total_treasures": total_treasures,
         "unique_treasure_types": unique_treasure_types,
         "challenges_completed": challenges_completed,
+        "ip_lookups_total": ip_lookups_total,
+        "ip_lookups_high_abuse": ip_lookups_high_abuse,
+        "ip_lookups_tor": ip_lookups_tor,
+        "ip_lookups_dangerous_ports": ip_lookups_dangerous_ports,
+        "ip_lookups_vulns": ip_lookups_vulns,
     }
 
 

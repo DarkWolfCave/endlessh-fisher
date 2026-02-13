@@ -130,6 +130,10 @@ def ip_lookup(request):
     from .ip_lookup_service import lookup_ip
     result = lookup_ip(ip)
 
+    # Log lookup for achievement tracking (only for public IPs with data)
+    if not result.get("error"):
+        _log_ip_lookup(result)
+
     # Return JSON if requested (for live pond modal)
     if request.headers.get("Accept") == "application/json":
         return JsonResponse(result)
@@ -137,3 +141,21 @@ def ip_lookup(request):
     return render(request, "components/ip_lookup_result.html", {
         "result": result,
     })
+
+
+def _log_ip_lookup(result: dict) -> None:
+    """Log IP lookup result for achievement evaluation."""
+    from .models import IPLookupLog
+
+    shodan = result.get("shodan", {})
+    abuse = result.get("abuseipdb", {})
+
+    IPLookupLog.objects.update_or_create(
+        ip_address=result["ip"],
+        defaults={
+            "abuse_score": abuse.get("abuse_score", 0) if abuse.get("available") else 0,
+            "is_tor": abuse.get("is_tor", False) if abuse.get("available") else False,
+            "has_vulns": bool(shodan.get("vulns")) if shodan.get("available") else False,
+            "has_dangerous_ports": bool(shodan.get("dangerous_ports")) if shodan.get("available") else False,
+        },
+    )

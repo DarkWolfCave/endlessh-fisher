@@ -39,6 +39,11 @@ class Achievement(TimeStampedModel):
         ("total_treasures", "Total Treasures Collected"),
         ("unique_treasure_types", "Unique Treasure Types Collected"),
         ("challenges_completed", "Total Challenges Completed"),
+        ("ip_lookups_total", "Unique IP Lookups"),
+        ("ip_lookups_high_abuse", "IPs with Abuse Score >= 90%"),
+        ("ip_lookups_tor", "Tor Exit Nodes Found"),
+        ("ip_lookups_dangerous_ports", "IPs with Dangerous Ports"),
+        ("ip_lookups_vulns", "IPs with Known Vulnerabilities"),
     ]
 
     RARITY_CHOICES = [

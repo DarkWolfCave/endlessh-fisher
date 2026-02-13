@@ -1117,6 +1117,13 @@ ACHIEVEMENT_CATEGORIES = [
         "icon": "gem",
         "sort_order": 8,
     },
+    {
+        "slug": "cyber-investigator",
+        "name": "Cyber Investigator",
+        "name_de": "Cyber-Ermittler",
+        "icon": "search",
+        "sort_order": 9,
+    },
 ]
 
 ACHIEVEMENTS = [
@@ -1249,4 +1256,37 @@ ACHIEVEMENTS = [
     {"slug": "fifty-challenges", "category": "treasure-hunter", "name": "Challenge Champion", "name_de": "Herausforderungs-Champion",
      "description": "Complete 50 daily challenges.", "description_de": "Schließe 50 tägliche Herausforderungen ab.",
      "metric": "challenges_completed", "threshold": 50, "rarity": "gold", "points": 150, "sort_order": 7},
+    # Cyber Investigator - IP lookups total
+    {"slug": "first-lookup", "category": "cyber-investigator", "name": "First Investigation", "name_de": "Erste Ermittlung",
+     "description": "Perform your first IP analysis.", "description_de": "Führe deine erste IP-Analyse durch.",
+     "metric": "ip_lookups_total", "threshold": 1, "rarity": "bronze", "points": 10, "sort_order": 1},
+    {"slug": "ten-lookups", "category": "cyber-investigator", "name": "Curious Mind", "name_de": "Neugieriger Geist",
+     "description": "Analyze 10 unique IPs.", "description_de": "Analysiere 10 verschiedene IPs.",
+     "metric": "ip_lookups_total", "threshold": 10, "rarity": "bronze", "points": 25, "sort_order": 2},
+    {"slug": "fifty-lookups", "category": "cyber-investigator", "name": "Cyber Detective", "name_de": "Cyber-Detektiv",
+     "description": "Analyze 50 unique IPs.", "description_de": "Analysiere 50 verschiedene IPs.",
+     "metric": "ip_lookups_total", "threshold": 50, "rarity": "silver", "points": 75, "sort_order": 3},
+    {"slug": "two-hundred-lookups", "category": "cyber-investigator", "name": "Intelligence Agency", "name_de": "Geheimdienst-Level",
+     "description": "Analyze 200 unique IPs.", "description_de": "Analysiere 200 verschiedene IPs.",
+     "metric": "ip_lookups_total", "threshold": 200, "rarity": "gold", "points": 150, "sort_order": 4},
+    # Cyber Investigator - abuse score discoveries
+    {"slug": "first-high-abuse", "category": "cyber-investigator", "name": "Caught Red-Handed", "name_de": "Auf frischer Tat",
+     "description": "Find an IP with an abuse score above 90%.", "description_de": "Finde eine IP mit Abuse-Score über 90%.",
+     "metric": "ip_lookups_high_abuse", "threshold": 1, "rarity": "bronze", "points": 25, "sort_order": 5},
+    {"slug": "ten-high-abuse", "category": "cyber-investigator", "name": "Repeat Offenders", "name_de": "Wiederholungstäter",
+     "description": "Find 10 IPs with abuse score above 90%.", "description_de": "Finde 10 IPs mit Abuse-Score über 90%.",
+     "metric": "ip_lookups_high_abuse", "threshold": 10, "rarity": "silver", "points": 75, "sort_order": 6},
+    # Cyber Investigator - special discoveries
+    {"slug": "first-tor", "category": "cyber-investigator", "name": "Tor Discoverer", "name_de": "Tor-Entdecker",
+     "description": "Discover a Tor exit node.", "description_de": "Entdecke einen Tor-Exit-Node.",
+     "metric": "ip_lookups_tor", "threshold": 1, "rarity": "silver", "points": 50, "sort_order": 7},
+    {"slug": "first-dangerous-ports", "category": "cyber-investigator", "name": "Open Barn Door", "name_de": "Offenes Scheunentor",
+     "description": "Find an IP with dangerous open ports.", "description_de": "Finde eine IP mit gefährlichen offenen Ports.",
+     "metric": "ip_lookups_dangerous_ports", "threshold": 1, "rarity": "bronze", "points": 15, "sort_order": 8},
+    {"slug": "first-vuln", "category": "cyber-investigator", "name": "Vulnerability Finder", "name_de": "Schwachstellenfinder",
+     "description": "Find an IP with known vulnerabilities.", "description_de": "Finde eine IP mit bekannten Schwachstellen.",
+     "metric": "ip_lookups_vulns", "threshold": 1, "rarity": "silver", "points": 50, "sort_order": 9},
+    {"slug": "five-vulns", "category": "cyber-investigator", "name": "Vulnerability Scanner", "name_de": "Vulnerability Scanner",
+     "description": "Find 5 IPs with known vulnerabilities.", "description_de": "Finde 5 IPs mit bekannten Schwachstellen.",
+     "metric": "ip_lookups_vulns", "threshold": 5, "rarity": "gold", "points": 100, "sort_order": 10},
 ]

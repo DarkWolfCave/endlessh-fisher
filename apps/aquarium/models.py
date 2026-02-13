@@ -365,3 +365,19 @@ class DailyChallenge(TimeStampedModel):
         if self.threshold == 0:
             return 100
         return min(100, int((self.current_value / self.threshold) * 100))
+
+
+class IPLookupLog(TimeStampedModel):
+    """Tracks unique IP lookups for achievement evaluation."""
+
+    ip_address = models.GenericIPAddressField(unique=True)
+    abuse_score = models.PositiveSmallIntegerField(default=0)
+    is_tor = models.BooleanField(default=False)
+    has_vulns = models.BooleanField(default=False)
+    has_dangerous_ports = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "IP Lookup Log"
+
+    def __str__(self):
+        return f"{self.ip_address} (abuse={self.abuse_score}%)"

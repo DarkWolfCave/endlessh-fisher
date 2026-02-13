@@ -41,6 +41,9 @@
             {% if achievement.is_secret and not achievement.unlock_record %}
             <h4 style="font-weight: 700; margin-top: 0.5rem; color: var(--color-text-muted);">{{ "Geheim"|t }}</h4>
             <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.25rem;">???</p>
+            {% elif not achievement.unlock_record %}
+            <h4 style="font-weight: 700; margin-top: 0.5rem;">{{ achievement|lang:"name" }}</h4>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.25rem; font-style: italic;">{{ "Wie schaltet man das frei?"|t }}</p>
             {% else %}
             <h4 style="font-weight: 700; margin-top: 0.5rem;">{{ achievement|lang:"name" }}</h4>
             <p style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: 0.25rem;">{{ achievement|lang:"description" }}</p>

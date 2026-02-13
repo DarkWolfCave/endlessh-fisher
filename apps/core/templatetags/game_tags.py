@@ -203,6 +203,7 @@ _TRANSLATIONS = {
     "Punkte": "Points",
     "Schwellwert": "Threshold",
     "Freigeschaltet am": "Unlocked on",
+    "Wie schaltet man das frei?": "How do you unlock this?",
     # IP Lookup
     "IP analysieren": "Analyze IP",
     "IP-Analyse": "IP Analysis",
