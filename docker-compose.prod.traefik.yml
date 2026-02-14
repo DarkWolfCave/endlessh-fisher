@@ -1,13 +1,19 @@
 # Endlessh Fisher - Production with Traefik & Blue-Green Deployment
 #
 # Advanced setup for Traefik reverse proxy with zero-downtime deployments.
-# Requires: external "proxy" Docker network with Traefik running.
+# Requires: an external Docker network where your Traefik instance runs.
+#
+# Configure in .env:
+#   TRAEFIK_NETWORK    - Name of your Traefik Docker network (default: proxy)
+#   TRAEFIK_ENTRYPOINT - HTTPS entrypoint name in your Traefik config (default: websecure)
+#   GAME_DOMAIN        - Your domain for Endlessh Fisher
+#   CERT_RESOLVER      - Traefik certificate resolver name (default: letsencrypt)
 #
 # For a simpler setup without Traefik, use docker-compose.prod.yml instead.
 
 x-traefik-labels: &traefik-labels
   traefik.enable: "true"
-  traefik.docker.network: proxy
+  traefik.docker.network: ${TRAEFIK_NETWORK:-proxy}
 
 x-backend-env: &backend-env
   - DJANGO_SETTINGS_MODULE=config.settings.production
@@ -48,7 +54,7 @@ x-backend-common: &backend-common
     retries: 3
     start_period: 40s
   networks:
-    - proxy
+    - traefik_ext
     - endlessh_internal
 
 services:
@@ -90,14 +96,14 @@ services:
     <<: *backend-common
     container_name: endlessh_fisher_blue
     networks:
-      proxy:
+      traefik_ext:
       endlessh_internal:
         aliases:
           - backend
     labels:
       <<: *traefik-labels
       traefik.http.routers.endlessh-fisher.rule: "Host(`${GAME_DOMAIN}`)"
-      traefik.http.routers.endlessh-fisher.entrypoints: https
+      traefik.http.routers.endlessh-fisher.entrypoints: ${TRAEFIK_ENTRYPOINT:-websecure}
       traefik.http.routers.endlessh-fisher.tls: "true"
       traefik.http.routers.endlessh-fisher.tls.certresolver: ${CERT_RESOLVER:-letsencrypt}
       traefik.http.routers.endlessh-fisher.service: endlessh-fisher
@@ -143,7 +149,8 @@ volumes:
   redis_data:
 
 networks:
-  proxy:
+  traefik_ext:
+    name: ${TRAEFIK_NETWORK:-proxy}
     external: true
   endlessh_internal:
     driver: bridge
