@@ -289,6 +289,19 @@ TREASURE_TYPES = [
         "min_active_fish": 15,
         "sort_order": 9,
     },
+    {
+        "slug": "wolf-head",
+        "name": "Wolf Head",
+        "name_de": "Wolfskopf",
+        "description_de": "Der Wolfskopf — ein uraltes Symbol der digitalen Wildnis. Nur die geduldigsten Angler finden ihn.",
+        "emoji": "\U0001F43A",
+        "rarity": "legendary",
+        "rarity_color": "#FF6B35",
+        "points": 500,
+        "spawn_weight": 1,
+        "min_active_fish": 20,
+        "sort_order": 10,
+    },
 ]
 
 SECURITY_TIPS = [
@@ -922,6 +935,61 @@ SECURITY_TIPS = [
         "emoji": "\U0001F4DC",
         "sort_order": 25,
     },
+    # --- Wolf Digital Empire ---
+    {
+        "slug": "cronjob-monitoring",
+        "title": "Monitor Your Cronjobs",
+        "title_de": "Überwache deine Cronjobs",
+        "content": (
+            "Cronjobs fail silently — a missed backup or expired certificate "
+            "goes unnoticed until it's too late. Use a cron monitoring service "
+            "that alerts you when jobs don't run, take too long, or fail. "
+            "CronWolf monitors your scheduled tasks and sends alerts via "
+            "email or webhook. Currently in beta with 30% lifetime discount."
+        ),
+        "content_de": (
+            "Cronjobs scheitern lautlos — ein verpasstes Backup oder ein "
+            "abgelaufenes Zertifikat fällt erst auf, wenn es zu spät ist. "
+            "Nutze einen Cron-Monitoring-Dienst, der dich warnt, wenn Jobs "
+            "nicht laufen, zu lange brauchen oder fehlschlagen. "
+            "CronWolf überwacht deine geplanten Tasks und sendet Alerts per "
+            "E-Mail oder Webhook. Aktuell in der Beta mit 30% Lifetime-Rabatt."
+        ),
+        "source_url": "https://cronwolf.de",
+        "source_label": "CronWolf — Cron Job Monitoring",
+        "source_label_de": "CronWolf — Cronjob-Überwachung",
+        "rarity": "legendary",
+        "category": "monitoring",
+        "emoji": "\U0001F43A",
+        "sort_order": 26,
+    },
+    {
+        "slug": "docker-security-basics",
+        "title": "Docker Security: Don't Run as Root",
+        "title_de": "Docker-Security: Nicht als Root laufen lassen",
+        "content": (
+            "Most Docker images run as root by default — a container escape "
+            "then means full host access. Always specify a non-root USER in your "
+            "Dockerfile, use `--cap-drop ALL`, and scan images with Trivy or "
+            "`docker scout`. WolfCoder covers these patterns and more "
+            "in depth for secure containerized deployments."
+        ),
+        "content_de": (
+            "Die meisten Docker-Images laufen per Default als Root — ein "
+            "Container-Escape bedeutet dann vollen Host-Zugriff. Definiere "
+            "immer einen non-root USER im Dockerfile, nutze `--cap-drop ALL` "
+            "und scanne Images mit Trivy oder `docker scout`. "
+            "WolfCoder behandelt diese Patterns und mehr für sichere "
+            "Container-Deployments im Detail."
+        ),
+        "source_url": "https://wolfcoder.de",
+        "source_label": "WolfCoder — Secure Development",
+        "source_label_de": "WolfCoder — Sichere Entwicklung",
+        "rarity": "epic",
+        "category": "container",
+        "emoji": "\U0001F40B",
+        "sort_order": 27,
+    },
 ]
 
 CHALLENGE_TEMPLATES = [
@@ -1245,7 +1313,7 @@ ACHIEVEMENTS = [
      "metric": "total_treasures", "threshold": 50, "rarity": "gold", "points": 100, "sort_order": 3},
     {"slug": "all-treasure-types", "category": "treasure-hunter", "name": "Complete Hoard", "name_de": "Vollständiger Hort",
      "description": "Collect every type of treasure.", "description_de": "Sammle jeden Schatztyp.",
-     "metric": "unique_treasure_types", "threshold": 9, "rarity": "platinum", "points": 250, "sort_order": 4},
+     "metric": "unique_treasure_types", "threshold": 10, "rarity": "platinum", "points": 250, "sort_order": 4},
     # Treasure Hunter - challenges completed
     {"slug": "first-challenge", "category": "treasure-hunter", "name": "Challenge Accepted", "name_de": "Herausforderung angenommen",
      "description": "Complete your first daily challenge.", "description_de": "Schließe deine erste tägliche Herausforderung ab.",
@@ -1289,4 +1357,9 @@ ACHIEVEMENTS = [
     {"slug": "five-vulns", "category": "cyber-investigator", "name": "Vulnerability Scanner", "name_de": "Vulnerability Scanner",
      "description": "Find 5 IPs with known vulnerabilities.", "description_de": "Finde 5 IPs mit bekannten Schwachstellen.",
      "metric": "ip_lookups_vulns", "threshold": 5, "rarity": "gold", "points": 100, "sort_order": 10},
+    # Secret Achievement - Wolf Digital Empire
+    {"slug": "wolf-friend", "category": "treasure-hunter", "name": "Friend of the Wolf", "name_de": "Freund des Wolfs",
+     "description": "Find the legendary Wolf Head treasure.", "description_de": "Finde den legendären Wolfskopf-Schatz.",
+     "metric": "unique_treasure_types", "threshold": 10, "rarity": "diamond", "points": 500,
+     "is_secret": True, "sort_order": 8},
 ]
