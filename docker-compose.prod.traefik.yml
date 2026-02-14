@@ -43,6 +43,8 @@ x-backend-common: &backend-common
     target: production
   restart: unless-stopped
   environment: *backend-env
+  volumes:
+    - ./servers.toml:/app/servers.toml:ro
   depends_on:
     postgres:
       condition: service_healthy
