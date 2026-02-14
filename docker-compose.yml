@@ -62,7 +62,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "8100:8000"
     depends_on:
       postgres:
         condition: service_healthy

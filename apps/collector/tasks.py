@@ -116,25 +116,27 @@ def sync_bot_data(self):
                 country = conn.get("country", "") or ""
                 country_code = _country_to_code(country)
 
+                shared_fields = {
+                    "server": server,
+                    "species": species,
+                    "ip_address": ip,
+                    "ip_hash": ip_hash,
+                    "country_code": country_code,
+                    "country_name": country,
+                    "geohash": conn.get("geohash", "") or "",
+                    "local_port": int(conn.get("local_port", 22) or 22),
+                    "trapped_seconds": trapped_seconds,
+                    "connection_count": int(conn.get("open_count", 1)),
+                    "last_seen": conn["time"],
+                    "score": score,
+                }
                 obj, created = CaughtBot.objects.update_or_create(
                     influx_fingerprint=fingerprint,
                     create_defaults={
+                        **shared_fields,
                         "first_seen": conn["time"],
                     },
-                    defaults={
-                        "server": server,
-                        "species": species,
-                        "ip_address": ip,
-                        "ip_hash": ip_hash,
-                        "country_code": country_code,
-                        "country_name": country,
-                        "geohash": conn.get("geohash", "") or "",
-                        "local_port": int(conn.get("local_port", 22) or 22),
-                        "trapped_seconds": trapped_seconds,
-                        "connection_count": int(conn.get("open_count", 1)),
-                        "last_seen": conn["time"],
-                        "score": score,
-                    },
+                    defaults=shared_fields,
                 )
                 if created:
                     created_count += 1
