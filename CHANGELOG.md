@@ -2,9 +2,38 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
-## [1.1.0] - 2026-02-14
+## [1.2.0] - 2026-02-14
+
+### Added
+
+- **Cache Warming** — Celery Beat pre-warms the live pond cache every 10
+  seconds, eliminating the ~1.4s InfluxDB cold-cache hit on page loads.
+  If InfluxDB is unreachable, stale cache is preserved as fallback.
 
 ### Changed
+
+- **Bind mounts** instead of named Docker volumes — persistent data now lives
+  under `./data/` (postgres, redis), making backups and inspection easier.
+- **View performance** optimized: parallel API calls, N+1 query fix, added
+  caching to context processors and template tags.
+- CSRF and session cookie settings are now automatically TLS-aware based on
+  the `TRAEFIK_TLS` environment variable.
+
+### Fixed
+
+- Celery workers could not reach InfluxDB when using the Traefik compose setup
+  (network isolation issue).
+- DNS resolution failures inside Docker containers (added explicit DNS servers).
+
+### Breaking Changes
+
+- **Named volumes replaced by bind mounts.** If upgrading from 1.1.0, you must
+  migrate your data from Docker named volumes to `./data/postgres` and
+  `./data/redis` before starting. See README for migration steps.
+
+## [1.1.0] - 2026-02-14
+
+### Added
 
 - **Adaptive Treasure Thresholds** — treasure spawn requirements now use
   percentile-based pond activity instead of fixed fish counts. A 7-day rolling
@@ -13,7 +42,29 @@ All notable changes to Endlessh Fisher are documented here.
   now have equally fair access to rare treasures like the Wolf Head.
 - During warmup (first ~50 minutes), all treasures are available to give new
   users a welcome experience. Spawn weights still limit rare drops.
+- **Traefik Configuration via `.env`** — TLS, network name, entrypoint, and
+  certificate resolver are now fully configurable without editing compose files.
+- **`servers.toml` mounted as volume** in production — add or remove endlessh
+  servers without rebuilding the Docker image.
+- Wolf Digital Empire cross-promotion content on the dashboard.
+- Disclaimer noting this is a fun project, not a security tool.
+
+### Changed
+
+- **Project renamed** from endlessh-game to **Endlessh Fisher** (containers,
+  User-Agent header, internal references).
 - Renamed `min_active_fish` to `min_pond_percentile` on TreasureType model.
+- **Default port** changed from 8000 to **8100** (development compose).
+- **Fish species duration ranges** rebalanced — fixed a bug where Plankton
+  was assigned incorrectly at certain thresholds.
+
+### Fixed
+
+- `first_seen` timestamp was overwritten on every sync cycle instead of being
+  preserved from the bot's first appearance.
+- Timezone mismatch in daily challenge generation caused challenges to reset
+  at the wrong time.
+- `null` ip_address crash on fresh installations with no data yet.
 
 ### Migration Notes
 
