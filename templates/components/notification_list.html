@@ -1,0 +1,13 @@
+{% load game_tags %}
+{% if notifications %}
+<div style="display: flex; flex-direction: column; gap: 0.5rem;">
+    {% for notification in notifications %}
+    {% include "components/notification_row.html" %}
+    {% endfor %}
+</div>
+{% else %}
+<div style="text-align: center; padding: 3rem; color: var(--color-text-muted);">
+    <div style="font-size: 2rem; margin-bottom: 0.75rem;">&#x1F514;</div>
+    <p>{{ "Keine Nachrichten."|t }}</p>
+</div>
+{% endif %}

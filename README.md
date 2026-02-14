@@ -135,6 +135,16 @@ docker compose -f docker-compose.prod.traefik.yml up -d
 
 Requires an external Traefik instance with a `proxy` Docker network.
 
+### Updating
+
+After pulling new code, rebuild containers and apply database migrations:
+
+```bash
+git pull
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose exec backend python manage.py migrate
+```
+
 ## How It Works
 
 ```

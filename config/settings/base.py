@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "apps.collector",
     "apps.aquarium",
     "apps.achievements",
+    "apps.notifications",
 ]
 
 MIDDLEWARE = [

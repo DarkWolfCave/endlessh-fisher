@@ -6,6 +6,7 @@ Scheduled Tasks:
 - Every 5 min:  Sync bot data from InfluxDB
 - Every 1 hour: Aggregate daily statistics
 - Every 10 min: Check achievement thresholds
+- Every 10 min: Create rare catch notifications
 - Daily 3 AM:   Full recalculate (consistency check)
 """
 
@@ -56,6 +57,10 @@ app.conf.beat_schedule = {
     },
     "evaluate-daily-challenges": {
         "task": "apps.collector.tasks.evaluate_daily_challenges_task",
+        "schedule": 600.0,  # every 10 minutes
+    },
+    "create-rare-catch-notifications": {
+        "task": "apps.collector.tasks.create_rare_catch_notifications",
         "schedule": 600.0,  # every 10 minutes
     },
     "warm-pond-cache": {

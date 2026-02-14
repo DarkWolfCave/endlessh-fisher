@@ -2,6 +2,36 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.3.0] - 2026-02-14
+
+### Added
+
+- **Notification Inbox** — persistent notification system at `/nachrichten/`
+  with mark-as-read and delete functionality. All notifications are stored in
+  the database and survive browser/container restarts.
+- **Toast Popups** — new notifications appear as auto-dismissing popups
+  (polled every 30s), complementing the existing rare fish alerts.
+- **Notification Bell** — header icon with unread count badge (polled every 30s).
+- **Rare Catch Notifications** — Celery task creates persistent notifications
+  for epic, legendary, and mythic fish catches (every 10 minutes).
+- **Achievement Notifications** — achievement unlocks now create persistent
+  inbox entries with links to the achievement detail page.
+- **Challenge Notifications** — completed daily challenges create notifications
+  with links to the dashboard.
+- **Bulk Actions** — "Mark All Read" and "Delete All" buttons in the inbox.
+- **Deep Links** — notification titles link to their targets (achievement detail,
+  fish detail, or dashboard).
+
+### Migration Notes
+
+After updating, run:
+
+```bash
+docker compose exec backend python manage.py migrate
+```
+
+The migration backfills existing unlocked achievements as read notifications.
+
 ## [1.2.0] - 2026-02-14
 
 ### Added

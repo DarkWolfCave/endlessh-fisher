@@ -6,9 +6,17 @@ from datetime import timedelta
 from django.db.models import Count, Sum
 from django.utils import timezone
 
+from apps.notifications.services import create_notification
+
 from .models import (
     CaughtBot, ChallengeTemplate, CollectedTreasure, DailyChallenge,
 )
+
+_DIFFICULTY_COLORS = {
+    "easy": "#34D399",
+    "medium": "#60A5FA",
+    "hard": "#A78BFA",
+}
 
 
 def generate_daily_challenges(target_date=None) -> list[str]:
@@ -138,6 +146,17 @@ def evaluate_daily_challenges(target_date=None) -> list[str]:
             challenge.completed_at = timezone.now()
             challenge.notified = False
             newly_completed.append(challenge.description_de)
+            create_notification(
+                category="challenge",
+                title=f"Challenge Completed: {challenge.description}",
+                title_de=f"Herausforderung geschafft: {challenge.description_de}",
+                emoji=challenge.template.emoji,
+                rarity=challenge.template.difficulty,
+                rarity_color=_DIFFICULTY_COLORS.get(
+                    challenge.template.difficulty, "#9CA3AF"
+                ),
+                challenge_id=challenge.id,
+            )
 
         challenge.save(update_fields=[
             "current_value", "is_completed", "completed_at", "notified",

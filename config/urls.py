@@ -14,7 +14,9 @@ urlpatterns = [
     path("api/v1/achievements/", include("apps.achievements.api.urls")),
     # HTMX partials
     path("htmx/", include("apps.aquarium.urls_htmx")),
+    path("htmx/notifications/", include("apps.notifications.urls_htmx")),
     # Template views
     path("", include("apps.aquarium.urls")),
     path("achievements/", include("apps.achievements.urls")),
+    path("nachrichten/", include("apps.notifications.urls")),
 ]

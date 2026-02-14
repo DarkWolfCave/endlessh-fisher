@@ -1,0 +1,61 @@
+{% load game_tags %}
+<div class="game-card notification-row {% if not notification.is_read %}notification-unread{% endif %}"
+     id="notification-{{ notification.id }}"
+     {% if not notification.is_read %}style="border-left: 3px solid {{ notification.rarity_color|default:'var(--color-accent)' }};"{% endif %}>
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.5rem;">{{ notification.emoji }}</span>
+        <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 700; font-size: 0.9rem;
+                        {% if notification.rarity_color %}color: {{ notification.rarity_color }};{% endif %}">
+                {% if notification.category == "achievement" and notification.achievement_slug %}
+                <a href="{% url 'achievements:detail' slug=notification.achievement_slug %}"
+                   style="color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor;">
+                    {{ notification|lang:"title" }}
+                </a>
+                {% elif notification.category == "rare_catch" and notification.caught_bot_id %}
+                <a href="{% url 'aquarium:fish-detail' pk=notification.caught_bot_id %}"
+                   style="color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor;">
+                    {{ notification|lang:"title" }}
+                </a>
+                {% elif notification.category == "challenge" %}
+                <a href="{% url 'aquarium:dashboard' %}"
+                   style="color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor;">
+                    {{ notification|lang:"title" }}
+                </a>
+                {% else %}
+                {{ notification|lang:"title" }}
+                {% endif %}
+            </div>
+            {% if notification.message_de or notification.message %}
+            <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.2rem;">
+                {{ notification|lang:"message" }}
+            </div>
+            {% endif %}
+            <div style="font-size: 0.7rem; color: var(--color-text-muted); margin-top: 0.3rem;">
+                {{ notification.created_at|date:"d.m.Y H:i" }}
+                &middot;
+                {% if notification.category == "achievement" %}Achievement
+                {% elif notification.category == "challenge" %}{{ "Herausforderung"|t }}
+                {% elif notification.category == "rare_catch" %}{{ "Seltener Fang"|t }}
+                {% endif %}
+            </div>
+        </div>
+        <div style="display: flex; gap: 0.3rem; flex-shrink: 0;">
+            {% if not notification.is_read %}
+            <button hx-post="{% url 'notifications-htmx:mark-read' %}"
+                    hx-vals='{"notification_id": "{{ notification.id }}"}'
+                    hx-target="#notification-{{ notification.id }}"
+                    hx-swap="outerHTML"
+                    class="notification-action-btn"
+                    title="{{ 'Gelesen'|t }}">&#x2714;</button>
+            {% endif %}
+            <button hx-post="{% url 'notifications-htmx:delete' %}"
+                    hx-vals='{"notification_id": "{{ notification.id }}"}'
+                    hx-target="#notification-{{ notification.id }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="{{ 'Wirklich löschen?'|t }}"
+                    class="notification-action-btn notification-delete-btn"
+                    title="{{ 'Löschen'|t }}">&times;</button>
+        </div>
+    </div>
+</div>

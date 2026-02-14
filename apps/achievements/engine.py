@@ -10,9 +10,19 @@ from apps.aquarium.models import (
     Server,
 )
 
+from apps.notifications.services import create_notification
+
 from .models import Achievement, UnlockedAchievement
 
 logger = logging.getLogger(__name__)
+
+_ACHIEVEMENT_RARITY_COLORS = {
+    "bronze": "#CD7F32",
+    "silver": "#C0C0C0",
+    "gold": "#FBBF24",
+    "platinum": "#93C5FD",
+    "diamond": "#C4B5FD",
+}
 
 
 def _get_current_stats() -> dict:
@@ -136,6 +146,19 @@ def evaluate_all_achievements() -> list[str]:
             logger.info(
                 "Achievement unlocked: %s (value: %s >= %s)",
                 achievement.slug, current_value, threshold,
+            )
+            create_notification(
+                category="achievement",
+                title=f"Achievement Unlocked: {achievement.name}",
+                title_de=f"Achievement freigeschaltet: {achievement.name_de}",
+                message=achievement.description,
+                message_de=achievement.description_de,
+                emoji="\U0001F3C5",
+                rarity=achievement.rarity,
+                rarity_color=_ACHIEVEMENT_RARITY_COLORS.get(
+                    achievement.rarity, "#9CA3AF"
+                ),
+                achievement_slug=achievement.slug,
             )
 
     return newly_unlocked

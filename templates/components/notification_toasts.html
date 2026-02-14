@@ -1,0 +1,36 @@
+{% load game_tags %}
+{% if toasts %}
+<div x-data="{ toasts: [{% for t in toasts %}{ id: {{ t.id }}, emoji: '{{ t.emoji|escapejs }}', title: '{{ t|lang:"title"|escapejs }}', rarity: '{{ t.rarity }}', rarity_color: '{{ t.rarity_color|default:"var(--color-accent)" }}', category: '{{ t.category }}' }{% if not forloop.last %},{% endif %}{% endfor %}] }"
+     x-init="
+        toasts.forEach((t, i) => {
+            setTimeout(() => {
+                toasts = toasts.filter(x => x.id !== t.id);
+            }, (5 + i * 2) * 1000);
+        });
+     ">
+    <template x-for="toast in toasts" :key="toast.id">
+        <div class="notification-toast"
+             :style="'border-color: ' + toast.rarity_color"
+             x-transition:enter="alert-enter"
+             x-transition:enter-start="alert-enter-start"
+             x-transition:enter-end="alert-enter-end"
+             x-transition:leave="alert-leave"
+             x-transition:leave-start="alert-leave-start"
+             x-transition:leave-end="alert-leave-end">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 1.5rem;" x-text="toast.emoji"></span>
+                <div style="flex: 1;">
+                    <div style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; color: var(--color-text-muted); text-transform: uppercase;"
+                         x-text="toast.category === 'achievement' ? '{{ "Achievement"|t }}' : toast.category === 'challenge' ? '{{ "Herausforderung"|t }}' : '{{ "Seltener Fang"|t }}'"></div>
+                    <div style="font-weight: 700; font-size: 0.95rem;"
+                         x-text="toast.title"
+                         :style="'color: ' + toast.rarity_color"></div>
+                </div>
+                <button @click="toasts = toasts.filter(x => x.id !== toast.id)"
+                        style="background: none; border: none; color: var(--color-text-muted);
+                               font-size: 1.2rem; cursor: pointer; padding: 0.2rem; line-height: 1;">&times;</button>
+            </div>
+        </div>
+    </template>
+</div>
+{% endif %}

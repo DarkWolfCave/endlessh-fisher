@@ -5,6 +5,7 @@ from django.core.cache import cache
 
 from apps.aquarium.models import CaughtBot
 from apps.aquarium.views import _get_active_traps, get_cached_stats
+from apps.notifications.services import get_unread_count
 
 
 def game_context(request):
@@ -30,5 +31,6 @@ def game_context(request):
         "SHOW_REAL_IP": settings.SHOW_REAL_IP,
         "GAME_LANGUAGE": settings.GAME_LANGUAGE,
         "ticker_catches": ticker_catches,
+        "notification_unread_count": get_unread_count(),
         **stats,
     }

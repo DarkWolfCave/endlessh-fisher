@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load game_tags %}
+
+{% block title %}{{ "Nachrichten"|t }} - {{ GAME_NAME }}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-accent);">
+        &#x1F514; {{ "Nachrichten"|t }}
+        {% if unread_count > 0 %}
+        <span style="font-size: 0.8rem; color: var(--color-text-muted); font-weight: 400;">
+            ({{ unread_count }} {{ "ungelesen"|t }})
+        </span>
+        {% endif %}
+    </h2>
+    <div style="display: flex; gap: 0.5rem;">
+        {% if unread_count > 0 %}
+        <button hx-post="{% url 'notifications-htmx:mark-all-read' %}"
+                hx-target="#notification-list"
+                hx-swap="innerHTML"
+                style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: var(--color-primary);
+                       color: white; border: none; border-radius: 0.4rem; cursor: pointer;
+                       transition: background 0.2s;">
+            &#x2714; {{ "Alle gelesen"|t }}
+        </button>
+        {% endif %}
+        {% if notifications %}
+        <button hx-post="{% url 'notifications-htmx:delete-all' %}"
+                hx-target="#notification-list"
+                hx-swap="innerHTML"
+                hx-confirm="{{ 'Wirklich alle Nachrichten löschen?'|t }}"
+                style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: var(--color-danger, #EF4444);
+                       color: white; border: none; border-radius: 0.4rem; cursor: pointer;
+                       transition: background 0.2s;">
+            &#x1F5D1; {{ "Alle löschen"|t }}
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<div id="notification-list">
+    {% include "components/notification_list.html" %}
+</div>
+{% endblock %}

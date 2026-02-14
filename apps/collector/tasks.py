@@ -303,6 +303,61 @@ def full_recalculate():
 
 
 @shared_task
+def create_rare_catch_notifications():
+    """Create notification records for epic+ catches not yet notified.
+
+    Runs every 10 minutes. Uses a Redis set to track which CaughtBot IDs
+    have already been notified, avoiding duplicate notifications.
+    """
+    from apps.aquarium.services import FISH_EMOJI
+    from apps.notifications.services import create_notification
+
+    rare_rarities = ["epic", "legendary", "mythic"]
+    cache_key = "endlessh:notified_rare_catches"
+    notified_ids = set(cache.get(cache_key) or [])
+
+    recent_rare = (
+        CaughtBot.objects.filter(species__rarity__in=rare_rarities)
+        .exclude(id__in=notified_ids)
+        .select_related("species", "server")
+        .order_by("-first_seen")[:10]
+    )
+
+    new_ids = set()
+    for catch in recent_rare:
+        sp = catch.species
+        trapped_display = (
+            f"{catch.trapped_seconds / 86400:.1f}d"
+            if catch.trapped_seconds > 86400
+            else f"{catch.trapped_seconds / 3600:.1f}h"
+            if catch.trapped_seconds > 3600
+            else f"{catch.trapped_seconds / 60:.0f}min"
+        )
+        create_notification(
+            category="rare_catch",
+            title=f"{sp.rarity.title()} Catch: {sp.name} on {catch.server.name}",
+            title_de=f"{sp.rarity.title()} Fang: {sp.name_de} auf {catch.server.name}",
+            message=f"Trapped for {trapped_display}",
+            message_de=f"Gefangen für {trapped_display}",
+            emoji=FISH_EMOJI.get(sp.slug, "\U0001F41F"),
+            rarity=sp.rarity,
+            rarity_color=sp.rarity_color,
+            caught_bot_id=catch.id,
+        )
+        new_ids.add(catch.id)
+
+    if new_ids:
+        notified_ids.update(new_ids)
+        # Keep only last 500 IDs to prevent unbounded growth
+        if len(notified_ids) > 500:
+            notified_ids = set(sorted(notified_ids)[-500:])
+        cache.set(cache_key, list(notified_ids), 86400 * 7)
+        logger.info("Created %d rare catch notifications", len(new_ids))
+
+    return f"{len(new_ids)} rare catch notifications"
+
+
+@shared_task
 def warm_pond_cache():
     """Pre-warm the live pond cache so no user request pays the InfluxDB cost."""
     from apps.aquarium.services import get_pond_fish

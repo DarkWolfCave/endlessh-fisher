@@ -1210,6 +1210,77 @@
             font-size: 0.75rem;
             color: var(--color-text-muted);
         }
+
+        /* ========================================
+           NOTIFICATIONS
+           ======================================== */
+        .notification-bell {
+            position: relative;
+        }
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -6px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .notification-toast-container {
+            position: fixed;
+            bottom: 3.5rem;
+            right: 1.5rem;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 380px;
+        }
+        .notification-toast {
+            background: var(--color-surface);
+            border: 2px solid var(--color-accent);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            animation: slide-in 0.5s ease-out;
+        }
+        .notification-row {
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s;
+        }
+        .notification-unread {
+            background: rgba(6, 182, 212, 0.03);
+        }
+        .notification-action-btn {
+            background: none;
+            border: none;
+            color: var(--color-accent);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.3rem 0.4rem;
+            border-radius: 0.25rem;
+            transition: background 0.15s;
+            line-height: 1;
+        }
+        .notification-action-btn:hover {
+            background: rgba(6, 182, 212, 0.15);
+        }
+        .notification-delete-btn {
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+        }
+        .notification-delete-btn:hover {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
     </style>
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
@@ -1232,6 +1303,14 @@
                 <a href="{% url 'aquarium:schatzkammer' %}" class="nav-link {% if request.resolver_match.url_name == 'schatzkammer' %}active{% endif %}">{{ "Schatzkammer"|t }}</a>
                 <a href="{% url 'aquarium:world-map' %}" class="nav-link {% if request.resolver_match.url_name == 'world-map' %}active{% endif %}">{{ "Weltkarte"|t }}</a>
                 <a href="{% url 'achievements:gallery' %}" class="nav-link {% if 'achievements' in request.resolver_match.app_name %}active{% endif %}">Achievements</a>
+                <a href="{% url 'notifications:inbox' %}" class="nav-link notification-bell {% if 'notifications' in request.resolver_match.app_name %}active{% endif %}">
+                    &#x1F514;
+                    <span hx-get="{% url 'notifications-htmx:badge' %}"
+                          hx-trigger="load, every 30s"
+                          hx-swap="innerHTML">
+                        {% include "components/notification_badge.html" with unread_count=notification_unread_count %}
+                    </span>
+                </a>
             </nav>
         </div>
     </header>
@@ -1248,6 +1327,14 @@
     <div class="rare-alert-container"
          id="rare-alert-container"
          hx-get="{% url 'htmx:rare-alert' %}"
+         hx-trigger="every 30s"
+         hx-swap="innerHTML">
+    </div>
+
+    <!-- Notification Toasts (fixed bottom-right, HTMX polling every 30s) -->
+    <div class="notification-toast-container"
+         id="notification-toast-container"
+         hx-get="{% url 'notifications-htmx:toasts' %}"
          hx-trigger="every 30s"
          hx-swap="innerHTML">
     </div>

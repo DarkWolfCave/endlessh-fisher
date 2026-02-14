@@ -228,6 +228,19 @@ _TRANSLATIONS = {
     "Aus Cache": "From cache",
     # Misc
     "Klicken zum Kopieren": "Click to copy",
+    # Notifications
+    "Nachrichten": "Messages",
+    "Alle gelesen": "Mark All Read",
+    "Keine Nachrichten.": "No messages.",
+    "Gelesen": "Read",
+    "Löschen": "Delete",
+    "Wirklich löschen?": "Really delete?",
+    "ungelesen": "unread",
+    "Achievement": "Achievement",
+    "Herausforderung": "Challenge",
+    "Seltener Fang": "Rare Catch",
+    "Alle löschen": "Delete All",
+    "Wirklich alle Nachrichten löschen?": "Really delete all messages?",
 }
 
 
