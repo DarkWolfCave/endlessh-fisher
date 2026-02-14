@@ -2,6 +2,21 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.3.1] - 2026-02-14
+
+### Fixed
+
+- **first_seen accuracy** — CaughtBot `first_seen` is now estimated as
+  `last_seen - trapped_seconds` instead of using the InfluxDB last scrape
+  timestamp, which incorrectly showed today's date for bots trapped days ago.
+- **Ghost notifications after deploy** — rare catch notifications now only
+  fire for bots that are currently active (trapped_time still increasing).
+  Previously, a fresh deployment could trigger notifications for historical
+  catches from stale InfluxDB data.
+- **Notification deduplication** — switched from Redis-based (lost on
+  container rebuild) to database-based dedup using existing Notification
+  records, preventing duplicate alerts after restarts.
+
 ## [1.3.0] - 2026-02-14
 
 ### Added

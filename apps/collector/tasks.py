@@ -130,11 +130,19 @@ def sync_bot_data(self):
                     "last_seen": conn["time"],
                     "score": score,
                 }
+                # Estimate first_seen from last scrape minus trapped duration.
+                # conn["time"] is the last InfluxDB scrape, not the actual
+                # connection start — subtracting trapped_seconds gives a
+                # much better approximation.
+                estimated_first = conn["time"] - timedelta(
+                    seconds=trapped_seconds
+                )
+
                 obj, created = CaughtBot.objects.update_or_create(
                     influx_fingerprint=fingerprint,
                     create_defaults={
                         **shared_fields,
-                        "first_seen": conn["time"],
+                        "first_seen": estimated_first,
                     },
                     defaults=shared_fields,
                 )
@@ -306,24 +314,44 @@ def full_recalculate():
 def create_rare_catch_notifications():
     """Create notification records for epic+ catches not yet notified.
 
-    Runs every 10 minutes. Uses a Redis set to track which CaughtBot IDs
-    have already been notified, avoiding duplicate notifications.
+    Runs every 10 minutes. Uses DB-based deduplication (checks existing
+    Notification records) instead of Redis — survives container rebuilds.
+
+    Only notifies for bots that are CURRENTLY active (trapped_time still
+    increasing in InfluxDB). This prevents ghost notifications for
+    stale/historical catches after a fresh deployment.
     """
     from apps.aquarium.services import FISH_EMOJI
+    from apps.collector.influx_client import query_active_bots
+    from apps.notifications.models import Notification
     from apps.notifications.services import create_notification
 
     rare_rarities = ["epic", "legendary", "mythic"]
-    cache_key = "endlessh:notified_rare_catches"
-    notified_ids = set(cache.get(cache_key) or [])
+
+    # Only consider bots currently trapped (counter still increasing)
+    active_bots = query_active_bots()
+    active_fingerprints = {f"{b['host']}:{b['ip']}" for b in active_bots}
+    if not active_fingerprints:
+        return "No active bots"
+
+    # DB-based dedup: find CaughtBot IDs that already have a notification
+    already_notified = set(
+        Notification.objects.filter(
+            category="rare_catch", caught_bot_id__isnull=False
+        ).values_list("caught_bot_id", flat=True)
+    )
 
     recent_rare = (
-        CaughtBot.objects.filter(species__rarity__in=rare_rarities)
-        .exclude(id__in=notified_ids)
+        CaughtBot.objects.filter(
+            species__rarity__in=rare_rarities,
+            influx_fingerprint__in=active_fingerprints,
+        )
+        .exclude(id__in=already_notified)
         .select_related("species", "server")
         .order_by("-first_seen")[:10]
     )
 
-    new_ids = set()
+    count = 0
     for catch in recent_rare:
         sp = catch.species
         trapped_display = (
@@ -344,17 +372,12 @@ def create_rare_catch_notifications():
             rarity_color=sp.rarity_color,
             caught_bot_id=catch.id,
         )
-        new_ids.add(catch.id)
+        count += 1
 
-    if new_ids:
-        notified_ids.update(new_ids)
-        # Keep only last 500 IDs to prevent unbounded growth
-        if len(notified_ids) > 500:
-            notified_ids = set(sorted(notified_ids)[-500:])
-        cache.set(cache_key, list(notified_ids), 86400 * 7)
-        logger.info("Created %d rare catch notifications", len(new_ids))
+    if count:
+        logger.info("Created %d rare catch notifications", count)
 
-    return f"{len(new_ids)} rare catch notifications"
+    return f"{count} rare catch notifications"
 
 
 @shared_task
