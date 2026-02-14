@@ -3,7 +3,7 @@
 import json
 
 from django.core.cache import cache
-from django.db.models import Count, Max, Min, Sum
+from django.db.models import Count, Max, Min, OuterRef, Subquery, Sum
 from django.shortcuts import get_object_or_404, render
 
 from .challenge_service import get_today_challenges
@@ -69,16 +69,20 @@ def dashboard(request):
 
 def species_dex(request):
     """Species Dex - Pokédex-style overview of all 12 fish species."""
-    species_list = (
-        FishSpecies.objects.all()
-        .annotate(
-            catch_count=Count("catches"),
-            best_trapped=Max("catches__trapped_seconds"),
-            best_score=Max("catches__score"),
-            first_caught=Min("catches__first_seen"),
+    cache_key = "endlessh:species_dex"
+    species_list = cache.get(cache_key)
+    if species_list is None:
+        species_list = list(
+            FishSpecies.objects.all()
+            .annotate(
+                catch_count=Count("catches"),
+                best_trapped=Max("catches__trapped_seconds"),
+                best_score=Max("catches__score"),
+                first_caught=Min("catches__first_seen"),
+            )
+            .order_by("sort_order")
         )
-        .order_by("sort_order")
-    )
+        cache.set(cache_key, species_list, _STATS_CACHE_TTL)
     return render(request, "aquarium/species_dex.html", {
         "species_list": species_list,
     })
@@ -86,6 +90,11 @@ def species_dex(request):
 
 def bestenliste(request):
     """Leaderboard - top catches by trap time, score, and per-species records."""
+    cache_key = "endlessh:bestenliste"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return render(request, "aquarium/bestenliste.html", cached)
+
     longest = (
         CaughtBot.objects.select_related("species", "server")
         .order_by("-trapped_seconds")[:10]
@@ -94,23 +103,35 @@ def bestenliste(request):
         CaughtBot.objects.select_related("species", "server")
         .order_by("-score")[:10]
     )
-    # Best catch per species (one record per species type)
-    species_records = []
-    for sp in FishSpecies.objects.order_by("sort_order"):
-        best = (
-            CaughtBot.objects.filter(species=sp)
-            .select_related("server")
-            .order_by("-trapped_seconds")
-            .first()
-        )
-        if best:
-            species_records.append({"species": sp, "record": best})
+    # Best catch per species — single query with Subquery instead of N+1 loop
+    best_pk_subquery = Subquery(
+        CaughtBot.objects.filter(species_id=OuterRef("pk"))
+        .order_by("-trapped_seconds")
+        .values("pk")[:1]
+    )
+    best_pks = (
+        FishSpecies.objects.annotate(best_pk=best_pk_subquery)
+        .exclude(best_pk=None)
+        .values_list("best_pk", flat=True)
+    )
+    best_catches = {
+        c.species_id: c
+        for c in CaughtBot.objects.filter(pk__in=best_pks)
+        .select_related("species", "server")
+    }
+    species_records = [
+        {"species": c.species, "record": c}
+        for c in sorted(best_catches.values(), key=lambda c: c.species.sort_order)
+    ]
 
-    return render(request, "aquarium/bestenliste.html", {
-        "longest": longest,
-        "highest_score": highest_score,
+    # Force evaluation so results are cacheable
+    context = {
+        "longest": list(longest),
+        "highest_score": list(highest_score),
         "species_records": species_records,
-    })
+    }
+    cache.set(cache_key, context, _STATS_CACHE_TTL)
+    return render(request, "aquarium/bestenliste.html", context)
 
 
 def server_detail(request, slug):
@@ -157,19 +178,22 @@ def schatzkammer(request):
         .select_related("treasure_type", "security_tip")
         .order_by("-collected_at")
     )
-    total_points = sum(c.points_awarded for c in collections)
+    agg = CollectedTreasure.objects.aggregate(
+        total_points=Sum("points_awarded"),
+        total_collected=Count("id"),
+    )
     unique_tips = (
-        collections.exclude(security_tip=None)
+        CollectedTreasure.objects.exclude(security_tip=None)
         .values("security_tip_id").distinct().count()
     )
     total_tips = SecurityTip.objects.count()
 
     return render(request, "aquarium/schatzkammer.html", {
         "collections": collections,
-        "total_collected": collections.count(),
+        "total_collected": agg["total_collected"],
         "unique_tips": unique_tips,
         "total_tips": total_tips,
-        "total_points": total_points,
+        "total_points": agg["total_points"] or 0,
     })
 
 

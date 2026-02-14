@@ -5,6 +5,7 @@ import json
 import logging
 import urllib.request
 import urllib.error
+from concurrent.futures import ThreadPoolExecutor
 
 from django.conf import settings
 from django.core.cache import cache
@@ -128,11 +129,16 @@ def lookup_ip(ip_address: str) -> dict:
             cached["cached"] = True
             return cached
 
+    # Run both API calls in parallel (5s each → 5s total instead of 10s)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        shodan_future = pool.submit(_fetch_shodan, ip_address)
+        abuse_future = pool.submit(_fetch_abuseipdb, ip_address)
+
     result = {
         "ip": ip_address,
         "cached": False,
-        "shodan": _fetch_shodan(ip_address),
-        "abuseipdb": _fetch_abuseipdb(ip_address),
+        "shodan": shodan_future.result(),
+        "abuseipdb": abuse_future.result(),
     }
 
     cache.set(cache_key, result, _CACHE_TTL)
