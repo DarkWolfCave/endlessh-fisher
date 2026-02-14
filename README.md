@@ -112,6 +112,8 @@ influx query 'from(bucket:"YOUR_BUCKET")
   |> distinct(column:"host")'
 ```
 
+**Adding servers later:** Edit `servers.toml` and re-run `setup_servers` — existing data is preserved.
+
 ## Production Deployment
 
 Two Docker Compose configs are provided:
