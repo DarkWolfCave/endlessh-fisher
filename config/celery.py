@@ -2,6 +2,7 @@
 Celery App Configuration for Endlessh Fisher.
 
 Scheduled Tasks:
+- Every 10 sec: Warm live pond cache (prevents slow InfluxDB hits on page load)
 - Every 5 min:  Sync bot data from InfluxDB
 - Every 1 hour: Aggregate daily statistics
 - Every 10 min: Check achievement thresholds
@@ -56,5 +57,9 @@ app.conf.beat_schedule = {
     "evaluate-daily-challenges": {
         "task": "apps.collector.tasks.evaluate_daily_challenges_task",
         "schedule": 600.0,  # every 10 minutes
+    },
+    "warm-pond-cache": {
+        "task": "apps.collector.tasks.warm_pond_cache",
+        "schedule": 10.0,  # every 10 seconds — keeps 12s cache always warm
     },
 }
