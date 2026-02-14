@@ -156,4 +156,3 @@ networks:
     external: true
   endlessh_internal:
     driver: bridge
-    internal: true
