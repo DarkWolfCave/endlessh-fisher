@@ -182,7 +182,7 @@ TREASURE_TYPES = [
         "rarity_color": "#9CA3AF",
         "points": 5,
         "spawn_weight": 100,
-        "min_active_fish": 1,
+        "min_pond_percentile": 0,
         "sort_order": 1,
     },
     {
@@ -195,7 +195,7 @@ TREASURE_TYPES = [
         "rarity_color": "#60A5FA",
         "points": 8,
         "spawn_weight": 80,
-        "min_active_fish": 2,
+        "min_pond_percentile": 10,
         "sort_order": 2,
     },
     {
@@ -208,7 +208,7 @@ TREASURE_TYPES = [
         "rarity_color": "#E2E8F0",
         "points": 15,
         "spawn_weight": 40,
-        "min_active_fish": 3,
+        "min_pond_percentile": 20,
         "sort_order": 3,
     },
     {
@@ -221,7 +221,7 @@ TREASURE_TYPES = [
         "rarity_color": "#FBBF24",
         "points": 20,
         "spawn_weight": 30,
-        "min_active_fish": 4,
+        "min_pond_percentile": 30,
         "sort_order": 4,
     },
     {
@@ -234,7 +234,7 @@ TREASURE_TYPES = [
         "rarity_color": "#60A5FA",
         "points": 40,
         "spawn_weight": 15,
-        "min_active_fish": 5,
+        "min_pond_percentile": 45,
         "sort_order": 5,
     },
     {
@@ -247,7 +247,7 @@ TREASURE_TYPES = [
         "rarity_color": "#34D399",
         "points": 50,
         "spawn_weight": 10,
-        "min_active_fish": 6,
+        "min_pond_percentile": 55,
         "sort_order": 6,
     },
     {
@@ -260,7 +260,7 @@ TREASURE_TYPES = [
         "rarity_color": "#A78BFA",
         "points": 100,
         "spawn_weight": 5,
-        "min_active_fish": 8,
+        "min_pond_percentile": 70,
         "sort_order": 7,
     },
     {
@@ -273,7 +273,7 @@ TREASURE_TYPES = [
         "rarity_color": "#818CF8",
         "points": 150,
         "spawn_weight": 3,
-        "min_active_fish": 10,
+        "min_pond_percentile": 80,
         "sort_order": 8,
     },
     {
@@ -286,7 +286,7 @@ TREASURE_TYPES = [
         "rarity_color": "#FBBF24",
         "points": 300,
         "spawn_weight": 1,
-        "min_active_fish": 15,
+        "min_pond_percentile": 93,
         "sort_order": 9,
     },
     {
@@ -299,7 +299,7 @@ TREASURE_TYPES = [
         "rarity_color": "#FF6B35",
         "points": 500,
         "spawn_weight": 1,
-        "min_active_fish": 20,
+        "min_pond_percentile": 98,
         "sort_order": 10,
     },
 ]

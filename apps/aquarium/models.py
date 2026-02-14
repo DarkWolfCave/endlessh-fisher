@@ -234,9 +234,9 @@ class TreasureType(TimeStampedModel):
         default=100,
         help_text="Relative spawn probability. Higher = more likely.",
     )
-    min_active_fish = models.PositiveSmallIntegerField(
-        default=1,
-        help_text="Minimum fish in pond for this treasure to spawn.",
+    min_pond_percentile = models.PositiveSmallIntegerField(
+        default=0,
+        help_text="Minimum pond activity percentile (0-100) for this treasure to spawn.",
     )
     css_class = models.CharField(max_length=50, blank=True, default="")
     sort_order = models.PositiveSmallIntegerField(default=0)

@@ -2,6 +2,28 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.1.0] - 2026-02-14
+
+### Changed
+
+- **Adaptive Treasure Thresholds** — treasure spawn requirements now use
+  percentile-based pond activity instead of fixed fish counts. A 7-day rolling
+  histogram tracks your pond's activity and adjusts thresholds automatically.
+  Small setups (2-3 concurrent bots) and large setups (200+ concurrent bots)
+  now have equally fair access to rare treasures like the Wolf Head.
+- During warmup (first ~50 minutes), all treasures are available to give new
+  users a welcome experience. Spawn weights still limit rare drops.
+- Renamed `min_active_fish` to `min_pond_percentile` on TreasureType model.
+
+### Migration Notes
+
+After updating, run:
+
+```bash
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py seed_game_data
+```
+
 ## [1.0.0] - 2025-02-13
 
 Initial public release.

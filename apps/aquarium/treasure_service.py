@@ -1,7 +1,9 @@
 """Treasure spawning and collection logic for the live pond."""
 
 import hashlib
+import json
 import random
+import time
 import uuid
 
 from django.core.cache import cache
@@ -38,6 +40,69 @@ _CACHE_TTL = 30  # Slightly longer than pond poll (15s)
 _COOLDOWN_KEY = "endlessh:treasure_cooldown"
 _SPAWN_COOLDOWN_KEY = "endlessh:treasure_spawn_cd"
 
+# --- Pond Activity Tracker ---
+# 7-day rolling window histogram for adaptive treasure thresholds.
+_ACTIVITY_KEY = "endlessh:pond_activity"
+_ACTIVITY_TTL = 7 * 24 * 3600  # 7 days
+_ACTIVITY_WARMUP = 200  # Samples before percentiles are reliable (~50 min)
+
+
+def record_pond_activity(fish_count: int) -> None:
+    """Record current fish count into the rolling histogram.
+
+    Called on every pond poll (~15s). Stores a compact histogram
+    in Redis: {"buckets": {"0": 500, "3": 120, ...}, "total": 5000,
+    "ring": [...last 40320 timestamps+values for 7d rolling window...]}
+    """
+    data = cache.get(_ACTIVITY_KEY)
+    now = time.time()
+    if not data:
+        data = {"buckets": {}, "total": 0, "ring": []}
+
+    bucket_key = str(int(fish_count))
+    data["buckets"][bucket_key] = data["buckets"].get(bucket_key, 0) + 1
+    data["total"] = data.get("total", 0) + 1
+    data["ring"].append((now, int(fish_count)))
+
+    # Prune entries older than 7 days from ring + adjust buckets
+    cutoff = now - _ACTIVITY_TTL
+    expired = []
+    kept = []
+    for ts, val in data["ring"]:
+        if ts < cutoff:
+            expired.append(val)
+        else:
+            kept.append((ts, val))
+
+    for val in expired:
+        bk = str(val)
+        data["buckets"][bk] = data["buckets"].get(bk, 1) - 1
+        if data["buckets"][bk] <= 0:
+            del data["buckets"][bk]
+        data["total"] = max(0, data["total"] - 1)
+    data["ring"] = kept
+
+    cache.set(_ACTIVITY_KEY, data, _ACTIVITY_TTL)
+
+
+def get_pond_percentile(fish_count: int) -> int:
+    """Return the percentile (0-100) of the given fish count.
+
+    During warmup (<200 samples), returns -1 to signal that callers
+    should use fallback logic.
+    """
+    data = cache.get(_ACTIVITY_KEY)
+    if not data or data.get("total", 0) < _ACTIVITY_WARMUP:
+        return -1  # Warmup phase
+
+    total = data["total"]
+    below = 0
+    for bucket_key, count in data["buckets"].items():
+        if int(bucket_key) < fish_count:
+            below += count
+
+    return min(100, int(below * 100 / total))
+
 
 def _compute_treasure_position(treasure_id: str) -> dict:
     """Deterministic position for a treasure (same approach as fish)."""
@@ -70,10 +135,23 @@ def _select_security_tip(rarity: str) -> SecurityTip | None:
 
 
 def _select_treasure_type(active_fish_count: int) -> TreasureType | None:
-    """Weighted random selection based on active fish count."""
-    eligible = list(
-        TreasureType.objects.filter(min_active_fish__lte=active_fish_count)
-    )
+    """Weighted random selection based on adaptive pond activity percentile.
+
+    Uses a 7-day rolling histogram to determine how unusual the current
+    fish count is for THIS setup. During warmup (<200 samples), all
+    treasures are eligible if at least 1 fish is active (spawn_weight
+    still limits rare drops).
+    """
+    percentile = get_pond_percentile(active_fish_count)
+
+    if percentile == -1:
+        # Warmup phase: all treasures eligible, spawn_weight handles rarity
+        eligible = list(TreasureType.objects.all())
+    else:
+        eligible = list(
+            TreasureType.objects.filter(min_pond_percentile__lte=percentile)
+        )
+
     if not eligible:
         return None
     weights = [t.spawn_weight for t in eligible]
@@ -86,6 +164,9 @@ def get_active_treasures(active_fish_count: int) -> list[dict]:
     Manages treasure lifecycle in Redis cache.
     Called from the live_pond HTMX view.
     """
+    # Track pond activity for adaptive treasure thresholds
+    record_pond_activity(active_fish_count)
+
     now = timezone.now()
     treasures = cache.get(_CACHE_KEY) or []
 
