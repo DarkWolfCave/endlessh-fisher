@@ -35,6 +35,7 @@ x-backend-env: &backend-env
   - SHOW_REAL_IP=${SHOW_REAL_IP:-false}
   - GAME_LANGUAGE=${GAME_LANGUAGE:-de}
   - ABUSEIPDB_API_KEY=${ABUSEIPDB_API_KEY:-}
+  - TRAEFIK_TLS=${TRAEFIK_TLS:-true}
 
 x-backend-common: &backend-common
   build:
