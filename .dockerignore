@@ -1,0 +1,28 @@
+# Persistent data (bind mounts)
+data/
+
+# Git
+.git/
+.gitignore
+
+# Environment & Config (user-specific)
+.env
+*.env.local
+servers.toml
+
+# IDE
+.vscode/
+.idea/
+
+# Node (Tailwind build artifacts on host)
+node_modules/
+
+# OS
+.DS_Store
+
+# Claude Code
+CLAUDE.md
+
+# Docker
+docker-compose*.yml
+Dockerfile
