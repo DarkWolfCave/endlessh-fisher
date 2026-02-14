@@ -10,12 +10,14 @@
 #   name            - Display name shown in the UI
 #   host_identifier - MUST match the "host" tag in your InfluxDB data.
 #                     This is how the game connects to your endlessh metrics.
-#                     Find your values with:
-#                       influx query 'from(bucket:"YOUR_BUCKET")
-#                         |> range(start:-1h)
-#                         |> filter(fn:(r) => r._measurement == "endlessh_client_open_count")
-#                         |> keep(columns:["host"])
-#                         |> distinct(column:"host")'
+#                     Find your values with (adjust container, org, token, bucket):
+#                       docker exec YOUR_INFLUXDB_CONTAINER influx query \
+#                         --org YOUR_ORG --token YOUR_INFLUXDB_TOKEN \
+#                         'from(bucket:"YOUR_BUCKET")
+#                           |> range(start:-1h)
+#                           |> filter(fn:(r) => r._measurement == "endlessh_client_open_count")
+#                           |> keep(columns:["host"])
+#                           |> distinct(column:"host"])'
 #   description     - Short description for the server card
 #   pond_theme      - Visual theme: "ocean", "lake", or "reef"
 
