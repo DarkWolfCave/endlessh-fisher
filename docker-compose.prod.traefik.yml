@@ -109,6 +109,7 @@ services:
       traefik.http.routers.endlessh-fisher.service: endlessh-fisher
       traefik.http.services.endlessh-fisher.loadbalancer.server.port: "8000"
       traefik.http.services.endlessh-fisher.loadbalancer.healthcheck.path: /api/v1/health/
+      traefik.http.services.endlessh-fisher.loadbalancer.healthcheck.hostname: ${GAME_DOMAIN}
 
   backend_green:
     <<: *backend-common
@@ -117,6 +118,7 @@ services:
       <<: *traefik-labels
       traefik.http.services.endlessh-fisher.loadbalancer.server.port: "8000"
       traefik.http.services.endlessh-fisher.loadbalancer.healthcheck.path: /api/v1/health/
+      traefik.http.services.endlessh-fisher.loadbalancer.healthcheck.hostname: ${GAME_DOMAIN}
 
   celery_worker:
     <<: *backend-common
