@@ -2,7 +2,7 @@
 {% for catch in recent_catches %}
 <a href="{% url 'aquarium:fish-detail' pk=catch.pk %}" class="feed-item feed-item-link">
     <span style="font-size: 1.25rem; color: {{ catch.species.rarity_color }};"
-          class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
+          class="glow-{{ catch.species.rarity }}">{{ catch.species.css_class|species_emoji }}</span>
     <div style="flex: 1;">
         <span style="font-weight: 600; color: {{ catch.species.rarity_color }};">
             {{ catch.species|lang:"name" }}

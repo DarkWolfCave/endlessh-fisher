@@ -141,7 +141,7 @@ def server_detail(request, slug):
     daily_stats = DailyStats.objects.filter(server=server)[:30]
     species_counts = (
         CaughtBot.objects.filter(server=server)
-        .values("species__name", "species__name_de", "species__rarity_color")
+        .values("species__name", "species__name_de", "species__rarity_color", "species__css_class")
         .annotate(count=Count("id"))
         .order_by("-count")
     )

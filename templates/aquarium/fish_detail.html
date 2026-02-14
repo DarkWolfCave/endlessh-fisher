@@ -11,7 +11,7 @@
 <div class="game-card" style="max-width: 600px;">
     <div style="text-align: center; margin-bottom: 1.5rem;">
         <span style="font-size: 4rem; color: {{ catch.species.rarity_color }};"
-              class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
+              class="glow-{{ catch.species.rarity }}">{{ catch.species.css_class|species_emoji }}</span>
         <h2 style="font-size: 1.5rem; font-weight: 700; color: {{ catch.species.rarity_color }}; margin-top: 0.5rem;">
             {{ catch.species|lang:"name" }}
         </h2>

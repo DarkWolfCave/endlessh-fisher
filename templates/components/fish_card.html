@@ -3,7 +3,7 @@
     <div style="display: flex; justify-content: space-between; align-items: start;">
         <div>
             <span style="font-size: 2rem; color: {{ catch.species.rarity_color }};"
-                  class="glow-{{ catch.species.rarity }}">&#x1F41F;</span>
+                  class="glow-{{ catch.species.rarity }}">{{ catch.species.css_class|species_emoji }}</span>
         </div>
         <span class="badge badge-{{ catch.species.rarity|default:'common' }}">
             {{ catch.species.rarity|rarity_de }}
