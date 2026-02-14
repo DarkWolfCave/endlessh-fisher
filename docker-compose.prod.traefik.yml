@@ -7,6 +7,7 @@
 #   TRAEFIK_NETWORK    - Name of your Traefik Docker network (default: proxy)
 #   TRAEFIK_ENTRYPOINT - HTTPS entrypoint name in your Traefik config (default: websecure)
 #   GAME_DOMAIN        - Your domain for Endlessh Fisher
+#   TRAEFIK_TLS        - Enable TLS/HTTPS (default: true, set to false for HTTP-only)
 #   CERT_RESOLVER      - Traefik certificate resolver name (default: letsencrypt)
 #
 # For a simpler setup without Traefik, use docker-compose.prod.yml instead.
@@ -104,8 +105,8 @@ services:
       <<: *traefik-labels
       traefik.http.routers.endlessh-fisher.rule: "Host(`${GAME_DOMAIN}`)"
       traefik.http.routers.endlessh-fisher.entrypoints: ${TRAEFIK_ENTRYPOINT:-websecure}
-      traefik.http.routers.endlessh-fisher.tls: "true"
-      traefik.http.routers.endlessh-fisher.tls.certresolver: ${CERT_RESOLVER:-letsencrypt}
+      traefik.http.routers.endlessh-fisher.tls: "${TRAEFIK_TLS:-true}"
+      traefik.http.routers.endlessh-fisher.tls.certresolver: ${CERT_RESOLVER:-}
       traefik.http.routers.endlessh-fisher.service: endlessh-fisher
       traefik.http.services.endlessh-fisher.loadbalancer.server.port: "8000"
       traefik.http.services.endlessh-fisher.loadbalancer.healthcheck.path: /api/v1/health/
