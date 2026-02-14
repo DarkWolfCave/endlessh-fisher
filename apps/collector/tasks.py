@@ -118,6 +118,9 @@ def sync_bot_data(self):
 
                 obj, created = CaughtBot.objects.update_or_create(
                     influx_fingerprint=fingerprint,
+                    create_defaults={
+                        "first_seen": conn["time"],
+                    },
                     defaults={
                         "server": server,
                         "species": species,
@@ -129,7 +132,6 @@ def sync_bot_data(self):
                         "local_port": int(conn.get("local_port", 22) or 22),
                         "trapped_seconds": trapped_seconds,
                         "connection_count": int(conn.get("open_count", 1)),
-                        "first_seen": conn["time"],
                         "last_seen": conn["time"],
                         "score": score,
                     },
