@@ -17,6 +17,7 @@ x-traefik-labels: &traefik-labels
   traefik.docker.network: ${TRAEFIK_NETWORK:-proxy}
 
 x-backend-env: &backend-env
+  - PYTHONUNBUFFERED=1
   - DJANGO_SETTINGS_MODULE=config.settings.production
   - SECRET_KEY=${SECRET_KEY}
   - ALLOWED_HOSTS=${ALLOWED_HOSTS}

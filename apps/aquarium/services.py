@@ -97,16 +97,18 @@ def _compute_fish_position(fish_id: str) -> dict:
 
 # --- Live Pond ---
 
-def get_pond_fish() -> dict:
+def get_pond_fish(force_refresh: bool = False) -> dict:
     """Build live pond data: currently active bots as fish.
 
     Returns dict with fish list, total_active count, and last_updated timestamp.
-    Cached 12 seconds in Redis.
+    Cached 12 seconds in Redis. Use force_refresh=True to bypass cache read
+    (used by cache warming task).
     """
     cache_key = "endlessh:live_pond"
-    cached = cache.get(cache_key)
-    if cached is not None:
-        return cached
+    if not force_refresh:
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return cached
 
     active_bots = query_active_bots()
     servers = {s.host_identifier: s for s in Server.objects.filter(is_active=True)}

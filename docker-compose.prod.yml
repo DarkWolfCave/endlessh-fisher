@@ -6,6 +6,7 @@
 # For a Traefik + Blue-Green setup, see docker-compose.prod.traefik.yml
 
 x-backend-env: &backend-env
+  - PYTHONUNBUFFERED=1
   - DJANGO_SETTINGS_MODULE=config.settings.production
   - SECRET_KEY=${SECRET_KEY}
   - ALLOWED_HOSTS=${ALLOWED_HOSTS}

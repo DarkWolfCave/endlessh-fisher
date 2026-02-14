@@ -307,7 +307,9 @@ def warm_pond_cache():
     """Pre-warm the live pond cache so no user request pays the InfluxDB cost."""
     from apps.aquarium.services import get_pond_fish
 
-    # Force cache rebuild by deleting first
-    cache.delete("endlessh:live_pond")
-    data = get_pond_fish()
-    return f"{data['total_active']} active bots cached"
+    try:
+        data = get_pond_fish(force_refresh=True)
+        return f"{data['total_active']} active bots cached"
+    except Exception:
+        logger.debug("Cache warming failed, keeping stale cache", exc_info=True)
+        return "warming failed, stale cache preserved"
