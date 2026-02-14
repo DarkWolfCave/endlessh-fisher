@@ -19,7 +19,7 @@ def generate_daily_challenges(target_date=None) -> list[str]:
     Returns list of generated challenge descriptions.
     """
     if target_date is None:
-        target_date = timezone.now().date()
+        target_date = timezone.localtime().date()
 
     # Skip if already generated
     if DailyChallenge.objects.filter(date=target_date).count() >= 3:
@@ -70,7 +70,7 @@ def evaluate_daily_challenges(target_date=None) -> list[str]:
     Returns list of newly completed challenge descriptions.
     """
     if target_date is None:
-        target_date = timezone.now().date()
+        target_date = timezone.localtime().date()
 
     challenges = DailyChallenge.objects.filter(
         date=target_date, is_completed=False
@@ -149,7 +149,7 @@ def evaluate_daily_challenges(target_date=None) -> list[str]:
 
 def get_today_challenges() -> list[dict]:
     """Get today's challenges with progress for display."""
-    today = timezone.now().date()
+    today = timezone.localtime().date()
     challenges = DailyChallenge.objects.filter(
         date=today
     ).select_related("template")

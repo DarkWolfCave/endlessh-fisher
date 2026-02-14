@@ -171,7 +171,7 @@ def sync_bot_data(self):
 @shared_task
 def aggregate_daily_stats():
     """Aggregate daily statistics per server. Runs every hour."""
-    today = timezone.now().date()
+    today = timezone.localtime().date()
 
     for server in Server.objects.filter(is_active=True):
         today_catches = CaughtBot.objects.filter(
