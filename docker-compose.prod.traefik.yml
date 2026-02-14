@@ -43,6 +43,9 @@ x-backend-common: &backend-common
     dockerfile: Dockerfile
     target: production
   restart: unless-stopped
+  dns:
+    - 1.1.1.1
+    - 8.8.8.8
   environment: *backend-env
   volumes:
     - ./servers.toml:/app/servers.toml:ro
@@ -71,7 +74,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_fisher}"]
       interval: 10s
@@ -86,7 +89,7 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     volumes:
-      - redis_data:/data
+      - ./data/redis:/data
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
@@ -145,10 +148,6 @@ services:
     labels: {}
     healthcheck:
       disable: true
-
-volumes:
-  postgres_data:
-  redis_data:
 
 networks:
   traefik_ext:
