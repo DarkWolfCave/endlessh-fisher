@@ -26,6 +26,7 @@ class Command(BaseCommand):
             self._seed_challenge_templates()
             self._seed_achievement_categories()
             self._seed_achievements()
+            self._update_dynamic_thresholds()
 
         self.stdout.write(self.style.SUCCESS("Game data seeded successfully!"))
 
@@ -109,3 +110,14 @@ class Command(BaseCommand):
         self.stdout.write(
             f"  Achievements: {created} created, {len(ACHIEVEMENTS)} total"
         )
+
+    def _update_dynamic_thresholds(self):
+        """Update achievements whose thresholds track total tip counts."""
+        tip_count_map = {
+            "security-scholar": SecurityTip.objects.filter(tip_type="security").count(),
+            "tip-completionist": SecurityTip.objects.count(),
+        }
+        for slug, count in tip_count_map.items():
+            updated = Achievement.objects.filter(slug=slug).update(threshold=count)
+            if updated:
+                self.stdout.write(f"  Dynamic threshold: {slug} \u2192 {count}")

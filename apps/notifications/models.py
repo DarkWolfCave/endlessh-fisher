@@ -16,6 +16,7 @@ class Notification(TimeStampedModel):
         ("achievement", "Achievement Unlocked"),
         ("challenge", "Daily Challenge Completed"),
         ("rare_catch", "Rare Fish Caught"),
+        ("treasure", "Treasure Tip Discovered"),
     ]
 
     RARITY_CHOICES = [

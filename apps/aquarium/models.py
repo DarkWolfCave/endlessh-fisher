@@ -188,6 +188,17 @@ class SecurityTip(TimeStampedModel):
         ("network", "Network"),
         ("container", "Container"),
         ("strategy", "Strategy"),
+        ("fun", "Fun & Humor"),
+        ("article", "Article"),
+        ("promo", "Promotion"),
+    ]
+
+    TIP_TYPE_CHOICES = [
+        ("security", "Security Tip"),
+        ("fun_fact", "Fun Fact"),
+        ("humor", "Humor"),
+        ("article", "Article Link"),
+        ("promo", "Project Promo"),
     ]
 
     slug = models.SlugField(unique=True, max_length=80)
@@ -200,14 +211,17 @@ class SecurityTip(TimeStampedModel):
     source_label_de = models.CharField(max_length=200, blank=True, default="")
     rarity = models.CharField(max_length=20, choices=RARITY_CHOICES)
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
+    tip_type = models.CharField(
+        max_length=20, choices=TIP_TYPE_CHOICES, default="security", db_index=True
+    )
     emoji = models.CharField(max_length=10, default="\U0001F512")
     sort_order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
-        ordering = ["rarity", "sort_order"]
+        ordering = ["tip_type", "sort_order"]
 
     def __str__(self):
-        return f"{self.emoji} {self.title_de} ({self.rarity})"
+        return f"{self.emoji} {self.title_de} ({self.tip_type}/{self.rarity})"
 
 
 class TreasureType(TimeStampedModel):
@@ -237,6 +251,10 @@ class TreasureType(TimeStampedModel):
     min_pond_percentile = models.PositiveSmallIntegerField(
         default=0,
         help_text="Minimum pond activity percentile (0-100) for this treasure to spawn.",
+    )
+    preferred_tip_types = models.CharField(
+        max_length=100, blank=True, default="",
+        help_text="Comma-separated tip_types (e.g. 'article,promo'). Empty = security,fun_fact,humor.",
     )
     css_class = models.CharField(max_length=50, blank=True, default="")
     sort_order = models.PositiveSmallIntegerField(default=0)

@@ -44,6 +44,8 @@ class Achievement(TimeStampedModel):
         ("ip_lookups_tor", "Tor Exit Nodes Found"),
         ("ip_lookups_dangerous_ports", "IPs with Dangerous Ports"),
         ("ip_lookups_vulns", "IPs with Known Vulnerabilities"),
+        ("unique_security_tips", "Unique Security Tips Collected"),
+        ("unique_tips_total", "Unique Tips Total (all types)"),
     ]
 
     RARITY_CHOICES = [

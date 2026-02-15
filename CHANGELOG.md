@@ -2,6 +2,56 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.4.0] - 2026-02-15
+
+### Added
+
+- **5 Tip Categories** — SecurityTip model now supports `tip_type` field with
+  five categories: Security, Fun Facts, Humor, Article Links, and Project Promos.
+  Total tips expanded from 27 to 73.
+- **Flaschenpost Mechanic** — Message in a Bottle treasure now delivers article
+  links and project promos via `preferred_tip_types` on TreasureType. Rebalanced
+  to common rarity with higher spawn weight for regular discoveries.
+- **Discovery Progress** — Schatzkammer shows per-category progress bars
+  (e.g. "Security Tips: 12/35") tracking unique tip collection.
+- **"NEU!" Badge** — newly discovered tips display a pulsing badge in the
+  Schatzkammer for 24 hours after first collection.
+- **New-Tip Notifications** — discovering a tip for the first time creates a
+  persistent notification with a link to the Schatzkammer.
+- **Dynamic Achievement Thresholds** — `security-scholar` and `tip-completionist`
+  achievements automatically adjust their thresholds to match the total tip count
+  when running `seed_game_data`.
+- **2 New Achievements** — "Security Scholar" (gold, collect all security tips)
+  and "Tip Completionist" (diamond, collect all tips across all categories).
+- **16 Article Tips** — links to top-traffic DarkWolfCave.de tutorials
+  (Raspberry Pi, Docker, InfluxDB, Monitoring, etc.) with bilingual teasers.
+- **7 Fun Fact Tips** — verified IT trivia (HTTP 418, Grace Hopper's bug,
+  fork bomb, RFC 1149, etc.).
+- **11 Humor Tips** — IT stories and jokes (Bobby Tables, 500-Mile Email,
+  Toy Story 2 deletion, etc.).
+- **4 Project Promo Tips** — Wolf Digital Empire projects (CronWolf, WolfCoder,
+  Favoritenportal, MeinWolfshund).
+
+### Changed
+
+- Treasure notification toasts and inbox entries now display "Schatzkammer"
+  as category label and link to `/schatzkammer/` when clicked.
+- SecurityTip admin shows `tip_type` column and filter.
+- TreasureType admin shows `preferred_tip_types` column.
+
+### Migration Notes
+
+After updating, run:
+
+```bash
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py seed_game_data
+```
+
+Two new model fields are added via migration: `SecurityTip.tip_type` (default
+"security") and `TreasureType.preferred_tip_types` (default ""). Both are
+backwards-compatible and require no data migration.
+
 ## [1.3.1] - 2026-02-14
 
 ### Fixed

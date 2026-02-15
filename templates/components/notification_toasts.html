@@ -21,7 +21,7 @@
                 <span style="font-size: 1.5rem;" x-text="toast.emoji"></span>
                 <div style="flex: 1;">
                     <div style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; color: var(--color-text-muted); text-transform: uppercase;"
-                         x-text="toast.category === 'achievement' ? '{{ "Achievement"|t }}' : toast.category === 'challenge' ? '{{ "Herausforderung"|t }}' : '{{ "Seltener Fang"|t }}'"></div>
+                         x-text="toast.category === 'achievement' ? '{{ "Achievement"|t }}' : toast.category === 'challenge' ? '{{ "Herausforderung"|t }}' : toast.category === 'treasure' ? '{{ "Schatzkammer"|t }}' : '{{ "Seltener Fang"|t }}'"></div>
                     <div style="font-weight: 700; font-size: 0.95rem;"
                          x-text="toast.title"
                          :style="'color: ' + toast.rarity_color"></div>

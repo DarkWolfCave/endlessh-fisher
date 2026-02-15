@@ -113,25 +113,90 @@ def _compute_treasure_position(treasure_id: str) -> dict:
     }
 
 
-def _select_security_tip(rarity: str) -> SecurityTip | None:
-    """Select a random security tip, preferring unseen tips of matching rarity."""
+# Default tip types for regular treasures (not Flaschenpost)
+_DEFAULT_TIP_TYPES = ["security", "fun_fact", "humor"]
+
+_TIP_TYPE_LABELS = {
+    "security": "Security Tip",
+    "fun_fact": "Fun Fact",
+    "humor": "Humor",
+    "article": "Article",
+    "promo": "Discovery",
+}
+_TIP_TYPE_LABELS_DE = {
+    "security": "Sicherheitstipp",
+    "fun_fact": "Fun Fact",
+    "humor": "Humor",
+    "article": "Artikel",
+    "promo": "Entdeckung",
+}
+
+_RARITY_COLORS = {
+    "common": "#9CA3AF",
+    "uncommon": "#60A5FA",
+    "rare": "#FB923C",
+    "epic": "#A78BFA",
+    "legendary": "#FBBF24",
+}
+
+
+def _notify_new_tip(tip: "SecurityTip") -> None:
+    """Send a notification when a tip is discovered for the first time."""
+    try:
+        from apps.notifications.services import create_notification
+
+        label = _TIP_TYPE_LABELS.get(tip.tip_type, "Tip")
+        label_de = _TIP_TYPE_LABELS_DE.get(tip.tip_type, "Tipp")
+        create_notification(
+            category="treasure",
+            title=f"New {label}: {tip.title}",
+            title_de=f"Neuer {label_de}: {tip.title_de}",
+            emoji=tip.emoji,
+            rarity=tip.rarity,
+            rarity_color=_RARITY_COLORS.get(tip.rarity, "#9CA3AF"),
+        )
+    except Exception:
+        pass  # Notification failure should never block treasure collection
+
+
+def _select_security_tip(
+    rarity: str, tip_types: list[str] | None = None
+) -> tuple[SecurityTip | None, bool]:
+    """Select a random security tip, preferring unseen tips of matching rarity.
+
+    Args:
+        rarity: Rarity to prefer (matching treasure rarity).
+        tip_types: List of tip_type values to filter by.
+            None = default types (security, fun_fact, humor).
+
+    Returns:
+        Tuple of (tip, is_new) where is_new indicates first-time discovery.
+    """
+    if tip_types is None:
+        tip_types = _DEFAULT_TIP_TYPES
+
     seen_ids = set(
         CollectedTreasure.objects.exclude(security_tip=None)
         .values_list("security_tip_id", flat=True)
     )
+    base_qs = SecurityTip.objects.filter(tip_type__in=tip_types)
+
     # 1st: unseen tip of matching rarity
-    candidates = SecurityTip.objects.filter(rarity=rarity).exclude(id__in=seen_ids)
+    candidates = base_qs.filter(rarity=rarity).exclude(id__in=seen_ids)
     if not candidates.exists():
-        # 2nd: any unseen tip
-        candidates = SecurityTip.objects.exclude(id__in=seen_ids)
+        # 2nd: any unseen tip (within tip_types)
+        candidates = base_qs.exclude(id__in=seen_ids)
     if not candidates.exists():
         # All seen — recycle a tip of matching rarity
-        candidates = SecurityTip.objects.filter(rarity=rarity)
+        candidates = base_qs.filter(rarity=rarity)
     if not candidates.exists():
-        candidates = SecurityTip.objects.all()
+        candidates = base_qs.all()
     if not candidates.exists():
-        return None
-    return candidates.order_by("?").first()
+        return None, False
+
+    tip = candidates.order_by("?").first()
+    is_new = tip is not None and tip.id not in seen_ids
+    return tip, is_new
 
 
 def _select_treasure_type(active_fish_count: int) -> TreasureType | None:
@@ -260,7 +325,12 @@ def collect_treasure(pond_treasure_id: str) -> dict | None:
         return None
 
     # Select a security tip (prefer unseen, matching rarity)
-    tip = _select_security_tip(treasure_type.rarity)
+    tip_types = (
+        treasure_type.preferred_tip_types.split(",")
+        if treasure_type.preferred_tip_types
+        else None
+    )
+    tip, is_new_tip = _select_security_tip(treasure_type.rarity, tip_types=tip_types)
 
     CollectedTreasure.objects.create(
         treasure_type=treasure_type,
@@ -270,6 +340,10 @@ def collect_treasure(pond_treasure_id: str) -> dict | None:
         active_fish_count=active_fish_count,
         points_awarded=treasure_type.points,
     )
+
+    # Notify on first-time tip discovery
+    if tip and is_new_tip:
+        _notify_new_tip(tip)
 
     # Remove from active treasures in cache
     treasures = [t for t in treasures if t["id"] != pond_treasure_id]
@@ -292,6 +366,7 @@ def collect_treasure(pond_treasure_id: str) -> dict | None:
             "source_url": tip.source_url,
             "source_label": _localized(tip, "source_label"),
             "rarity": tip.rarity,
+            "tip_type": tip.tip_type,
         }
 
     return result

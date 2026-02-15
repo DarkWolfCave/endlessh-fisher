@@ -10,9 +10,9 @@ from .models import (
 
 @admin.register(SecurityTip)
 class SecurityTipAdmin(admin.ModelAdmin):
-    list_display = ["title_de", "slug", "emoji", "rarity", "category", "sort_order"]
-    list_filter = ["rarity", "category"]
-    ordering = ["rarity", "sort_order"]
+    list_display = ["title_de", "slug", "emoji", "tip_type", "rarity", "category", "sort_order"]
+    list_filter = ["tip_type", "rarity", "category"]
+    ordering = ["tip_type", "sort_order"]
     search_fields = ["title_de", "content_de"]
 
 
@@ -59,7 +59,7 @@ class CountryStatsAdmin(admin.ModelAdmin):
 
 @admin.register(TreasureType)
 class TreasureTypeAdmin(admin.ModelAdmin):
-    list_display = ["name_de", "slug", "emoji", "rarity", "points", "spawn_weight", "sort_order"]
+    list_display = ["name_de", "slug", "emoji", "rarity", "points", "spawn_weight", "preferred_tip_types", "sort_order"]
     list_filter = ["rarity"]
     ordering = ["sort_order"]
 

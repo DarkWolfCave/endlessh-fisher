@@ -1211,6 +1211,34 @@
             color: var(--color-text-muted);
         }
 
+        /* Vault: Discovery Progress */
+        .vault-progress { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+        .vault-progress-item { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 0.5rem; padding: 0.75rem; }
+        .vault-progress-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.875rem; }
+        .vault-progress-bar { height: 0.5rem; background: var(--color-surface-2); border-radius: 0.25rem; overflow: hidden; }
+        .vault-progress-fill { height: 100%; background: var(--color-accent); border-radius: 0.25rem; transition: width 0.5s ease; }
+        .vault-progress-complete { background: var(--color-uncommon); }
+        .vault-badge-new {
+            background: var(--color-accent); color: #000;
+            font-size: 0.65rem; font-weight: 700;
+            padding: 0.1rem 0.4rem; border-radius: 0.25rem;
+            margin-left: 0.5rem;
+            animation: pulse-new 2s infinite;
+        }
+        @keyframes pulse-new { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .vault-tip-type-badge {
+            display: inline-block;
+            font-size: 0.7rem; font-weight: 600;
+            padding: 0.15rem 0.5rem; border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+            background: var(--color-surface-2); color: var(--color-text-muted);
+        }
+        .vault-tip-type-security { color: var(--color-accent); }
+        .vault-tip-type-fun_fact { color: #FBBF24; }
+        .vault-tip-type-humor { color: #FB923C; }
+        .vault-tip-type-article { color: #60A5FA; }
+        .vault-tip-type-promo { color: #A78BFA; }
+
         /* ========================================
            NOTIFICATIONS
            ======================================== */

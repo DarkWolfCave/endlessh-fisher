@@ -2,6 +2,7 @@
 
 import json
 
+from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Count, Max, Min, OuterRef, Subquery, Sum
 from django.shortcuts import get_object_or_404, render
@@ -188,12 +189,64 @@ def schatzkammer(request):
     )
     total_tips = SecurityTip.objects.count()
 
+    # Per-category discovery progress
+    tip_type_meta = [
+        ("security", "\U0001F512", "Sicherheitstipps", "Security Tips"),
+        ("fun_fact", "\U0001F4A1", "Fun Facts", "Fun Facts"),
+        ("humor", "\U0001F602", "Humor", "Humor"),
+        ("article", "\U0001F4F0", "Artikel", "Articles"),
+        ("promo", "\U0001F43A", "Projekte", "Projects"),
+    ]
+    game_lang = getattr(settings, "GAME_LANGUAGE", "de")
+    tip_progress = []
+    for tip_type, emoji, label_de, label_en in tip_type_meta:
+        total = SecurityTip.objects.filter(tip_type=tip_type).count()
+        if total == 0:
+            continue
+        collected = (
+            CollectedTreasure.objects.exclude(security_tip=None)
+            .filter(security_tip__tip_type=tip_type)
+            .values("security_tip_id").distinct().count()
+        )
+        tip_progress.append({
+            "type": tip_type,
+            "label": label_de if game_lang == "de" else label_en,
+            "emoji": emoji,
+            "collected": collected,
+            "total": total,
+            "percent": min(100, int(collected * 100 / total)) if total > 0 else 0,
+        })
+
+    # "NEU!" badge: tip IDs discovered for the first time in the last 24h
+    from django.utils import timezone as tz
+    cutoff = tz.now() - tz.timedelta(hours=24)
+    recent_tip_collections = (
+        CollectedTreasure.objects
+        .exclude(security_tip=None)
+        .filter(collected_at__gte=cutoff)
+        .values_list("security_tip_id", flat=True)
+    )
+    # A tip is "new" if it was first collected within the last 24h
+    new_tip_ids = set()
+    for tip_id in recent_tip_collections:
+        first_collection = (
+            CollectedTreasure.objects
+            .filter(security_tip_id=tip_id)
+            .order_by("collected_at")
+            .values_list("collected_at", flat=True)
+            .first()
+        )
+        if first_collection and first_collection >= cutoff:
+            new_tip_ids.add(tip_id)
+
     return render(request, "aquarium/schatzkammer.html", {
         "collections": collections,
         "total_collected": agg["total_collected"],
         "unique_tips": unique_tips,
         "total_tips": total_tips,
         "total_points": agg["total_points"] or 0,
+        "tip_progress": tip_progress,
+        "new_tip_ids": new_tip_ids,
     })
 
 

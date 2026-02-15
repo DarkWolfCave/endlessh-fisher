@@ -243,11 +243,12 @@ TREASURE_TYPES = [
         "name_de": "Flaschenpost",
         "description_de": "Eine Nachricht in einer Flasche. Wer hat sie geschrieben?",
         "emoji": "\U0001F9F4",
-        "rarity": "rare",
+        "rarity": "common",
         "rarity_color": "#34D399",
-        "points": 50,
-        "spawn_weight": 10,
-        "min_pond_percentile": 55,
+        "points": 15,
+        "spawn_weight": 60,
+        "min_pond_percentile": 0,
+        "preferred_tip_types": "article,promo",
         "sort_order": 6,
     },
     {
@@ -990,6 +991,1154 @@ SECURITY_TIPS = [
         "emoji": "\U0001F40B",
         "sort_order": 27,
     },
+    # --- New Security Tips (8): Extracted from darkwolfcave.de articles ---
+    {
+        "slug": "log-management-zentralisiert",
+        "title": "Centralized Log Management",
+        "title_de": "Zentralisiertes Log-Management",
+        "content": (
+            "Ship logs to a central server with rsyslog or Promtail + Loki. "
+            "Local logs can be deleted by attackers — centralized logs survive. "
+            "Set up log rotation (`logrotate`) to prevent disk overflow. "
+            "Correlating logs across multiple servers reveals attack patterns "
+            "invisible on individual machines."
+        ),
+        "content_de": (
+            "Leite Logs an einen zentralen Server weiter mit rsyslog oder Promtail + Loki. "
+            "Lokale Logs können von Angreifern gelöscht werden — zentrale Logs überleben. "
+            "Richte Log-Rotation ein (`logrotate`), um Festplattenüberlauf zu vermeiden. "
+            "Die Korrelation von Logs über mehrere Server hinweg enthüllt Angriffsmuster, "
+            "die auf einzelnen Maschinen unsichtbar bleiben."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave — Server Monitoring",
+        "source_label_de": "DarkWolfCave — Server-Monitoring",
+        "rarity": "common",
+        "category": "monitoring",
+        "tip_type": "security",
+        "emoji": "\U0001F4CA",
+        "sort_order": 28,
+    },
+    {
+        "slug": "passwort-manager-pflicht",
+        "title": "Password Manager: A Must-Have",
+        "title_de": "Passwort-Manager: Pflicht für jeden Admin",
+        "content": (
+            "Use a password manager like Vaultwarden (self-hosted Bitwarden), KeePassXC, "
+            "or 1Password. Generate unique 20+ character passwords for every service. "
+            "Reused passwords are the #1 reason credential stuffing attacks succeed. "
+            "Self-hosting with Vaultwarden keeps your vault under your own control."
+        ),
+        "content_de": (
+            "Nutze einen Passwort-Manager wie Vaultwarden (self-hosted Bitwarden), KeePassXC "
+            "oder 1Password. Generiere einzigartige 20+ Zeichen Passwörter für jeden Dienst. "
+            "Wiederverwendete Passwörter sind der #1 Grund, warum Credential-Stuffing-Angriffe "
+            "funktionieren. Self-Hosting mit Vaultwarden hält deinen Tresor unter eigener Kontrolle."
+        ),
+        "source_url": "https://darkwolfcave.de/vaultwarden-docker-linux-passwort-manager/",
+        "source_label": "DarkWolfCave — Vaultwarden Setup",
+        "source_label_de": "DarkWolfCave — Vaultwarden einrichten",
+        "rarity": "common",
+        "category": "auth",
+        "tip_type": "security",
+        "emoji": "\U0001F513",
+        "sort_order": 29,
+    },
+    {
+        "slug": "vpn-wireguard-einrichten",
+        "title": "VPN with WireGuard",
+        "title_de": "VPN mit WireGuard einrichten",
+        "content": (
+            "WireGuard is faster and simpler than OpenVPN: only ~4,000 lines of code "
+            "vs 100,000+. Set up a point-to-point VPN with `wg-quick` in minutes. "
+            "Combined with a kill switch (`PostDown = iptables -D ...`), your traffic "
+            "stays encrypted even if the tunnel drops. Perfect for admin access."
+        ),
+        "content_de": (
+            "WireGuard ist schneller und einfacher als OpenVPN: nur ~4.000 Zeilen Code "
+            "statt 100.000+. Richte ein Point-to-Point VPN mit `wg-quick` in Minuten ein. "
+            "Kombiniert mit einem Kill-Switch (`PostDown = iptables -D ...`) bleibt dein "
+            "Traffic verschlüsselt, selbst wenn der Tunnel abreißt. Ideal für Admin-Zugriff."
+        ),
+        "source_url": "https://darkwolfcave.de/netzwerk-sicherheit-firewall-zero-trust/",
+        "source_label": "DarkWolfCave — Network Security",
+        "source_label_de": "DarkWolfCave — Netzwerk-Sicherheit",
+        "rarity": "common",
+        "category": "network",
+        "tip_type": "security",
+        "emoji": "\U0001F50F",
+        "sort_order": 30,
+    },
+    {
+        "slug": "ssh-jump-host",
+        "title": "SSH Jump Host (ProxyJump)",
+        "title_de": "SSH Jump Host (ProxyJump)",
+        "content": (
+            "Never expose internal servers directly. Use a bastion/jump host: "
+            "`ssh -J bastion internal-server` or configure `ProxyJump bastion` "
+            "in `~/.ssh/config`. The jump host is the only machine with a public SSH port. "
+            "All internal access goes through this single, hardened entry point."
+        ),
+        "content_de": (
+            "Exponiere interne Server niemals direkt. Nutze einen Bastion/Jump Host: "
+            "`ssh -J bastion interner-server` oder konfiguriere `ProxyJump bastion` "
+            "in `~/.ssh/config`. Der Jump Host ist die einzige Maschine mit öffentlichem "
+            "SSH-Port. Jeder interne Zugriff geht durch diesen einzelnen, gehärteten Einstiegspunkt."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "uncommon",
+        "category": "ssh",
+        "tip_type": "security",
+        "emoji": "\U0001F3AF",
+        "sort_order": 31,
+    },
+    {
+        "slug": "port-knocking",
+        "title": "Port Knocking",
+        "title_de": "Port Knocking einrichten",
+        "content": (
+            "Hide SSH behind port knocking: the port stays closed until a specific "
+            "sequence of connection attempts is detected. Tools like `knockd` implement "
+            "this. Nmap scans see nothing — your SSH port is invisible to the entire "
+            "internet. A simple but effective obscurity layer on top of real security."
+        ),
+        "content_de": (
+            "Verstecke SSH hinter Port Knocking: Der Port bleibt geschlossen, bis eine "
+            "bestimmte Sequenz von Verbindungsversuchen erkannt wird. Tools wie `knockd` "
+            "implementieren das. Nmap-Scans sehen nichts — dein SSH-Port ist für das "
+            "gesamte Internet unsichtbar. Eine einfache aber effektive Verschleierungsschicht."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave — Hardening SSH Servers",
+        "source_label_de": "DarkWolfCave — SSH-Server absichern",
+        "rarity": "uncommon",
+        "category": "ssh",
+        "tip_type": "security",
+        "emoji": "\U0001F6AA",
+        "sort_order": 32,
+    },
+    {
+        "slug": "monitoring-alerting",
+        "title": "Monitoring with Alerting",
+        "title_de": "Monitoring mit Alerting aufsetzen",
+        "content": (
+            "Monitoring without alerting is just pretty dashboards. Set up "
+            "Prometheus + Grafana with alert rules, or use Uptime Kuma for "
+            "simple endpoint monitoring. Alert on: disk >90%, CPU >95% for 5min, "
+            "SSH login from unknown IP, service restart. A silent failure is "
+            "the most dangerous failure."
+        ),
+        "content_de": (
+            "Monitoring ohne Alerting sind nur hübsche Dashboards. Richte "
+            "Prometheus + Grafana mit Alert-Regeln ein, oder Uptime Kuma für "
+            "einfaches Endpoint-Monitoring. Alerts bei: Disk >90%, CPU >95% für 5min, "
+            "SSH-Login von unbekannter IP, Service-Neustart. Ein lautloser "
+            "Fehler ist der gefährlichste Fehler."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave — Server Monitoring",
+        "source_label_de": "DarkWolfCave — Server-Monitoring",
+        "rarity": "rare",
+        "category": "monitoring",
+        "tip_type": "security",
+        "emoji": "\U0001F514",
+        "sort_order": 33,
+    },
+    {
+        "slug": "reverse-proxy-waf",
+        "title": "Reverse Proxy as WAF",
+        "title_de": "Reverse Proxy als Web Application Firewall",
+        "content": (
+            "Put Traefik, Nginx, or Caddy as reverse proxy in front of every service. "
+            "Add rate limiting, IP whitelisting, and TLS termination at the proxy level. "
+            "Services behind the proxy only listen on internal Docker networks — "
+            "no direct internet exposure. ModSecurity or Coraza add WAF capabilities."
+        ),
+        "content_de": (
+            "Stelle Traefik, Nginx oder Caddy als Reverse Proxy vor jeden Dienst. "
+            "Füge Rate-Limiting, IP-Whitelisting und TLS-Terminierung auf Proxy-Ebene hinzu. "
+            "Dienste hinter dem Proxy lauschen nur auf internen Docker-Netzwerken — "
+            "keine direkte Internet-Exposition. ModSecurity oder Coraza ergänzen WAF-Fähigkeiten."
+        ),
+        "source_url": "https://darkwolfcave.de/traefik-docker-linux-einrichten/",
+        "source_label": "DarkWolfCave — Traefik Setup",
+        "source_label_de": "DarkWolfCave — Traefik einrichten",
+        "rarity": "rare",
+        "category": "network",
+        "tip_type": "security",
+        "emoji": "\U0001F6E1\uFE0F",
+        "sort_order": 34,
+    },
+    {
+        "slug": "dns-sinkhole-pihole",
+        "title": "DNS Sinkhole with Pi-hole",
+        "title_de": "DNS-Sinkhole mit Pi-hole",
+        "content": (
+            "Pi-hole blocks ads, trackers, and malware domains at the DNS level — "
+            "for your entire network. Combined with Unbound as recursive resolver, "
+            "you get full DNS privacy without relying on third-party DNS servers. "
+            "Block lists like Steven Black's host file cover 100,000+ known bad domains."
+        ),
+        "content_de": (
+            "Pi-hole blockiert Werbung, Tracker und Malware-Domains auf DNS-Ebene — "
+            "für dein gesamtes Netzwerk. Kombiniert mit Unbound als rekursiver Resolver "
+            "bekommst du volle DNS-Privatsphäre ohne fremde DNS-Server. "
+            "Blocklisten wie Steven Blacks Host-Datei decken 100.000+ bekannte böse Domains ab."
+        ),
+        "source_url": "https://darkwolfcave.de/pihole-unbound-fritzbox-ultimative-anleitung/",
+        "source_label": "DarkWolfCave — Pi-hole & Unbound",
+        "source_label_de": "DarkWolfCave — Pi-hole & Unbound",
+        "rarity": "epic",
+        "category": "network",
+        "tip_type": "security",
+        "emoji": "\U0001F30D",
+        "sort_order": 35,
+    },
+    # --- Fun Facts (7): Verified IT trivia ---
+    {
+        "slug": "http-418-teapot",
+        "title": "HTTP 418: I'm a Teapot",
+        "title_de": "HTTP 418: Ich bin eine Teekanne",
+        "content": (
+            "HTTP status code 418 'I'm a teapot' was defined in RFC 2324 as an "
+            "April Fools' joke in 1998. It describes the Hyper Text Coffee Pot Control "
+            "Protocol (HTCPCP). Despite being a joke, it's implemented in many web "
+            "frameworks and was even preserved when Google tried to remove it in 2017."
+        ),
+        "content_de": (
+            "HTTP-Statuscode 418 'I'm a teapot' wurde in RFC 2324 als Aprilscherz "
+            "1998 definiert. Er beschreibt das Hyper Text Coffee Pot Control Protocol "
+            "(HTCPCP). Obwohl es ein Witz war, ist er in vielen Web-Frameworks "
+            "implementiert und wurde sogar bewahrt, als Google ihn 2017 entfernen wollte."
+        ),
+        "source_url": "https://datatracker.ietf.org/doc/html/rfc2324",
+        "source_label": "RFC 2324 — HTCPCP",
+        "source_label_de": "RFC 2324 — HTCPCP",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "fun_fact",
+        "emoji": "\u2615",
+        "sort_order": 36,
+    },
+    {
+        "slug": "erster-computerbug-1947",
+        "title": "The First Computer Bug (1947)",
+        "title_de": "Der erste Computerbug (1947)",
+        "content": (
+            "On September 9, 1947, engineers found a real moth stuck in a relay of "
+            "the Harvard Mark II computer. Grace Hopper taped it into the logbook with "
+            "the note 'First actual case of bug being found.' The term 'bug' predates "
+            "this incident, but this is the most famous literal one."
+        ),
+        "content_de": (
+            "Am 9. September 1947 fanden Ingenieure eine echte Motte in einem Relais des "
+            "Harvard Mark II Computers. Grace Hopper klebte sie ins Logbuch mit der Notiz "
+            "'First actual case of bug being found.' Der Begriff 'Bug' ist älter als "
+            "dieser Vorfall, aber dies ist der berühmteste buchstäbliche."
+        ),
+        "source_url": "https://americanhistory.si.edu/collections/nmah_334663",
+        "source_label": "Smithsonian National Museum",
+        "source_label_de": "Smithsonian Nationalmuseum",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "fun_fact",
+        "emoji": "\U0001F41B",
+        "sort_order": 37,
+    },
+    {
+        "slug": "fork-bomb-bash",
+        "title": "The Fork Bomb: :(){ :|:&};:",
+        "title_de": "Die Fork-Bomb: :(){ :|:&};:",
+        "content": (
+            "This 13-character Bash one-liner `:(){ :|:&};:` defines a function "
+            "called `:` that calls itself twice in the background. It exponentially "
+            "spawns processes until the system crashes. Protection: "
+            "`ulimit -u 500` limits max processes per user. A beautiful example of "
+            "how dangerous elegance can be."
+        ),
+        "content_de": (
+            "Dieser 13-Zeichen Bash-Einzeiler `:(){ :|:&};:` definiert eine Funktion "
+            "namens `:`, die sich selbst zweimal im Hintergrund aufruft. Sie spawnt "
+            "exponentiell Prozesse bis das System abstürzt. Schutz: "
+            "`ulimit -u 500` begrenzt die maximale Prozessanzahl pro User. "
+            "Ein wunderschönes Beispiel, wie gefährlich Eleganz sein kann."
+        ),
+        "source_url": "https://en.wikipedia.org/wiki/Fork_bomb",
+        "source_label": "Wikipedia — Fork bomb",
+        "source_label_de": "Wikipedia — Fork-Bomb",
+        "rarity": "uncommon",
+        "category": "fun",
+        "tip_type": "fun_fact",
+        "emoji": "\U0001F4A3",
+        "sort_order": 38,
+    },
+    {
+        "slug": "ipv4-adressen-aufgebraucht",
+        "title": "IPv4 Addresses Ran Out",
+        "title_de": "IPv4-Adressen aufgebraucht",
+        "content": (
+            "On February 3, 2011, IANA allocated the last five /8 blocks of IPv4 "
+            "addresses. That's 4,294,967,296 total addresses — about 0.5 per human "
+            "alive. NAT and IPv6 are the workarounds, but in 2025, IPv4 addresses "
+            "still trade for $30-50 each on the secondary market."
+        ),
+        "content_de": (
+            "Am 3. Februar 2011 vergab die IANA die letzten fünf /8-Blöcke von "
+            "IPv4-Adressen. Das sind insgesamt 4.294.967.296 Adressen — etwa 0,5 pro "
+            "lebenden Menschen. NAT und IPv6 sind die Behelfslösungen, aber 2025 werden "
+            "IPv4-Adressen immer noch für 30-50 USD auf dem Sekundärmarkt gehandelt."
+        ),
+        "source_url": "https://en.wikipedia.org/wiki/IPv4_address_exhaustion",
+        "source_label": "Wikipedia — IPv4 address exhaustion",
+        "source_label_de": "Wikipedia — IPv4-Adressknappheit",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "fun_fact",
+        "emoji": "\U0001F4E6",
+        "sort_order": 39,
+    },
+    {
+        "slug": "linux-kernel-zeilen",
+        "title": "Linux Kernel: 30+ Million Lines",
+        "title_de": "Linux-Kernel: 30+ Millionen Zeilen",
+        "content": (
+            "The Linux kernel has over 30 million lines of code, maintained by "
+            "thousands of developers worldwide. Linus Torvalds wrote the first version "
+            "in 1991 with just 10,000 lines. It's the largest collaborative software "
+            "project in human history, running on everything from smartwatches to "
+            "supercomputers and 96.3% of the world's top 500 supercomputers."
+        ),
+        "content_de": (
+            "Der Linux-Kernel hat über 30 Millionen Zeilen Code, gepflegt von "
+            "Tausenden Entwicklern weltweit. Linus Torvalds schrieb die erste Version "
+            "1991 mit nur 10.000 Zeilen. Es ist das größte kollaborative Software-"
+            "Projekt der Menschheitsgeschichte und läuft auf Smartwatches bis "
+            "Supercomputer — 96,3% der Top-500-Supercomputer nutzen Linux."
+        ),
+        "source_url": "https://www.linuxfoundation.org/",
+        "source_label": "Linux Foundation",
+        "source_label_de": "Linux Foundation",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "fun_fact",
+        "emoji": "\U0001F427",
+        "sort_order": 40,
+    },
+    {
+        "slug": "rfc-1149-brieftauben",
+        "title": "RFC 1149: IP over Avian Carriers",
+        "title_de": "RFC 1149: IP über Brieftauben",
+        "content": (
+            "RFC 1149 (1990) describes how to transmit IP datagrams via carrier pigeons. "
+            "In 2001, the Bergen Linux User Group actually implemented it: 9 packets sent, "
+            "4 arrived — 55% packet loss and 3,000-6,000ms latency. They noted that "
+            "'ichtiological, avian and other biological carriers' are suboptimal for TCP."
+        ),
+        "content_de": (
+            "RFC 1149 (1990) beschreibt, wie man IP-Datagramme über Brieftauben überträgt. "
+            "2001 hat die Bergen Linux User Group es tatsächlich implementiert: 9 Pakete "
+            "gesendet, 4 angekommen — 55% Paketverlust und 3.000-6.000ms Latenz. "
+            "Sie notierten, dass 'ichthyologische, aviale und andere biologische Carrier' "
+            "für TCP suboptimal seien."
+        ),
+        "source_url": "https://datatracker.ietf.org/doc/html/rfc1149",
+        "source_label": "RFC 1149 — IP Datagrams on Avian Carriers",
+        "source_label_de": "RFC 1149 — IP über Brieftauben",
+        "rarity": "uncommon",
+        "category": "fun",
+        "tip_type": "fun_fact",
+        "emoji": "\U0001F54A\uFE0F",
+        "sort_order": 41,
+    },
+    {
+        "slug": "laengster-domainname",
+        "title": "World's Longest Domain Name",
+        "title_de": "Längster Domain-Name der Welt",
+        "content": (
+            "The Welsh village Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch "
+            "has its own website at llanfairpwllgwyngyllgogerychwyrndrobwllllantysilio"
+            "gogogoch.co.uk — 58 characters. But the longest valid domain label is 63 "
+            "characters (RFC 1035). The full domain can be up to 253 characters total."
+        ),
+        "content_de": (
+            "Das walisische Dorf Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch "
+            "hat eine eigene Website mit 58 Zeichen Domainnamen. Aber das längste gültige "
+            "Domain-Label ist 63 Zeichen (RFC 1035). Die gesamte Domain kann bis zu "
+            "253 Zeichen lang sein. Viel Spaß beim Tippen."
+        ),
+        "source_url": "https://en.wikipedia.org/wiki/Llanfairpwllgwyngyll",
+        "source_label": "Wikipedia — Llanfairpwllgwyngyll",
+        "source_label_de": "Wikipedia — Llanfairpwllgwyngyll",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "fun_fact",
+        "emoji": "\U0001F3F4\U000E0067\U000E0062\U000E0077\U000E006C\U000E0073\U000E007F",
+        "sort_order": 42,
+    },
+    # --- Humor (11): Verified IT stories and quotes ---
+    {
+        "slug": "bobby-tables",
+        "title": "Bobby Tables (xkcd 327)",
+        "title_de": "Bobby Tables (xkcd 327)",
+        "content": (
+            "'Hi, this is your son's school. We're having some computer trouble.' "
+            "'Oh, did he break something?' 'Did you really name your son "
+            "Robert\\'); DROP TABLE Students;--?' The most famous SQL injection "
+            "joke — and sadly, still relevant. Always use parameterized queries."
+        ),
+        "content_de": (
+            "'Hallo, hier ist die Schule Ihres Sohnes. Wir haben Computerprobleme.' "
+            "'Oh, hat er etwas kaputt gemacht?' 'Haben Sie Ihren Sohn wirklich "
+            "Robert\\'); DROP TABLE Students;-- genannt?' Der berühmteste "
+            "SQL-Injection-Witz — und leider immer noch aktuell. Immer parametrisierte Queries nutzen."
+        ),
+        "source_url": "https://xkcd.com/327/",
+        "source_label": "xkcd 327 — Exploits of a Mom",
+        "source_label_de": "xkcd 327 — Exploits of a Mom",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F4DD",
+        "sort_order": 43,
+    },
+    {
+        "slug": "works-on-my-machine",
+        "title": "Works on My Machine",
+        "title_de": "Funktioniert auf meiner Maschine",
+        "content": (
+            "'It works on my machine' — the most feared sentence in software development. "
+            "Docker was essentially invented to solve this problem. The unofficial certificate "
+            "'Works on My Machine' became a meme so popular that Docker practically made it "
+            "their marketing slogan. Containers: because environments shouldn't be unique snowflakes."
+        ),
+        "content_de": (
+            "'Es funktioniert auf meiner Maschine' — der gefürchtetste Satz in der "
+            "Softwareentwicklung. Docker wurde quasi erfunden, um dieses Problem zu lösen. "
+            "Das inoffizielle Zertifikat 'Works on My Machine' wurde ein Meme, das so "
+            "populär war, dass Docker es praktisch als Marketing-Slogan übernahm. "
+            "Container: weil Umgebungen keine Schneeflocken sein sollten."
+        ),
+        "source_url": "https://blog.codinghorror.com/the-works-on-my-machine-certification-program/",
+        "source_label": "Coding Horror — Works on My Machine",
+        "source_label_de": "Coding Horror — Works on My Machine",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F4BB",
+        "sort_order": 44,
+    },
+    {
+        "slug": "toy-story-2-rm-rf",
+        "title": "Toy Story 2: Almost Deleted by rm -rf",
+        "title_de": "Toy Story 2: Fast gelöscht durch rm -rf",
+        "content": (
+            "In 1998, someone accidentally ran `rm -rf *` on Pixar's Toy Story 2 "
+            "production servers, deleting 90% of the movie. The backups? Also corrupted. "
+            "The film was saved because a technical director had a full copy on her "
+            "home machine — she'd been working from home after having a baby. "
+            "The 3-2-1 backup rule exists for a reason."
+        ),
+        "content_de": (
+            "1998 führte jemand versehentlich `rm -rf *` auf Pixars Toy Story 2 "
+            "Produktionsservern aus und löschte 90% des Films. Die Backups? Ebenfalls "
+            "defekt. Der Film wurde gerettet, weil eine technische Direktorin eine "
+            "vollständige Kopie auf ihrem Heimrechner hatte — sie hatte nach der Geburt "
+            "ihres Babys von zu Hause gearbeitet. Die 3-2-1-Backup-Regel existiert aus gutem Grund."
+        ),
+        "source_url": "https://thenextweb.com/news/how-pixars-toy-story-2-was-deleted-twice",
+        "source_label": "TheNextWeb — Toy Story 2 Deletion",
+        "source_label_de": "TheNextWeb — Toy Story 2 Löschung",
+        "rarity": "uncommon",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F4A5",
+        "sort_order": 45,
+    },
+    {
+        "slug": "500-mile-email",
+        "title": "The 500-Mile Email Problem",
+        "title_de": "Das 500-Meilen-E-Mail-Problem",
+        "content": (
+            "In 2002, a sysadmin reported that emails couldn't be sent farther than "
+            "500 miles. Sounds insane? The server's sendmail had a 0-second timeout "
+            "due to a config bug. Light travels ~500 miles in 3ms — the TCP handshake "
+            "time. Any server farther away timed out before responding. "
+            "One of the greatest debugging stories ever told."
+        ),
+        "content_de": (
+            "2002 meldete ein Sysadmin, dass E-Mails nicht weiter als 500 Meilen "
+            "gesendet werden konnten. Klingt irre? Der sendmail-Server hatte einen "
+            "0-Sekunden-Timeout wegen eines Config-Bugs. Licht reist ~500 Meilen in 3ms "
+            "— die TCP-Handshake-Zeit. Jeder weiter entfernte Server bekam einen Timeout "
+            "vor der Antwort. Eine der größten Debugging-Geschichten aller Zeiten."
+        ),
+        "source_url": "https://web.mit.edu/jemorris/humor/500-miles",
+        "source_label": "Trey Harris — 500-Mile Email",
+        "source_label_de": "Trey Harris — 500-Meilen-E-Mail",
+        "rarity": "uncommon",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F4E7",
+        "sort_order": 46,
+    },
+    {
+        "slug": "zwei-harte-dinge-cs",
+        "title": "Two Hard Things in CS",
+        "title_de": "Zwei schwere Dinge in der Informatik",
+        "content": (
+            "'There are only 2 hard things in computer science: cache invalidation, "
+            "naming things, and off-by-one errors.' — Attributed to Phil Karlton "
+            "(with the off-by-one addition by Leon Bambrick). The joke is the error: "
+            "there are 3 items in a list of 2. Every developer has lived this pain."
+        ),
+        "content_de": (
+            "'Es gibt nur 2 schwere Dinge in der Informatik: Cache-Invalidierung, "
+            "Benennung von Dingen und Off-by-One-Fehler.' — Phil Karlton zugeschrieben "
+            "(mit dem Off-by-One-Zusatz von Leon Bambrick). Der Witz ist der Fehler: "
+            "Es sind 3 Punkte in einer Liste von 2. Jeder Entwickler kennt diesen Schmerz."
+        ),
+        "source_url": "https://martinfowler.com/bliki/TwoHardThings.html",
+        "source_label": "Martin Fowler — Two Hard Things",
+        "source_label_de": "Martin Fowler — Two Hard Things",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F914",
+        "sort_order": 47,
+    },
+    {
+        "slug": "y2k-bug",
+        "title": "Y2K Bug: $300 Billion for 2 Digits",
+        "title_de": "Y2K-Bug: 300 Milliarden Dollar für 2 Ziffern",
+        "content": (
+            "The Y2K bug: developers saved memory by storing years as 2 digits (99 instead "
+            "of 1999). When 2000 approached, the world spent an estimated $300 billion "
+            "fixing code so systems wouldn't think it was 1900. The fix worked so well "
+            "that people now think it was overblown. Classic 'prevention paradox.'"
+        ),
+        "content_de": (
+            "Der Y2K-Bug: Entwickler sparten Speicher, indem sie Jahre als 2 Ziffern "
+            "speicherten (99 statt 1999). Als 2000 nahte, gab die Welt geschätzt "
+            "300 Milliarden Dollar aus, um Code zu fixen, damit Systeme nicht dachten, "
+            "es sei 1900. Der Fix war so erfolgreich, dass Leute heute denken, "
+            "es war übertrieben. Klassisches 'Präventionsparadox.'"
+        ),
+        "source_url": "https://en.wikipedia.org/wiki/Year_2000_problem",
+        "source_label": "Wikipedia — Year 2000 problem",
+        "source_label_de": "Wikipedia — Jahr-2000-Problem",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F4C5",
+        "sort_order": 48,
+    },
+    {
+        "slug": "not-a-bug-a-feature",
+        "title": "It's Not a Bug, It's a Feature",
+        "title_de": "Kein Bug, ein Feature",
+        "content": (
+            "'It's not a bug, it's a feature' — the classic developer excuse since "
+            "the dawn of software. Originally used seriously by marketing teams to "
+            "reframe unexpected behavior. Now the universal response when a QA engineer "
+            "asks 'why does it do that?' The line between bug and feature is often "
+            "just a matter of perspective (and documentation)."
+        ),
+        "content_de": (
+            "'Das ist kein Bug, das ist ein Feature' — die klassische Entwickler-Ausrede "
+            "seit Anbeginn der Software. Ursprünglich ernsthaft von Marketing-Teams "
+            "verwendet, um unerwartetes Verhalten umzudeuten. Heute die universelle "
+            "Antwort, wenn ein QA-Tester fragt 'warum macht es das?' Die Grenze zwischen "
+            "Bug und Feature ist oft nur eine Frage der Perspektive (und der Dokumentation)."
+        ),
+        "source_url": "https://en.wikipedia.org/wiki/Undocumented_feature",
+        "source_label": "Wikipedia — Undocumented feature",
+        "source_label_de": "Wikipedia — Undokumentiertes Feature",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F60F",
+        "sort_order": 49,
+    },
+    {
+        "slug": "captcha-ironie",
+        "title": "CAPTCHA Irony: Bots Beat Humans",
+        "title_de": "CAPTCHA-Ironie: Bots schlagen Menschen",
+        "content": (
+            "CAPTCHAs were designed to tell humans and computers apart. Today's AI "
+            "solves them faster and more accurately than humans. Google's reCAPTCHA v3 "
+            "gave up on challenges entirely and just scores 'human-likeness' based on "
+            "behavior. The bots won the CAPTCHA arms race — we now prove our humanity "
+            "by how humanly we move our mouse."
+        ),
+        "content_de": (
+            "CAPTCHAs sollten Menschen von Computern unterscheiden. Heutige KI löst "
+            "sie schneller und genauer als Menschen. Googles reCAPTCHA v3 gab die "
+            "Herausforderungen komplett auf und bewertet nur noch 'Menschenähnlichkeit' "
+            "basierend auf Verhalten. Die Bots haben das CAPTCHA-Wettrüsten gewonnen — "
+            "wir beweisen unsere Menschlichkeit jetzt dadurch, wie menschlich wir die Maus bewegen."
+        ),
+        "source_url": "https://en.wikipedia.org/wiki/CAPTCHA",
+        "source_label": "Wikipedia — CAPTCHA",
+        "source_label_de": "Wikipedia — CAPTCHA",
+        "rarity": "uncommon",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F916",
+        "sort_order": 50,
+    },
+    {
+        "slug": "reddit-place",
+        "title": "r/place: The Pixel War",
+        "title_de": "r/place: Der Pixel-Krieg",
+        "content": (
+            "Reddit's r/place (2017, 2022, 2023): a shared 1000x1000 pixel canvas where "
+            "each user could place one pixel every 5 minutes. Communities formed alliances, "
+            "wrote bots, and waged wars over territory. The result: collaborative pixel art "
+            "from millions of users. A beautiful experiment in emergent behavior, "
+            "cooperation, and the internet's competitive spirit."
+        ),
+        "content_de": (
+            "Reddits r/place (2017, 2022, 2023): eine gemeinsame 1000x1000 Pixel-Leinwand, "
+            "auf der jeder User alle 5 Minuten einen Pixel setzen konnte. Communities "
+            "bildeten Allianzen, schrieben Bots und führten Kriege um Territorium. "
+            "Das Ergebnis: kollaborative Pixel-Kunst von Millionen Nutzern. "
+            "Ein Experiment über emergentes Verhalten, Kooperation und Wettbewerb im Internet."
+        ),
+        "source_url": "https://en.wikipedia.org/wiki/R/place",
+        "source_label": "Wikipedia — r/place",
+        "source_label_de": "Wikipedia — r/place",
+        "rarity": "uncommon",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F3A8",
+        "sort_order": 51,
+    },
+    {
+        "slug": "nasa-mars-orbiter",
+        "title": "NASA Mars Orbiter: Metric vs Imperial",
+        "title_de": "NASA Mars Orbiter: Metrisch vs Imperial",
+        "content": (
+            "In 1999, NASA lost the $125 million Mars Climate Orbiter because one team "
+            "used metric units (Newton-seconds) while another used imperial (pound-seconds). "
+            "The spacecraft entered Mars' atmosphere at the wrong altitude and burned up. "
+            "The most expensive unit conversion error in history. Always agree on units."
+        ),
+        "content_de": (
+            "1999 verlor die NASA den 125 Millionen Dollar teuren Mars Climate Orbiter, "
+            "weil ein Team metrische Einheiten (Newton-Sekunden) und ein anderes imperiale "
+            "(Pfund-Sekunden) verwendete. Die Sonde trat in der falschen Höhe in die "
+            "Mars-Atmosphäre ein und verglühte. Der teuerste Einheitenumrechnungsfehler "
+            "der Geschichte. Immer auf Einheiten einigen."
+        ),
+        "source_url": "https://solarsystem.nasa.gov/missions/mars-climate-orbiter/in-depth/",
+        "source_label": "NASA — Mars Climate Orbiter",
+        "source_label_de": "NASA — Mars Climate Orbiter",
+        "rarity": "rare",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F680",
+        "sort_order": 52,
+    },
+    {
+        "slug": "git-blame",
+        "title": "git blame: The Passive-Aggressive Tool",
+        "title_de": "git blame: Das passiv-aggressivste Tool",
+        "content": (
+            "`git blame` shows who wrote each line of code. Despite its name, it's "
+            "officially for 'tracking changes' — but let's be honest, everyone uses it "
+            "to find out who wrote that terrible code. Plot twist: it was you, "
+            "six months ago. git blame is the mirror nobody asked for."
+        ),
+        "content_de": (
+            "`git blame` zeigt, wer jede Zeile Code geschrieben hat. Offiziell dient es "
+            "der 'Änderungsverfolgung' — aber seien wir ehrlich, jeder nutzt es, "
+            "um herauszufinden, wer diesen schrecklichen Code geschrieben hat. "
+            "Plot-Twist: Du warst es selbst, vor sechs Monaten. git blame ist der "
+            "Spiegel, den niemand wollte."
+        ),
+        "source_url": "https://git-scm.com/docs/git-blame",
+        "source_label": "Git Documentation — git blame",
+        "source_label_de": "Git-Dokumentation — git blame",
+        "rarity": "common",
+        "category": "fun",
+        "tip_type": "humor",
+        "emoji": "\U0001F52E",
+        "sort_order": 53,
+    },
+    # --- Article Links (11): DarkWolfCave.de Flaschenpost ---
+    {
+        "slug": "article-ssh-absichern",
+        "title": "SSH Hardening: From Password to Certificate",
+        "title_de": "SSH absichern: Vom Passwort zum Zertifikat",
+        "content": (
+            "A comprehensive guide to hardening SSH: from disabling passwords to "
+            "SSH certificates. Covers key management, 2FA, AllowUsers, algorithm "
+            "hardening, and more. The complete SSH security checklist."
+        ),
+        "content_de": (
+            "Eine vollständige Anleitung zum Härten von SSH: vom Deaktivieren von "
+            "Passwörtern bis zu SSH-Zertifikaten. Behandelt Key-Management, 2FA, "
+            "AllowUsers, Algorithmen-Härtung und mehr. Die komplette SSH-Sicherheits-Checkliste."
+        ),
+        "source_url": "https://darkwolfcave.de/ssh-server-absichern-komplettanleitung/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 54,
+    },
+    {
+        "slug": "article-netzwerk-sicherheit",
+        "title": "Firewall & Zero-Trust Network Security",
+        "title_de": "Firewall & Zero-Trust: Netzwerk absichern",
+        "content": (
+            "ufw firewall, CrowdSec, network segmentation, DNS security, "
+            "and zero-trust architecture. Practical Linux network security "
+            "from the basics to advanced concepts."
+        ),
+        "content_de": (
+            "ufw-Firewall, CrowdSec, Netzwerksegmentierung, DNS-Security "
+            "und Zero-Trust-Architektur. Praktische Linux-Netzwerksicherheit "
+            "von den Grundlagen bis zu fortgeschrittenen Konzepten."
+        ),
+        "source_url": "https://darkwolfcave.de/netzwerk-sicherheit-firewall-zero-trust/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 55,
+    },
+    {
+        "slug": "article-monitoring-intrusion",
+        "title": "Monitoring & Intrusion Detection",
+        "title_de": "Monitoring & Intrusion Detection",
+        "content": (
+            "Monitor Linux servers: automatic updates, auditd, Lynis, AIDE, "
+            "and an incident response plan. Detect attacks early and "
+            "respond correctly."
+        ),
+        "content_de": (
+            "Linux-Server überwachen: automatische Updates, auditd, Lynis, AIDE "
+            "und ein Incident-Response-Plan. Angriffe früh erkennen und "
+            "richtig reagieren."
+        ),
+        "source_url": "https://darkwolfcave.de/server-monitoring-intrusion-detection-linux/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 56,
+    },
+    {
+        "slug": "article-linux-haerten",
+        "title": "Linux Server Hardening: Kernel to Container",
+        "title_de": "Linux-Server härten: Vom Kernel bis zum Container",
+        "content": (
+            "Harden Linux systems: disable services, AppArmor, kernel sysctl, "
+            "systemd hardening, and container security. A practical guide "
+            "to minimizing your attack surface."
+        ),
+        "content_de": (
+            "Linux-Systeme härten: Dienste deaktivieren, AppArmor, Kernel-sysctl, "
+            "systemd-Hardening und Container-Sicherheit. Eine praktische Anleitung "
+            "zur Minimierung deiner Angriffsfläche."
+        ),
+        "source_url": "https://darkwolfcave.de/linux-server-haerten-angriffflaeche-minimieren/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 57,
+    },
+    {
+        "slug": "article-backup-defense",
+        "title": "Backup Strategy & Defense-in-Depth",
+        "title_de": "Backup-Strategie & Defense-in-Depth",
+        "content": (
+            "Backup strategy with restic and borgbackup, the 3-2-1 rule, "
+            "and defense-in-depth: security in layers for Linux servers. "
+            "Because a backup that doesn't work isn't a backup."
+        ),
+        "content_de": (
+            "Backup-Strategie mit restic und borgbackup, die 3-2-1-Regel "
+            "und Defense-in-Depth: Sicherheit in Schichten für Linux-Server. "
+            "Denn ein Backup das nicht funktioniert ist kein Backup."
+        ),
+        "source_url": "https://darkwolfcave.de/backup-strategie-defense-in-depth-sicherheit/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 58,
+    },
+    {
+        "slug": "article-rpi5-nvme-ssd",
+        "title": "Boot Raspberry Pi 5 from NVMe SSD",
+        "title_de": "Raspberry Pi 5 von NVMe-SSD starten",
+        "content": (
+            "Ditch the microSD card and boot your Raspberry Pi 5 from a fast "
+            "NVMe SSD. Hardware recommendations, dd-based OS transfer, boot "
+            "order configuration, and PCIe Gen3 activation for maximum speed."
+        ),
+        "content_de": (
+            "Schluss mit der microSD-Karte: Starte deinen Raspberry Pi 5 von "
+            "einer schnellen NVMe-SSD. Hardware-Empfehlungen, OS-Transfer per dd, "
+            "Boot-Reihenfolge konfigurieren und PCIe Gen3 aktivieren für maximale Geschwindigkeit."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-pi-5-starten-von-nvme-ssd/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 59,
+    },
+    {
+        "slug": "article-watchtower-docker",
+        "title": "Watchtower: Auto-Update Docker Containers",
+        "title_de": "Watchtower: Docker-Container automatisch aktualisieren",
+        "content": (
+            "Keep your Docker containers up-to-date automatically with Watchtower. "
+            "Setup guide with Portainer integration, Discord notifications, "
+            "and label-based control for selective container updates."
+        ),
+        "content_de": (
+            "Halte deine Docker-Container automatisch aktuell mit Watchtower. "
+            "Einrichtung mit Portainer-Integration, Discord-Benachrichtigungen "
+            "und Label-basierte Steuerung für selektive Container-Updates."
+        ),
+        "source_url": "https://darkwolfcave.de/docker-container-aktualisieren-mit-watchtower/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 60,
+    },
+    {
+        "slug": "article-paperless-docker",
+        "title": "Paperless: Self-Hosted Document Management",
+        "title_de": "Paperless mit Docker: Dokumentenverwaltung selbst hosten",
+        "content": (
+            "Go paperless with a self-hosted document management system in Docker. "
+            "OCR, tagging, full-text search \u2014 manage your documents locally "
+            "on a Raspberry Pi or any Linux server."
+        ),
+        "content_de": (
+            "Papierlos mit einem selbstgehosteten Dokumentenmanagementsystem in Docker. "
+            "OCR, Tagging, Volltextsuche \u2014 verwalte deine Dokumente lokal "
+            "auf einem Raspberry Pi oder jedem Linux-Server."
+        ),
+        "source_url": "https://darkwolfcave.de/paperless-mit-docker/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 61,
+    },
+    {
+        "slug": "article-rpi-passwort-vergessen",
+        "title": "Raspberry Pi: Forgotten Password Recovery",
+        "title_de": "Raspberry Pi: Passwort vergessen \u2014 So kommst du rein",
+        "content": (
+            "Locked out of your Raspberry Pi? Step-by-step recovery guide to "
+            "regain access when you forgot the password. Works without "
+            "reinstalling the OS or losing your data."
+        ),
+        "content_de": (
+            "Aus dem Raspberry Pi ausgesperrt? Schritt-f\u00fcr-Schritt-Anleitung zum "
+            "Wiederherstellen des Zugangs bei vergessenem Passwort. Funktioniert "
+            "ohne Neuinstallation und ohne Datenverlust."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-pi-passwort-vergessen/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 62,
+    },
+    {
+        "slug": "article-rpi-grafana-monitoring",
+        "title": "Free Monitoring with Grafana & InfluxDB",
+        "title_de": "Kostenloses Monitoring mit Grafana & InfluxDB",
+        "content": (
+            "Build a free monitoring stack on your Raspberry Pi: Grafana for "
+            "dashboards, InfluxDB for time-series data, all managed through "
+            "Portainer and Docker. No license costs, full control."
+        ),
+        "content_de": (
+            "Baue einen kostenlosen Monitoring-Stack auf deinem Raspberry Pi: "
+            "Grafana f\u00fcr Dashboards, InfluxDB f\u00fcr Zeitreihendaten, alles verwaltet "
+            "\u00fcber Portainer und Docker. Keine Lizenzkosten, volle Kontrolle."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-pi-monitoring-grafana-installieren/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "common",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 63,
+    },
+    {
+        "slug": "article-influxdb-erklaert",
+        "title": "InfluxDB Explained: 1.x vs 2.x vs 3.x",
+        "title_de": "InfluxDB erkl\u00e4rt: Alles \u00fcber 1.x, 2.x und 3.x",
+        "content": (
+            "The complete InfluxDB guide: version comparison 1.x vs 2.x vs 3.x, "
+            "migration strategies, and practical recommendations for which "
+            "version to use in your monitoring setup."
+        ),
+        "content_de": (
+            "Der komplette InfluxDB-Guide: Versionsvergleich 1.x vs 2.x vs 3.x, "
+            "Migrationsstrategien und praktische Empfehlungen, welche Version "
+            "du f\u00fcr dein Monitoring-Setup nutzen solltest."
+        ),
+        "source_url": "https://darkwolfcave.de/influxdb-erklart-alles-uber-das-leistungsstarke-datenbank-tool/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "uncommon",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 64,
+    },
+    {
+        "slug": "article-influxdb-backup",
+        "title": "InfluxDB Backup Made Simple",
+        "title_de": "InfluxDB-Backup ganz einfach sichern",
+        "content": (
+            "Protect your time-series data: backup procedures for InfluxDB 1.8 "
+            "and 2.x on Raspberry Pi. Includes automation scripts so you "
+            "never lose your monitoring history."
+        ),
+        "content_de": (
+            "Sch\u00fctze deine Zeitreihendaten: Backup-Verfahren f\u00fcr InfluxDB 1.8 "
+            "und 2.x auf dem Raspberry Pi. Inklusive Automatisierungs-Skripte, "
+            "damit du nie deine Monitoring-Historie verlierst."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-pi-influxdb-backup-ganz-einfach-sichern/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "uncommon",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 65,
+    },
+    {
+        "slug": "article-rpi-nas-mount",
+        "title": "Auto-Mount NAS Shares on Raspberry Pi",
+        "title_de": "NAS-Freigaben automatisch auf dem Raspberry Pi einbinden",
+        "content": (
+            "Mount NAS shares reliably on your Raspberry Pi at boot. Solves the "
+            "common problem where standard automount fails because the network "
+            "is not ready yet during startup."
+        ),
+        "content_de": (
+            "NAS-Freigaben zuverl\u00e4ssig beim Booten auf dem Raspberry Pi einbinden. "
+            "L\u00f6st das h\u00e4ufige Problem, dass der Standard-Automount fehlschl\u00e4gt, "
+            "weil das Netzwerk beim Start noch nicht bereit ist."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-pi-nas-freigaben-automatisch-einbinden/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "uncommon",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 66,
+    },
+    {
+        "slug": "article-influxdb2-telegraf-grafana",
+        "title": "InfluxDB 2.x + Telegraf + Grafana Stack",
+        "title_de": "InfluxDB 2.x + Telegraf + Grafana: Monitoring-Stack",
+        "content": (
+            "The complete monitoring trio: collect metrics with Telegraf, store "
+            "in InfluxDB 2.x with FLUX queries, and visualize everything in "
+            "Grafana dashboards. Real-time system monitoring on Raspberry Pi."
+        ),
+        "content_de": (
+            "Das komplette Monitoring-Trio: Metriken sammeln mit Telegraf, speichern "
+            "in InfluxDB 2.x mit FLUX-Queries und alles visualisieren in "
+            "Grafana-Dashboards. Echtzeit-System-Monitoring auf dem Raspberry Pi."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-pi-influxdb-2-telegraf-grafana-anzeigen/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "uncommon",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 67,
+    },
+    {
+        "slug": "article-rpi-ssd-boot",
+        "title": "Boot Raspberry Pi from SSD",
+        "title_de": "Raspberry Pi von SSD starten",
+        "content": (
+            "Tired of slow and unreliable SD cards? Boot your Raspberry Pi "
+            "directly from an SSD for better performance and reliability. "
+            "Step-by-step guide for all compatible Pi models."
+        ),
+        "content_de": (
+            "Genug von langsamen und unzuverl\u00e4ssigen SD-Karten? Starte deinen "
+            "Raspberry Pi direkt von einer SSD f\u00fcr bessere Leistung und Zuverl\u00e4ssigkeit. "
+            "Schritt-f\u00fcr-Schritt-Anleitung f\u00fcr alle kompatiblen Pi-Modelle."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-von-ssd-starten/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "uncommon",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 68,
+    },
+    {
+        "slug": "article-rpi-docker-install",
+        "title": "Install Docker on Raspberry Pi",
+        "title_de": "Docker auf dem Raspberry Pi installieren",
+        "content": (
+            "Install Docker on your Raspberry Pi without the usual headaches. "
+            "From initial setup to your first running container, including "
+            "Portainer for easy web-based management."
+        ),
+        "content_de": (
+            "Docker auf dem Raspberry Pi installieren ohne die \u00fcblichen Probleme. "
+            "Von der Ersteinrichtung bis zum ersten laufenden Container, inklusive "
+            "Portainer f\u00fcr komfortable Web-basierte Verwaltung."
+        ),
+        "source_url": "https://darkwolfcave.de/raspberry-pi-docker-ohne-probleme-installieren/",
+        "source_label": "DarkWolfCave \u2192 Read article",
+        "source_label_de": "DarkWolfCave \u2192 Artikel lesen",
+        "rarity": "uncommon",
+        "category": "article",
+        "tip_type": "article",
+        "emoji": "\U0001F4F0",
+        "sort_order": 69,
+    },
+    # --- Project Promos (4): Wolf Digital Empire ---
+    {
+        "slug": "promo-cronwolf",
+        "title": "CronWolf: Never Miss a Failed Cronjob",
+        "title_de": "CronWolf: Nie wieder stille Cronjob-Fehler",
+        "content": (
+            "Cronjobs fail silently. A missed backup, an expired certificate, "
+            "a broken sync — you only notice when it's too late. CronWolf "
+            "monitors your scheduled tasks and alerts you via email or webhook "
+            "when jobs don't run, take too long, or fail. "
+            "Currently in beta with a lifetime discount."
+        ),
+        "content_de": (
+            "Cronjobs scheitern lautlos. Ein verpasstes Backup, ein abgelaufenes "
+            "Zertifikat, eine defekte Synchronisation — man merkt es erst, wenn es "
+            "zu spät ist. CronWolf überwacht deine geplanten Tasks und warnt per "
+            "E-Mail oder Webhook, wenn Jobs nicht laufen, zu lange brauchen oder "
+            "fehlschlagen. Aktuell in der Beta mit Lifetime-Rabatt."
+        ),
+        "source_url": "https://cronwolf.de",
+        "source_label": "CronWolf \u2192 Visit",
+        "source_label_de": "CronWolf \u2192 Besuchen",
+        "rarity": "uncommon",
+        "category": "promo",
+        "tip_type": "promo",
+        "emoji": "\U0001F43A",
+        "sort_order": 65,
+    },
+    {
+        "slug": "promo-wolfcoder",
+        "title": "WolfCoder: Dev Tutorials & Security",
+        "title_de": "WolfCoder: Dev-Tutorials & Security",
+        "content": (
+            "Practical development tutorials focused on security, Docker, "
+            "Linux, and modern web development. From container hardening "
+            "to CI/CD pipelines — code that runs safe in production. "
+            "Written by a developer, for developers."
+        ),
+        "content_de": (
+            "Praktische Entwickler-Tutorials mit Fokus auf Security, Docker, "
+            "Linux und moderne Webentwicklung. Von Container-Hardening "
+            "bis CI/CD-Pipelines — Code, der sicher in Produktion läuft. "
+            "Von einem Entwickler, für Entwickler."
+        ),
+        "source_url": "https://wolfcoder.de",
+        "source_label": "WolfCoder \u2192 Visit",
+        "source_label_de": "WolfCoder \u2192 Besuchen",
+        "rarity": "uncommon",
+        "category": "promo",
+        "tip_type": "promo",
+        "emoji": "\U0001F4BB",
+        "sort_order": 66,
+    },
+    {
+        "slug": "promo-favoritenportal",
+        "title": "Favoritenportal: Your Bookmark Hub",
+        "title_de": "Favoritenportal: Dein Lesezeichen-Hub",
+        "content": (
+            "Tired of losing bookmarks across browsers and devices? "
+            "Favoritenportal is a clean, fast bookmark portal you can "
+            "set as your browser start page. Organize your favorite links "
+            "in categories, access them from anywhere."
+        ),
+        "content_de": (
+            "Lesezeichen über Browser und Geräte hinweg verloren? "
+            "Favoritenportal ist ein schnelles, aufgeräumtes Lesezeichen-Portal "
+            "als Browser-Startseite. Organisiere deine Lieblingslinks "
+            "in Kategorien, zugreifbar von überall."
+        ),
+        "source_url": "https://favoritenportal.de",
+        "source_label": "Favoritenportal \u2192 Visit",
+        "source_label_de": "Favoritenportal \u2192 Besuchen",
+        "rarity": "rare",
+        "category": "promo",
+        "tip_type": "promo",
+        "emoji": "\U0001F517",
+        "sort_order": 67,
+    },
+    {
+        "slug": "promo-meinwolfshund",
+        "title": "MeinWolfshund: Marxdorfer Wolfdog Community",
+        "title_de": "MeinWolfshund: Marxdorfer Wolfshund Community",
+        "content": (
+            "The Marxdorfer Wolfshund looks like a wolf but lives as a loyal "
+            "family companion. MeinWolfshund is the community for wolf dog "
+            "enthusiasts: breed information, health tips, breeder directory, "
+            "and a forum to connect with other wolf dog owners."
+        ),
+        "content_de": (
+            "Der Marxdorfer Wolfshund sieht aus wie ein Wolf, lebt aber als treuer "
+            "Familienbegleiter. MeinWolfshund ist die Community für Wolfshund-"
+            "Liebhaber: Rasseinfos, Gesundheitstipps, Züchterverzeichnis "
+            "und ein Forum zum Austausch mit anderen Wolfshund-Besitzern."
+        ),
+        "source_url": "https://meinwolfshund.de",
+        "source_label": "MeinWolfshund \u2192 Visit",
+        "source_label_de": "MeinWolfshund \u2192 Besuchen",
+        "rarity": "rare",
+        "category": "promo",
+        "tip_type": "promo",
+        "emoji": "\U0001F43A",
+        "sort_order": 68,
+    },
 ]
 
 CHALLENGE_TEMPLATES = [
@@ -1362,4 +2511,11 @@ ACHIEVEMENTS = [
      "description": "Find the legendary Wolf Head treasure.", "description_de": "Finde den legendären Wolfskopf-Schatz.",
      "metric": "unique_treasure_types", "threshold": 10, "rarity": "diamond", "points": 500,
      "is_secret": True, "sort_order": 8},
+    # Tip collection achievements (dynamic thresholds updated by seed_game_data)
+    {"slug": "security-scholar", "category": "treasure-hunter", "name": "Security Scholar", "name_de": "Sicherheitsforscher",
+     "description": "Discover all security tips.", "description_de": "Entdecke alle Sicherheitstipps.",
+     "metric": "unique_security_tips", "threshold": 35, "rarity": "gold", "points": 150, "sort_order": 9},
+    {"slug": "tip-completionist", "category": "treasure-hunter", "name": "Tip Completionist", "name_de": "Tipp-Komplettist",
+     "description": "Discover all tips across all categories.", "description_de": "Entdecke alle Tipps in allen Kategorien.",
+     "metric": "unique_tips_total", "threshold": 68, "rarity": "diamond", "points": 500, "sort_order": 10},
 ]

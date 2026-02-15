@@ -78,6 +78,17 @@ def _get_current_stats() -> dict:
         is_completed=True
     ).count()
 
+    # Tip discovery stats
+    unique_security_tips = (
+        CollectedTreasure.objects.exclude(security_tip=None)
+        .filter(security_tip__tip_type="security")
+        .values("security_tip_id").distinct().count()
+    )
+    unique_tips_total = (
+        CollectedTreasure.objects.exclude(security_tip=None)
+        .values("security_tip_id").distinct().count()
+    )
+
     # IP lookup stats
     ip_lookups_total = IPLookupLog.objects.count()
     ip_lookups_high_abuse = IPLookupLog.objects.filter(abuse_score__gte=90).count()
@@ -104,6 +115,8 @@ def _get_current_stats() -> dict:
         "ip_lookups_tor": ip_lookups_tor,
         "ip_lookups_dangerous_ports": ip_lookups_dangerous_ports,
         "ip_lookups_vulns": ip_lookups_vulns,
+        "unique_security_tips": unique_security_tips,
+        "unique_tips_total": unique_tips_total,
     }
 
 

@@ -170,6 +170,8 @@ _TRANSLATIONS = {
     "Andere Fänge von dieser IP": "Other catches from this IP",
     "Aquarium": "Aquarium",
     # Schatzkammer
+    "Gesammelte Tipps & Entdeckungen": "Collected Tips & Discoveries",
+    "Entdeckungsfortschritt": "Discovery Progress",
     "Gesammelte Sicherheitstipps": "Collected Security Tips",
     "Schätze gesammelt": "Treasures collected",
     "Tipps entdeckt": "Tips discovered",
