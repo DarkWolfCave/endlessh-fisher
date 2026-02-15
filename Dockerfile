@@ -52,11 +52,15 @@ RUN DJANGO_SETTINGS_MODULE=config.settings.production \
 RUN find /app -name "*.pyc" -delete && \
     find /app -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 
+# Entrypoint handles migrate + seed + setup_servers for web processes
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:8000/api/v1/health/ || exit 1
 
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "2", \
      "--worker-class", "gthread", "--worker-tmp-dir", "/dev/shm", \
      "--log-file", "-", "--access-logfile", "-", "--error-logfile", "-", \

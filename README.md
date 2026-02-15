@@ -60,16 +60,15 @@ cp .env.example .env
 cp servers.toml.example servers.toml
 # Edit servers.toml — set host_identifier to match your InfluxDB host tags
 
-# Start the stack
+# Start the stack — migrations, seeding, and server setup run automatically
 docker compose up -d
-
-# Initialize the database and seed game data
-docker compose exec backend python manage.py migrate
-docker compose exec backend python manage.py seed_game_data
-docker compose exec backend python manage.py setup_servers
 
 # Open http://localhost:8000
 ```
+
+The Docker entrypoint automatically handles `migrate`, `seed_game_data`, and
+`setup_servers` on every container start. These commands are idempotent and
+only add a few seconds to startup. No manual initialization needed.
 
 ## Configuration
 
@@ -137,12 +136,11 @@ Requires an external Traefik instance with a `proxy` Docker network.
 
 ### Updating
 
-After pulling new code, rebuild containers and apply database migrations:
+After pulling new code, just rebuild — migrations and seeding run automatically:
 
 ```bash
 git pull
 docker compose -f docker-compose.prod.yml up -d --build
-docker compose exec backend python manage.py migrate
 ```
 
 ## How It Works
@@ -184,12 +182,18 @@ endlessh-go → InfluxDB → [Celery Sync every 5min] → PostgreSQL → Django/
 
 ## Management Commands
 
+These run automatically via the Docker entrypoint on every container start.
+You only need to run them manually for debugging or one-off tasks:
+
 ```bash
 # Seed fish species, achievements, treasures, challenges, security tips
 docker compose exec backend python manage.py seed_game_data
 
 # Import server config and run initial sync
 docker compose exec backend python manage.py setup_servers
+
+# Import servers WITHOUT triggering a full InfluxDB sync
+docker compose exec backend python manage.py setup_servers --skip-initial-sync
 
 # Re-run with custom config path
 docker compose exec backend python manage.py setup_servers --config /path/to/servers.toml

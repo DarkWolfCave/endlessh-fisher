@@ -30,6 +30,12 @@ class Command(BaseCommand):
             action="store_true",
             help="Show what would be created/updated without making changes.",
         )
+        parser.add_argument(
+            "--skip-initial-sync",
+            action="store_true",
+            help="Only create/update server records, skip the initial data sync. "
+            "Useful in entrypoint scripts where Celery handles syncing.",
+        )
 
     def handle(self, *args, **options):
         config_path = Path(options["config"])
@@ -101,6 +107,13 @@ class Command(BaseCommand):
             f"Servers configured: {created} created, {updated} updated, "
             f"{len(servers)} total"
         ))
+
+        if options["skip_initial_sync"]:
+            self.stdout.write(
+                "Skipping initial sync (--skip-initial-sync). "
+                "Celery will sync data on its next scheduled run."
+            )
+            return
 
         # Run initial data population so the dashboard isn't empty.
         # These are called as regular functions, not via Celery broker.

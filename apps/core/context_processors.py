@@ -26,7 +26,7 @@ def game_context(request):
 
     return {
         "GAME_NAME": "Endlessh Fisher",
-        "GAME_VERSION": "1.4.0",
+        "GAME_VERSION": "1.4.1",
         "DEBUG": settings.DEBUG,
         "SHOW_REAL_IP": settings.SHOW_REAL_IP,
         "GAME_LANGUAGE": settings.GAME_LANGUAGE,

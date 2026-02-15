@@ -2,6 +2,24 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.4.1] - 2026-02-15
+
+### Added
+
+- **Docker Entrypoint** — `entrypoint.sh` automatically runs `migrate`,
+  `seed_game_data`, and `setup_servers --skip-initial-sync` on every web
+  container start. Celery workers skip initialization. No more forgotten
+  setup steps after fresh deploys.
+- **`--skip-initial-sync` flag** for `setup_servers` command — creates/updates
+  server records without triggering a full InfluxDB sync. Celery handles
+  syncing on its regular schedule.
+
+### Changed
+
+- Quick Start and Updating sections in README simplified — manual
+  `migrate`/`seed_game_data`/`setup_servers` calls are no longer required.
+- Dockerfile now uses `ENTRYPOINT` + `CMD` pattern instead of `CMD` only.
+
 ## [1.4.0] - 2026-02-15
 
 ### Added
@@ -41,16 +59,10 @@ All notable changes to Endlessh Fisher are documented here.
 
 ### Migration Notes
 
-After updating, run:
-
-```bash
-docker compose exec backend python manage.py migrate
-docker compose exec backend python manage.py seed_game_data
-```
-
 Two new model fields are added via migration: `SecurityTip.tip_type` (default
 "security") and `TreasureType.preferred_tip_types` (default ""). Both are
-backwards-compatible and require no data migration.
+backwards-compatible and require no data migration. As of v1.4.1, migrations
+and seeding run automatically via the Docker entrypoint.
 
 ## [1.3.1] - 2026-02-14
 
