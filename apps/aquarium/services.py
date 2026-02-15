@@ -203,7 +203,7 @@ def get_pond_fish(force_refresh: bool = False) -> dict:
         "total_active": len(display_fish),
         "last_updated": timezone.now().isoformat(),
     }
-    cache.set(cache_key, result, 12)
+    cache.set(cache_key, result, 30)
     return result
 
 
