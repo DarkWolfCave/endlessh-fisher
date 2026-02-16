@@ -2,6 +2,18 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.4.2] - 2026-02-16
+
+### Fixed
+
+- **AbuseIPDB error messages** — IP analysis panel now shows specific error
+  messages (rate limit, timeout, API error) instead of silently hiding the
+  AbuseIPDB section when a request fails.
+- **Error cache TTL** — Failed API results are now cached for 60s instead of
+  6h, allowing quick retries after transient errors.
+- **Request timeout** — Increased IP lookup timeout from 5s to 10s to
+  accommodate slower response times from AbuseIPDB on low-power hosts.
+
 ## [1.4.1] - 2026-02-15
 
 ### Added

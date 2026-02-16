@@ -146,6 +146,18 @@
     <div class="ip-lookup-section">
         <div class="ip-lookup-muted">{{ "AbuseIPDB nicht konfiguriert"|t }}</div>
     </div>
+    {% elif result.abuseipdb.reason == "rate_limit" %}
+    <div class="ip-lookup-section">
+        <div class="ip-lookup-muted">{{ "AbuseIPDB Limit erreicht — bitte später erneut versuchen"|t }}</div>
+    </div>
+    {% elif result.abuseipdb.reason == "timeout" %}
+    <div class="ip-lookup-section">
+        <div class="ip-lookup-muted">{{ "AbuseIPDB Zeitüberschreitung — Server nicht erreichbar"|t }}</div>
+    </div>
+    {% elif result.abuseipdb.reason == "api_error" %}
+    <div class="ip-lookup-section">
+        <div class="ip-lookup-muted">{{ "AbuseIPDB Fehler — Daten konnten nicht abgerufen werden"|t }}</div>
+    </div>
     {% endif %}
 </div>
 

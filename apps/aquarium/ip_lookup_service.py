@@ -21,7 +21,7 @@ _DANGEROUS_PORTS = {
     5432, 5900, 5985, 6379, 8080, 8443, 9200, 11211, 27017,
 }
 
-_REQUEST_TIMEOUT = 5  # seconds
+_REQUEST_TIMEOUT = 10  # seconds
 
 
 def _is_public_ip(ip_str: str) -> bool:
@@ -73,15 +73,32 @@ def _fetch_abuseipdb(ip: str) -> dict:
     if not api_key:
         return {"available": False, "reason": "no_key"}
 
-    data = _fetch_json(
+    url = (
         f"https://api.abuseipdb.com/api/v2/check"
-        f"?ipAddress={ip}&maxAgeInDays=90&verbose",
-        headers={
-            "Key": api_key,
-            "Accept": "application/json",
-        },
+        f"?ipAddress={ip}&maxAgeInDays=90&verbose"
     )
-    if not data or "data" not in data:
+    req = urllib.request.Request(url, headers={
+        "User-Agent": "EndlesshFisher/1.0",
+        "Key": api_key,
+        "Accept": "application/json",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=_REQUEST_TIMEOUT) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode())
+                if "data" not in data:
+                    return {"available": False, "reason": "api_error"}
+            else:
+                return {"available": False, "reason": "api_error"}
+    except urllib.error.HTTPError as exc:
+        if exc.code == 429:
+            return {"available": False, "reason": "rate_limit"}
+        logger.debug("AbuseIPDB HTTP error for %s: %s", ip, exc)
+        return {"available": False, "reason": "api_error"}
+    except (TimeoutError, OSError):
+        return {"available": False, "reason": "timeout"}
+    except (urllib.error.URLError, json.JSONDecodeError) as exc:
+        logger.debug("AbuseIPDB fetch failed for %s: %s", ip, exc)
         return {"available": False, "reason": "api_error"}
 
     d = data["data"]
@@ -141,5 +158,11 @@ def lookup_ip(ip_address: str) -> dict:
         "abuseipdb": abuse_future.result(),
     }
 
-    cache.set(cache_key, result, _CACHE_TTL)
+    # Cache errors with short TTL to allow quick retry,
+    # successful results with full TTL.
+    both_ok = (
+        result["shodan"].get("available")
+        and result["abuseipdb"].get("available")
+    )
+    cache.set(cache_key, result, _CACHE_TTL if both_ok else 60)
     return result
