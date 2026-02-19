@@ -1035,9 +1035,9 @@ SECURITY_TIPS = [
             "Wiederverwendete Passwörter sind der #1 Grund, warum Credential-Stuffing-Angriffe "
             "funktionieren. Self-Hosting mit Vaultwarden hält deinen Tresor unter eigener Kontrolle."
         ),
-        "source_url": "https://darkwolfcave.de/vaultwarden-docker-linux-passwort-manager/",
-        "source_label": "DarkWolfCave — Vaultwarden Setup",
-        "source_label_de": "DarkWolfCave — Vaultwarden einrichten",
+        "source_url": "",
+        "source_label": "",
+        "source_label_de": "",
         "rarity": "common",
         "category": "auth",
         "tip_type": "security",
@@ -1162,9 +1162,9 @@ SECURITY_TIPS = [
             "Dienste hinter dem Proxy lauschen nur auf internen Docker-Netzwerken — "
             "keine direkte Internet-Exposition. ModSecurity oder Coraza ergänzen WAF-Fähigkeiten."
         ),
-        "source_url": "https://darkwolfcave.de/traefik-docker-linux-einrichten/",
-        "source_label": "DarkWolfCave — Traefik Setup",
-        "source_label_de": "DarkWolfCave — Traefik einrichten",
+        "source_url": "https://darkwolfcave.de/traefik-absichern-waf-rate-limiting-tls/",
+        "source_label": "DarkWolfCave — Traefik Security",
+        "source_label_de": "DarkWolfCave — Traefik absichern",
         "rarity": "rare",
         "category": "network",
         "tip_type": "security",
@@ -1187,9 +1187,9 @@ SECURITY_TIPS = [
             "bekommst du volle DNS-Privatsphäre ohne fremde DNS-Server. "
             "Blocklisten wie Steven Blacks Host-Datei decken 100.000+ bekannte böse Domains ab."
         ),
-        "source_url": "https://darkwolfcave.de/pihole-unbound-fritzbox-ultimative-anleitung/",
-        "source_label": "DarkWolfCave — Pi-hole & Unbound",
-        "source_label_de": "DarkWolfCave — Pi-hole & Unbound",
+        "source_url": "",
+        "source_label": "",
+        "source_label_de": "",
         "rarity": "epic",
         "category": "network",
         "tip_type": "security",
