@@ -1,7 +1,7 @@
 # Endlessh Fisher - Multi-Stage Dockerfile
 
 # Stage 1: Build Dependencies
-FROM python:3.14-slim AS builder
+FROM python:3.14.3-slim AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ COPY requirements/base.txt requirements/base.txt
 RUN pip install --no-cache-dir --user -r requirements/production.txt
 
 # Stage 2: Production Image
-FROM python:3.14-slim AS production
+FROM python:3.14.3-slim AS production
 
 WORKDIR /app
 
