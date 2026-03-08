@@ -67,7 +67,7 @@ x-backend-common: &backend-common
 
 services:
   postgres:
-    image: postgres:18.2-alpine
+    image: postgres:18.3-alpine
     container_name: endlessh_fisher_postgres
     restart: unless-stopped
     environment:
