@@ -85,7 +85,7 @@ class CaughtBot(TimeStampedModel):
     ip_hash = models.CharField(max_length=64, db_index=True)
     country_code = models.CharField(max_length=2, blank=True, default="", db_index=True)
     country_name = models.CharField(max_length=100, blank=True, default="")
-    geohash = models.CharField(max_length=12, blank=True, default="")
+    geohash = models.CharField(max_length=24, blank=True, default="")
     local_port = models.PositiveIntegerField(default=22)
     trapped_seconds = models.FloatField(default=0)
     bytes_sent = models.PositiveBigIntegerField(default=0)

@@ -2,6 +2,16 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.4.3] - 2026-03-27
+
+### Fixed
+
+- **Bot sync completely broken** — Geohash field (`max_length=12`) was too short
+  for variable-length geohashes produced by `EncodeAuto()` after a GeoIP database
+  update in endlessh-go. The entire `sync_bot_data` transaction rolled back on
+  every cycle, preventing any new CaughtBot records — which caused daily challenges
+  to show zero progress. Extended field to 24 characters with truncation safety net.
+
 ## [1.4.2] - 2026-02-16
 
 ### Fixed

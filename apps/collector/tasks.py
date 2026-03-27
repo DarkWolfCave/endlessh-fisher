@@ -123,7 +123,7 @@ def sync_bot_data(self):
                     "ip_hash": ip_hash,
                     "country_code": country_code,
                     "country_name": country,
-                    "geohash": conn.get("geohash", "") or "",
+                    "geohash": (conn.get("geohash", "") or "")[:24],
                     "local_port": int(conn.get("local_port", 22) or 22),
                     "trapped_seconds": trapped_seconds,
                     "connection_count": int(conn.get("open_count", 1)),
