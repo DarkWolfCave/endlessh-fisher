@@ -134,6 +134,14 @@ docker compose -f docker-compose.prod.traefik.yml up -d
 
 Requires an external Traefik instance with a `proxy` Docker network.
 
+### Container Security
+
+Both production configs include hardening out of the box:
+
+- **`no-new-privileges`** on all services
+- **`cap_drop: ALL`** with minimal capabilities re-added per service
+- **Internal network** for database and Redis (no outbound internet access)
+
 ### Updating
 
 After pulling new code, just rebuild — migrations and seeding run automatically:

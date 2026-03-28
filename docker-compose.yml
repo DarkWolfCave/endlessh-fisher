@@ -5,6 +5,8 @@ services:
     image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
     container_name: endlessh_fisher_postgres
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
       - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
@@ -23,6 +25,8 @@ services:
     image: redis:8.6.1-alpine@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
     container_name: endlessh_fisher_redis
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     command: redis-server --appendonly yes
     volumes:
       - ./data/redis:/data
@@ -41,6 +45,8 @@ services:
       target: development
     container_name: endlessh_fisher_backend
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     environment:
       - PYTHONUNBUFFERED=1
       - DJANGO_SETTINGS_MODULE=config.settings.development
@@ -77,6 +83,8 @@ services:
       target: development
     container_name: endlessh_fisher_celery_worker
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     command: celery -A config worker -l info --concurrency=2
     environment:
       - PYTHONUNBUFFERED=1
@@ -117,6 +125,8 @@ services:
       target: development
     container_name: endlessh_fisher_celery_beat
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     command: celery -A config beat -l info --schedule=/tmp/celerybeat-schedule
     environment:
       - PYTHONUNBUFFERED=1

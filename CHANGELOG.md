@@ -2,6 +2,16 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.4.4] - 2026-03-28
+
+### Changed
+
+- **Docker container hardening** — Added `security_opt: no-new-privileges`,
+  `cap_drop: ALL` with minimal `cap_add` on all production services. Database
+  and Redis containers are now isolated in an internal network that blocks
+  outbound internet access. Development compose only adds `no-new-privileges`
+  to keep the setup simple for contributors.
+
 ## [1.4.3] - 2026-03-27
 
 ### Fixed

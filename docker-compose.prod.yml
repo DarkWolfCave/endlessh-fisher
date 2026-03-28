@@ -32,6 +32,10 @@ x-backend-common: &backend-common
     dockerfile: Dockerfile
     target: production
   restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
   dns:
     - 1.1.1.1
     - 8.8.8.8
@@ -43,12 +47,25 @@ x-backend-common: &backend-common
       condition: service_healthy
     redis:
       condition: service_healthy
+  networks:
+    - app_default
+    - app_internal
 
 services:
   postgres:
     image: postgres:18.3-alpine@sha256:4da1a4828be12604092fa55311276f08f9224a74a62dcb4708bd7439e2a03911
     container_name: endlessh_fisher_postgres
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_READ_SEARCH
+      - FOWNER
+      - SETGID
+      - SETUID
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
       - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
@@ -60,11 +77,22 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app_internal
 
   redis:
     image: redis:8.6.1-alpine@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0
     container_name: endlessh_fisher_redis
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     volumes:
       - ./data/redis:/data
@@ -73,6 +101,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app_internal
 
   backend:
     <<: *backend-common
@@ -105,4 +135,11 @@ services:
     command: celery -A config beat -l info --schedule=/tmp/celerybeat-schedule
     healthcheck:
       disable: true
+
+networks:
+  app_default:
+    driver: bridge
+  app_internal:
+    driver: bridge
+    internal: true
 
