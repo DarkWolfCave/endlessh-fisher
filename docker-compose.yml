@@ -11,6 +11,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
       - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-devpassword}
+      - PGDATA=/var/lib/postgresql/data
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     ports:

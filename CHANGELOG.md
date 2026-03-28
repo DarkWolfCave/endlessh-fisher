@@ -2,6 +2,38 @@
 
 All notable changes to Endlessh Fisher are documented here.
 
+## [1.4.5] - 2026-03-28
+
+### Fixed
+
+- **PostgreSQL data loss on container recreate** — Postgres 18 Alpine sets
+  `PGDATA` to `/var/lib/postgresql/18/docker`, causing the bind mount on
+  `/var/lib/postgresql/data` to be silently ignored. Data was written to an
+  anonymous Docker volume instead, leading to data loss on `docker compose down`.
+  Fixed by explicitly setting `PGDATA=/var/lib/postgresql/data` in all compose
+  files so the bind mount is always used regardless of upstream image changes.
+
+### Migration Notes
+
+> **⚠️ Action required before updating!** All previous versions stored PostgreSQL
+> data in an anonymous Docker volume instead of the bind mount. You must migrate
+> your data before pulling this update, or you will lose all game progress.
+
+```bash
+# 1. Dump your database BEFORE updating
+docker compose exec postgres pg_dump -U endlessh_fisher endlessh_fisher > backup.sql
+
+# 2. Pull the new code
+git pull origin main
+
+# 3. Recreate containers (this starts a fresh database in the bind mount)
+docker compose -f <your-compose-file> down
+docker compose -f <your-compose-file> up -d
+
+# 4. Wait for postgres to be healthy, then restore
+docker compose exec -T postgres psql -U endlessh_fisher endlessh_fisher < backup.sql
+```
+
 ## [1.4.4] - 2026-03-28
 
 ### Changed
