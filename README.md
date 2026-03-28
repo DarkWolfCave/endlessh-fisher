@@ -151,6 +151,20 @@ git pull
 docker compose -f docker-compose.prod.yml up -d --build
 ```
 
+> **⚠️ Upgrading from v1.4.4 or earlier?** Previous versions had a silent data
+> loss bug: PostgreSQL 18 Alpine stores data in `/var/lib/postgresql/18/docker`
+> instead of the expected `/var/lib/postgresql/data`, causing the bind mount to
+> be ignored. Your game data lives in an anonymous Docker volume and **will be
+> lost** on `docker compose down`. Back up first:
+>
+> ```bash
+> docker compose exec postgres pg_dump -U endlessh_fisher endlessh_fisher > backup.sql
+> git pull
+> docker compose -f <your-compose-file> down
+> docker compose -f <your-compose-file> up -d
+> docker compose exec -T postgres psql -U endlessh_fisher endlessh_fisher < backup.sql
+> ```
+
 ## How It Works
 
 ```
