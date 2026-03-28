@@ -21,7 +21,7 @@ rarities, achievements, and a live aquarium dashboard.
   unique rarity tiers and point values
 - **Multi-Server Support** — Monitor multiple endlessh instances as separate
   "fishing ponds" with individual themes (ocean, lake, reef)
-- **Achievement System** — 50+ achievements across 8 categories with bronze
+- **Achievement System** — 50+ achievements across 9 categories with bronze
   to diamond rarities and secret unlockables
 - **Daily Challenges** — Three new challenges every day (easy, medium, hard)
   to keep the game engaging
@@ -174,7 +174,7 @@ endlessh-go → InfluxDB → [Celery Sync every 5min] → PostgreSQL → Django/
 1. **endlessh-go** traps SSH bots and writes metrics to InfluxDB
 2. **Celery** syncs bot data from InfluxDB to PostgreSQL every 5 minutes
 3. **Django** classifies bots into fish species based on trap duration
-4. **HTMX** provides real-time dashboard updates (polling every 15-60s)
+4. **HTMX** provides real-time dashboard updates (polling every 15-30s)
 5. **Achievements & Challenges** are evaluated automatically every 10 minutes
 
 ### Fish Species
@@ -219,6 +219,9 @@ docker compose exec backend python manage.py setup_servers --skip-initial-sync
 
 # Re-run with custom config path
 docker compose exec backend python manage.py setup_servers --config /path/to/servers.toml
+
+# Preview what would change without modifying the database
+docker compose exec backend python manage.py setup_servers --dry-run
 ```
 
 ## API Endpoints
@@ -231,11 +234,15 @@ All endpoints are read-only (GET):
 | `/api/v1/dashboard/` | Dashboard stats |
 | `/api/v1/catches/` | Caught bots (filterable) |
 | `/api/v1/catches/latest/` | Latest catches |
+| `/api/v1/catches/<id>/` | Catch detail |
 | `/api/v1/servers/` | Server list |
+| `/api/v1/servers/<slug>/` | Server detail |
 | `/api/v1/species/` | Fish species |
 | `/api/v1/stats/daily/` | Daily statistics |
 | `/api/v1/stats/countries/` | Country statistics |
 | `/api/v1/achievements/` | Achievements with unlock status |
+| `/api/v1/achievements/pending/` | Unacknowledged achievement toasts |
+| `/api/v1/achievements/ack/` | Acknowledge achievement toast |
 
 ## License
 
