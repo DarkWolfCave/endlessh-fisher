@@ -88,9 +88,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-endlessh_fisher}
       - POSTGRES_USER=${POSTGRES_USER:-endlessh_fisher}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - PGDATA=/var/lib/postgresql/data
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-endlessh_fisher}"]
       interval: 10s
