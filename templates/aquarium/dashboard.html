@@ -11,7 +11,7 @@
 <div class="live-pond-container" style="margin-bottom: 2rem;"
      id="live-pond-container"
      hx-get="{% url 'htmx:live-pond' %}"
-     hx-trigger="every 15s"
+     hx-trigger="every 15s [document.visibilityState === 'visible'], visibilitychange[document.visibilityState === 'visible'] from:document"
      hx-swap="innerHTML">
     {% include "components/live_pond.html" %}
 </div>

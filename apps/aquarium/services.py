@@ -101,7 +101,7 @@ def get_pond_fish(force_refresh: bool = False) -> dict:
     """Build live pond data: currently active bots as fish.
 
     Returns dict with fish list, total_active count, and last_updated timestamp.
-    Cached 12 seconds in Redis. Use force_refresh=True to bypass cache read
+    Cached 30 seconds in Redis. Use force_refresh=True to bypass cache read
     (used by cache warming task).
     """
     cache_key = "endlessh:live_pond"

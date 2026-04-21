@@ -138,7 +138,9 @@ def query_active_connections() -> int:
 def query_active_bots() -> list[dict]:
     """Query currently active (trapped) bots with their live trap duration.
 
-    Uses three queries:
+    Uses three queries over a 2-minute window (Telegraf scrapes every 30s,
+    so 4 data points per bot are available — enough for difference() to
+    detect activity while keeping the per-query scan cheap on ARM):
     1. difference() finds bots where trapped_time is still increasing (= active)
     2. first() finds newly connected bots (only 1 data point, difference can't detect)
     3. last() gets actual trapped_time values for all matched bots
@@ -149,7 +151,7 @@ def query_active_bots() -> list[dict]:
     # Query A: Bots with increasing trapped_time (2+ data points)
     active_query = f"""
 from(bucket: "{settings.INFLUXDB_BUCKET}")
-  |> range(start: -5m)
+  |> range(start: -2m)
   |> filter(fn: (r) => r["_measurement"] == "endlessh_client_trapped_time_seconds")
   |> group(columns: ["host", "ip"])
   |> difference(nonNegative: true)
@@ -163,7 +165,7 @@ from(bucket: "{settings.INFLUXDB_BUCKET}")
 import "experimental"
 
 from(bucket: "{settings.INFLUXDB_BUCKET}")
-  |> range(start: -5m)
+  |> range(start: -2m)
   |> filter(fn: (r) => r["_measurement"] == "endlessh_client_trapped_time_seconds")
   |> group(columns: ["host", "ip"])
   |> first()
@@ -175,7 +177,7 @@ from(bucket: "{settings.INFLUXDB_BUCKET}")
     # Note: trapped_time metric has no country/geohash tags (those are on open_count)
     values_query = f"""
 from(bucket: "{settings.INFLUXDB_BUCKET}")
-  |> range(start: -5m)
+  |> range(start: -2m)
   |> filter(fn: (r) => r["_measurement"] == "endlessh_client_trapped_time_seconds")
   |> group(columns: ["host", "ip"])
   |> last()

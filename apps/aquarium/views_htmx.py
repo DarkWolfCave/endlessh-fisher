@@ -32,7 +32,13 @@ def activity_feed(request):
 
 
 def live_pond(request):
-    """Live pond - polled every 15s via HTMX."""
+    """Live pond - polled every 15s via HTMX when the tab is visible.
+
+    Sets a short-lived ``last_viewed`` marker so ``warm_pond_cache`` knows
+    someone is actually watching. When no marker is present, the warmer
+    skips its expensive InfluxDB queries.
+    """
+    cache.set("endlessh:live_pond:last_viewed", True, 120)
     pond_data = get_pond_fish()
     treasures = get_active_treasures(pond_data["total_active"])
     return render(request, "components/live_pond.html", {

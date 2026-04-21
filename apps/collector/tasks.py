@@ -382,7 +382,16 @@ def create_rare_catch_notifications():
 
 @shared_task
 def warm_pond_cache():
-    """Pre-warm the live pond cache so no user request pays the InfluxDB cost."""
+    """Pre-warm the live pond cache so no user request pays the InfluxDB cost.
+
+    Skips the refresh when no visible browser tab polled the live pond in
+    the last 120 seconds. The ``endlessh:live_pond:last_viewed`` marker is
+    set by the HTMX view on every request from a visible tab, so idle
+    periods incur zero InfluxDB load.
+    """
+    if cache.get("endlessh:live_pond:last_viewed") is None:
+        return "skipped: no active viewers"
+
     from apps.aquarium.services import get_pond_fish
 
     try:
