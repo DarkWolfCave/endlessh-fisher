@@ -69,8 +69,9 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            echo "==> Building backend image"
-            docker compose -f docker-compose.prod.traefik.yml build backend_blue
+            echo "==> Building all backend-based images (blue, green, celery_worker, celery_beat)"
+            docker compose -f docker-compose.prod.traefik.yml build \
+              backend_blue backend_green celery_worker celery_beat
 
             wait_healthy() {
               local container=$1
