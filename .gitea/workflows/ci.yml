@@ -1,0 +1,106 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      skip_checks:
+        description: 'Skip checks (nur für Notfälle)'
+        type: boolean
+        default: false
+
+jobs:
+  # ============================================
+  # ALLE Branches: Security & Quality Checks
+  # ============================================
+  check:
+    name: "Security & Quality Checks"
+    runs-on: ubuntu-latest
+    if: ${{ !inputs.skip_checks }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+
+      - name: Install tools
+        run: pip install pip-audit ruff
+
+      - name: Python security audit
+        run: pip-audit -r requirements/production.txt || true
+        continue-on-error: true
+
+      - name: Python lint
+        run: ruff check apps/ config/ manage.py || true
+        continue-on-error: true
+
+  # ============================================
+  # NUR main: Rolling Deploy to wolf-prod
+  # ============================================
+  deploy:
+    name: "Deploy to Production (Rolling HA)"
+    runs-on: ubuntu-latest
+    needs: check
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Rolling deploy (blue then green)
+        run: |
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s << 'ENDSSH'
+            set -euo pipefail
+            cd "${{ secrets.DEPLOY_PATH }}"
+
+            echo "==> Pulling latest main"
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "==> Building backend image"
+            docker compose -f docker-compose.prod.traefik.yml build backend_blue
+
+            wait_healthy() {
+              local container=$1
+              for i in $(seq 1 60); do
+                status=$(docker inspect "$container" --format '{{.State.Health.Status}}' 2>/dev/null || echo none)
+                if [ "$status" = "healthy" ]; then
+                  echo "==> $container is healthy"
+                  return 0
+                fi
+                sleep 2
+              done
+              echo "==> FAILED: $container did not become healthy in time"
+              docker logs --tail 50 "$container" || true
+              return 1
+            }
+
+            echo "==> Recreating backend_blue"
+            docker compose -f docker-compose.prod.traefik.yml up -d --no-deps --force-recreate backend_blue
+            wait_healthy endlessh_fisher_blue
+
+            echo "==> Recreating backend_green"
+            docker compose -f docker-compose.prod.traefik.yml up -d --no-deps --force-recreate backend_green
+            wait_healthy endlessh_fisher_green
+
+            echo "==> Recreating celery worker and beat"
+            docker compose -f docker-compose.prod.traefik.yml up -d --no-deps --force-recreate celery_worker celery_beat
+
+            echo "==> Deploy complete"
+          ENDSSH
+
+      - name: Cleanup SSH
+        if: always()
+        run: rm -rf ~/.ssh/deploy_key
