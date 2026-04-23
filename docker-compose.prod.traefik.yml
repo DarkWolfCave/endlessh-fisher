@@ -71,7 +71,7 @@ x-backend-common: &backend-common
 
 services:
   postgres:
-    image: postgres:18.3-alpine@sha256:c48f944df2efbcece2dc4ea6725554f97d430fc0a4fbcfbeb31803b22dc33331
+    image: postgres:18.3-alpine@sha256:54451ecb8ab38c24c3ec123f2fd501303a3a1856a5c66e98cecf2460d5e1e9d7
     container_name: endlessh_fisher_postgres
     restart: unless-stopped
     security_opt:
