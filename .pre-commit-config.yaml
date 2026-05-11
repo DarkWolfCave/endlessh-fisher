@@ -1,0 +1,9 @@
+# Empire CI Security Standard (CM #219, Schicht 2)
+# Pre-Commit Secret-Scan via gitleaks — fängt versehentliche Secret-Commits VOR Push ab.
+# Backup-Schicht im CI: gitleaks-action (siehe #219).
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+

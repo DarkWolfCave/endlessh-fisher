@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load game_tags %}
+
+{% block title %}{{ "Schatzkammer"|t }} - {{ GAME_NAME }}{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-accent);">
+    &#x1F3F0; {{ "Schatzkammer"|t }} &mdash; {{ "Gesammelte Tipps & Entdeckungen"|t }}
+</h2>
+
+<!-- Stats -->
+<div class="vault-stats">
+    <div class="vault-stat">
+        <span class="vault-stat-value">{{ total_collected }}</span>
+        <span class="vault-stat-label">{{ "Schätze gesammelt"|t }}</span>
+    </div>
+    <div class="vault-stat">
+        <span class="vault-stat-value">{{ unique_tips }}</span>
+        <span class="vault-stat-label">{{ "Tipps entdeckt"|t }}</span>
+    </div>
+    <div class="vault-stat">
+        <span class="vault-stat-value">{{ total_tips }}</span>
+        <span class="vault-stat-label">{{ "Tipps gesamt"|t }}</span>
+    </div>
+    <div class="vault-stat">
+        <span class="vault-stat-value">{{ total_points|score_format }}</span>
+        <span class="vault-stat-label">{{ "Punkte verdient"|t }}</span>
+    </div>
+</div>
+
+{% if tip_progress %}
+<h3 style="font-weight: 700; margin-bottom: 0.75rem; color: var(--color-accent);">{{ "Entdeckungsfortschritt"|t }}</h3>
+<div class="vault-progress">
+    {% for cat in tip_progress %}
+    <div class="vault-progress-item">
+        <div class="vault-progress-header">
+            <span>{{ cat.emoji }} {{ cat.label }}</span>
+            <span>{{ cat.collected }}/{{ cat.total }}</span>
+        </div>
+        <div class="vault-progress-bar">
+            <div class="vault-progress-fill {% if cat.percent == 100 %}vault-progress-complete{% endif %}"
+                 style="width: {{ cat.percent }}%"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if collections %}
+<div class="vault-grid">
+    {% for item in collections %}
+    <div class="vault-card">
+        <div class="vault-card-header">
+            <span class="vault-card-emoji">{{ item.treasure_type.emoji }}</span>
+            <span class="vault-card-name" style="color: {{ item.treasure_type.rarity_color }};">
+                {{ item.treasure_type|lang:"name" }}
+            </span>
+            <span class="vault-card-date">{{ item.collected_at|date:"d.m.Y H:i" }}</span>
+        </div>
+        {% if item.security_tip %}
+        <div class="vault-card-body">
+            <div class="vault-tip-title">
+                <span>{{ item.security_tip.emoji }}</span>
+                <span class="tip-rarity-{{ item.security_tip.rarity }}">
+                    {{ item.security_tip|lang:"title" }}
+                </span>
+                {% if item.security_tip_id in new_tip_ids %}<span class="vault-badge-new">NEU!</span>{% endif %}
+            </div>
+            <div class="vault-tip-type-badge vault-tip-type-{{ item.security_tip.tip_type }}">
+                {{ item.security_tip.get_tip_type_display }}
+            </div>
+            <p class="vault-tip-content">{{ item.security_tip|lang:"content"|format_code }}</p>
+            {% if item.security_tip.source_url %}
+            <a class="vault-tip-source"
+               href="{{ item.security_tip.source_url }}"
+               target="_blank" rel="noopener noreferrer">
+                {{ item.security_tip|lang:"source_label"|default:item.security_tip.source_url }} &rarr;
+            </a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="vault-card-body">
+            <p class="vault-tip-content" style="font-style: italic;">
+                +{{ item.points_awarded }} {{ "Punkte gesammelt"|t }}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="vault-empty">
+    <div class="vault-empty-icon">&#x1F3F0;</div>
+    <p>{{ "Noch keine Schätze gesammelt."|t }}</p>
+    <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+        {{ "Schätze erscheinen zufällig im Live-Teich"|t }} &mdash; {{ "klicke sie an, um Sicherheitstipps zu entdecken!"|t }}
+    </p>
+</div>
+{% endif %}
+{% endblock %}

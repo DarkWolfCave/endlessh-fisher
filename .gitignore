@@ -1,8 +1,43 @@
-local/
-.env
-.env.*
-!.env.example
+# Python
 __pycache__/
-*.pyc
-.venv/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Django
+db.sqlite3
+static-collected/
+*.log
+
+# Environment & Config (user-specific)
+.env
+*.env.local
+servers.toml
+
+# Claude Code (user-specific)
+CLAUDE.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+data/
+
+# Node (Tailwind build)
 node_modules/
+package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+# Celery
+celerybeat-schedule*
+local/

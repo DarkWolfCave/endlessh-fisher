@@ -1,0 +1,40 @@
+# Grype CVE Allowlist for CI image scanning.
+#
+# Each entry below has been triaged and accepted for one of these reasons:
+#  - Debian "won't fix" (no upstream patch available)
+#  - Patch lag (fix scheduled, not yet in current base image)
+#  - Container hardening (read_only, cap_drop, non-root user) makes the
+#    CVE unreachable in our threat model
+#
+# Review cadence: quarterly. Each entry has a review date — re-check
+# upstream status and either remove (if patched) or refresh the date.
+
+ignore:
+  # Python 3.14.x base-image binary CVE — pending upstream patch for the
+  # 3.14.3/3.14.4 line. Remove when base bumps to 3.14.5+.
+  - vulnerability: CVE-2026-6100
+    package: { name: python, type: binary }
+    reason: |
+      No upstream patch for Python 3.14.3/3.14.4 line. EPSS <0.1%.
+      Review: 2026-08-11.
+
+  # Debian glibc "won't fix" — no local exploit vector without shell
+  # access. Container runs non-root with read_only filesystem and
+  # cap_drop=ALL, so this is unreachable in practice.
+  - vulnerability: CVE-2026-5450
+    package: { name: libc-bin, type: deb }
+    reason: |
+      Debian marks "won't fix". Container hardening makes it unreachable.
+      EPSS <0.1%. Review: 2026-08-11.
+
+  - vulnerability: CVE-2026-5450
+    package: { name: libc6, type: deb }
+    reason: "Same CVE as libc-bin (shared source package). Review: 2026-08-11."
+
+  # GnuTLS critical — Debian backport pending. Container has no direct
+  # TLS client path (Traefik handles TLS termination externally).
+  - vulnerability: CVE-2026-33845
+    package: { name: libgnutls30t64, type: deb }
+    reason: |
+      Debian backport pending. TLS termination is external (Traefik),
+      container only handles plain HTTP internally. Review: 2026-06-11.
